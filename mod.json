@@ -1,9 +1,9 @@
 {
-    "displayName": "Mod Template",
-    "description": "Mindustry Java mod template, complete with EntityAnno and syntax downgrader integration.",
+    "displayName": "Tantros",
+    "description": "Breathes life into Tantros, the planet Anuke has ceased working on. This mod is meant to faithfully recreate what Tantros could have been, had work not ceased.",
     "version": "v1.0",
-    "minGameVersion": "146",
-    "author": "You",
+    "minGameVersion": "149",
+    "author": "Alecthe2nd",
     "java": true,
-    "main": "template.ModTemplate"
+    "main": "tantros.Tantros"
 }
