@@ -6,11 +6,17 @@ import arc.struct.Seq;
 import mindustry.content.Fx;
 import mindustry.content.Items;
 import mindustry.content.Liquids;
+import mindustry.entities.bullet.BasicBulletType;
+import mindustry.entities.part.RegionPart;
+import mindustry.entities.pattern.ShootAlternate;
 import mindustry.gen.Sounds;
+import mindustry.graphics.Pal;
 import mindustry.type.Category;
 import mindustry.type.ItemStack;
 import mindustry.type.LiquidStack;
 import mindustry.world.Block;
+import mindustry.world.blocks.defense.Wall;
+import mindustry.world.blocks.defense.turrets.ItemTurret;
 import mindustry.world.blocks.distribution.Duct;
 import mindustry.world.blocks.distribution.DuctBridge;
 import mindustry.world.blocks.distribution.DuctRouter;
@@ -18,6 +24,7 @@ import mindustry.world.blocks.environment.OreBlock;
 import mindustry.world.blocks.power.PowerNode;
 import mindustry.world.blocks.production.BeamDrill;
 import mindustry.world.blocks.production.GenericCrafter;
+import mindustry.world.consumers.ConsumeCoolant;
 import mindustry.world.draw.*;
 import mindustry.world.meta.Env;
 import tantros.content.world.blocks.power.PassiveGenerator;
@@ -35,14 +42,20 @@ public class TantrosBlocks {
             //drills
             copperBore, siltSifter,
 
-            //crafter
+            //crafters
             metaglassAnnealer, graphiticDecomposer,
 
             //ore
             wallOreCopper, wallOreLead, wallOreCoal,
 
             //power
-            sealed_node, tidal_turbine;
+            sealed_node, tidal_turbine,
+
+            //defense
+            copperBulkhead, largeCopperBulkhead,
+
+            //turrets
+            bident;
 
     public static void load(){
 
@@ -105,6 +118,7 @@ public class TantrosBlocks {
             researchCost = with(Items.copper, 10);
         }};
         //endregion
+
         //region ore
         wallOreCopper = new OreBlock("ore-wall-copper", Items.copper){{
             wallOre = true;
@@ -190,6 +204,99 @@ public class TantrosBlocks {
             ignoreLiquidFullness = true;
             consumePower(30f / 60f);
         }};
+        //endregion
+
+        //region defense
+
+        copperBulkhead = new Wall("copper-bulkhead"){{
+            requirements(Category.defense, with(Items.copper, 6));
+            health = 320;
+            researchCostMultiplier = 0.1f;
+        }};
+
+        largeCopperBulkhead = new Wall("copper-bulkhead-large"){{
+            requirements(Category.defense, ItemStack.mult(copperBulkhead.requirements, 4));
+            health = copperBulkhead.health * 4;
+            size = 2;
+        }};
+
+        //endregion
+
+        //region turrets
+
+        bident = new ItemTurret("bident"){{
+            requirements(Category.turret, with(Items.copper, 35));
+            ammo(
+                    Items.copper,  new BasicBulletType(2f, 9){{
+                        width = 7f;
+                        height = 9f;
+                        lifetime = 60f;
+                        ammoMultiplier = 2;
+
+                        hitEffect = despawnEffect = Fx.hitBulletColor;
+                        hitColor = backColor = trailColor = Pal.copperAmmoBack;
+                        frontColor = Pal.copperAmmoFront;
+                    }},
+                    Items.metaglass, new BasicBulletType(3.5f, 18){{
+                        width = 9f;
+                        height = 12f;
+                        ammoMultiplier = 4;
+                        lifetime = 60f;
+                        rangeChange = 80f;
+
+                        hitEffect = despawnEffect = Fx.hitBulletColor;
+                        hitColor = backColor = trailColor = Pal.glassAmmoBack;
+                        frontColor = Pal.glassAmmoFront;
+                    }},
+                    Items.silicon, new BasicBulletType(3f, 12){{
+                        width = 7f;
+                        height = 9f;
+                        homingPower = 0.2f;
+                        reloadMultiplier = 1.5f;
+                        ammoMultiplier = 5;
+                        lifetime = 60f;
+
+                        trailLength = 5;
+                        trailWidth = 1.5f;
+
+                        hitEffect = despawnEffect = Fx.hitBulletColor;
+                        hitColor = backColor = trailColor = Pal.siliconAmmoBack;
+                        frontColor = Pal.siliconAmmoFront;
+                    }}
+            );
+
+            shoot = new ShootAlternate(3.5f);
+
+            recoils = 2;
+            drawer = new DrawTurret(){{
+                for(int i = 0; i < 2; i ++){
+                    int f = i;
+                    parts.add(new RegionPart("-barrel-" + (i == 0 ? "l" : "r")){{
+                        progress = PartProgress.recoil;
+                        recoilIndex = f;
+                        under = true;
+                        moveY = -1.5f;
+                    }});
+                }
+            }};
+
+            recoil = 0.5f;
+            shootY = 3f;
+            reload = 20f;
+            range = 80;
+            shootCone = 15f;
+            ammoUseEffect = Fx.casing1;
+            health = 250;
+            inaccuracy = 2f;
+            rotateSpeed = 10f;
+            coolant = consume(new ConsumeCoolant(6f/60f){{
+                filter = liquid -> liquid != Liquids.water && liquid.coolant && (this.allowLiquid && !liquid.gas || this.allowGas && liquid.gas) && liquid.temperature <= maxTemp && liquid.flammability < maxFlammability;
+            }});
+            researchCostMultiplier = 0.05f;
+
+            limitRange(5f);
+        }};
+
         //endregion
     }
 }

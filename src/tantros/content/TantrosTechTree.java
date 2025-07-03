@@ -1,10 +1,7 @@
 package tantros.content;
 
 
-import mindustry.content.Blocks;
-import mindustry.content.Items;
-import mindustry.content.Planets;
-import mindustry.content.TechTree;
+import mindustry.content.*;
 
 public class TantrosTechTree {
 
@@ -31,6 +28,9 @@ public class TantrosTechTree {
             TechTree.node(TantrosBlocks.graphiticDecomposer, () -> {
 
             });
+            TechTree.node(TantrosBlocks.bident, () -> {
+
+            });
             TechTree.node(Items.copper, () -> {
                 TechTree.node(Items.lead, () -> {
                     TechTree.node(Items.sand, () -> {
@@ -40,7 +40,9 @@ public class TantrosTechTree {
                     });
                     TechTree.node(Items.coal, () -> {
                         TechTree.node(Items.graphite, () -> {
+                            TechTree.node(Liquids.hydrogen, () -> {
 
+                            });
                         });
                     });
                 });
