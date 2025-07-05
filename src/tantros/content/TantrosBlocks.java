@@ -3,6 +3,7 @@ package tantros.content;
 import arc.graphics.Color;
 import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.Fill;
+import arc.graphics.g2d.TextureRegion;
 import arc.math.Angles;
 import arc.math.Interp;
 import arc.math.Mathf;
@@ -43,7 +44,9 @@ import mindustry.world.meta.BlockGroup;
 import mindustry.world.meta.Env;
 import tantros.content.world.blocks.power.PassiveGenerator;
 import tantros.content.world.blocks.production.Sifter;
+import tantros.content.world.draw.DrawLayeredRegion;
 import tantros.content.world.draw.DrawSpin;
+import tantros.content.world.draw.DrawSurfaceRipples;
 
 import static mindustry.type.ItemStack.with;
 
@@ -57,7 +60,9 @@ public class TantrosBlocks {
             copperBore, siltSifter, seawaterIntake,
 
             //crafters
-            metaglassAnnealer, graphiticDecomposer, atmosphereIntake,
+            metaglassAnnealer, graphiticDecomposer,
+                    atmosphereIntake,
+                    siliconPressureSmelter,
 
             //ore
             wallOreCopper, wallOreLead, wallOreCoal,
@@ -131,7 +136,7 @@ public class TantrosBlocks {
         }};
 
         seawaterIntake = new GenericCrafter("seawater-intake"){{
-            requirements(Category.crafting, with(Items.metaglass, 15, Items.graphite, 5, Items.copper, 10));
+            requirements(Category.production, with(Items.metaglass, 15, Items.graphite, 5, Items.copper, 10));
             size = 1;
             hasLiquids = true;
 
@@ -235,12 +240,12 @@ public class TantrosBlocks {
                     }},
                     new DrawDefault());
             consumeItems(with(Items.coal, 2));
-            ignoreLiquidFullness = true;
+            dumpExtraLiquid = true;
             consumePower(30f / 60f);
         }};
 
         atmosphereIntake = new GenericCrafter("atmosphere-intake"){{
-            requirements(Category.crafting, with(Items.copper, 40, Items.lead, 15, Items.metaglass, 50, Items.graphite, 30));
+            requirements(Category.production, with(Items.copper, 40, Items.lead, 15, Items.metaglass, 50, Items.graphite, 30));
             craftEffect = Fx.none;
             outputLiquids = LiquidStack.with(
                     Liquids.ozone, 1f / 60f,
@@ -262,16 +267,32 @@ public class TantrosBlocks {
                     new DrawLiquidTile(Liquids.nitrogen),
                     new DrawRegion(),
                     new DrawLiquidOutputs(),
-                    new DrawRegion("-vent-shadow"){{
-                        x = -(size * Vars.tilesize) / 2f;
-                        y = -(size * Vars.tilesize) / 2f;
-                        rotation = 45f;
-                    }},
-                    new DrawRegion("-vent"){
+                    new DrawRegion("-vent-shadow"){
                         {
-                            layer = Layer.light + 1.1f;
+                            x = -(size * Vars.tilesize) / 2f;
+                            y = -(size * Vars.tilesize) / 2f;
+                            rotation = 45f;
+                            layer = Layer.light + 1.05f;
+                        }
+
+                        @Override
+                        public TextureRegion[] icons(Block block) {
+                            return new TextureRegion[]{};
                         }
                     },
+                    new DrawSurfaceRipples(){
+                        {
+                            color = Liquids.water.color;
+                            sides = 24;
+                            recurrence = 15f;
+                            spread = 0;
+                            radius = 12f;
+                            amount = 12;
+                            timeScl = 90f;
+                            layer = Layer.light + 1.1f;
+                        }},
+                    new DrawLayeredRegion("-vent-bottom", Layer.light + 1.1f),
+                    new DrawLayeredRegion("-vent", Layer.light + 1.1f),
                     new DrawParticles(){
                         {
                             color = Liquids.nitrogen.color;
@@ -287,8 +308,29 @@ public class TantrosBlocks {
                             super.draw(build);
                         }
                     });
-            ignoreLiquidFullness = true;
+            dumpExtraLiquid = true;
             consumePower(45f / 60f);
+        }};
+
+        siliconPressureSmelter = new GenericCrafter("silicon-pressure-smelter"){{
+            requirements(Category.crafting, with(Items.copper, 30, Items.lead, 20, Items.metaglass, 40, Items.graphite, 50));
+            craftEffect = Fx.none;
+            outputItem = new ItemStack(Items.silicon, 3);
+            craftTime = 60f;
+            size = 3;
+            hasPower = true;
+            hasLiquids = true;
+            envEnabled |= Env.space | Env.underwater;
+            envDisabled = Env.none;
+            itemCapacity = 30;
+            drawer = new DrawMulti(new DrawRegion("-bottom"), new DrawArcSmelt(), new DrawDefault());
+            fogRadius = 3;
+            ambientSound = Sounds.smelter;
+            ambientSoundVolume = 0.12f;
+
+            consumeItems(with(Items.coal, 1, Items.sand, 3));
+            consumeLiquids(LiquidStack.with(Liquids.nitrogen, 3.5f/60f));
+            consumePower(120f/60f);
         }};
 
         //endregion

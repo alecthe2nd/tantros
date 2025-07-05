@@ -24,24 +24,23 @@ public class TantrosTechTree {
                         });
                     });
                 });
-            });
-            TechTree.node(TantrosBlocks.siltSifter, () -> {
+                TechTree.node(TantrosBlocks.siltSifter, () -> {
 
-            });
-            TechTree.node(TantrosBlocks.sealed_node, () -> {
-
+                });
             });
             TechTree.node(TantrosBlocks.tidal_turbine, () -> {
+                TechTree.node(TantrosBlocks.sealed_node, () -> {
 
+                });
             });
             TechTree.node(TantrosBlocks.metaglassAnnealer, () -> {
+                TechTree.node(TantrosBlocks.graphiticDecomposer, () -> {
+                    TechTree.node(TantrosBlocks.atmosphereIntake, () -> {
+                        TechTree.node(TantrosBlocks.siliconPressureSmelter, () -> {
 
-            });
-            TechTree.node(TantrosBlocks.graphiticDecomposer, () -> {
-
-            });
-            TechTree.node(TantrosBlocks.atmosphereIntake, () -> {
-
+                        });
+                    });
+                });
             });
             TechTree.node(TantrosBlocks.bident, () -> {
 
@@ -50,14 +49,21 @@ public class TantrosTechTree {
                 TechTree.node(Items.lead, () -> {
                     TechTree.node(Items.sand, () -> {
                         TechTree.node(Items.metaglass, () -> {
+                            TechTree.node(Liquids.water, () -> {
+                                TechTree.node(Liquids.hydrogen, () -> {
 
+                                });
+                                TechTree.node(Liquids.ozone, () -> {
+
+                                });
+                            });
+                            TechTree.node(Liquids.nitrogen, () -> {
+
+                            });
                         });
                     });
                     TechTree.node(Items.coal, () -> {
                         TechTree.node(Items.graphite, () -> {
-                            TechTree.node(Liquids.hydrogen, () -> {
-
-                            });
                         });
                     });
                 });
