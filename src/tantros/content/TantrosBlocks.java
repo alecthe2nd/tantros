@@ -1,20 +1,30 @@
 package tantros.content;
 
 import arc.graphics.Color;
+import arc.graphics.g2d.Draw;
+import arc.graphics.g2d.Fill;
+import arc.math.Angles;
 import arc.math.Interp;
+import arc.math.Mathf;
 import arc.struct.Seq;
+import arc.util.Time;
+import mindustry.Vars;
 import mindustry.content.Fx;
 import mindustry.content.Items;
 import mindustry.content.Liquids;
 import mindustry.entities.bullet.BasicBulletType;
 import mindustry.entities.part.RegionPart;
 import mindustry.entities.pattern.ShootAlternate;
+import mindustry.gen.Building;
 import mindustry.gen.Sounds;
+import mindustry.graphics.Layer;
 import mindustry.graphics.Pal;
 import mindustry.type.Category;
 import mindustry.type.ItemStack;
+import mindustry.type.Liquid;
 import mindustry.type.LiquidStack;
 import mindustry.world.Block;
+import mindustry.world.Tile;
 import mindustry.world.blocks.defense.Wall;
 import mindustry.world.blocks.defense.turrets.ItemTurret;
 import mindustry.world.blocks.distribution.Duct;
@@ -24,8 +34,12 @@ import mindustry.world.blocks.environment.OreBlock;
 import mindustry.world.blocks.power.PowerNode;
 import mindustry.world.blocks.production.BeamDrill;
 import mindustry.world.blocks.production.GenericCrafter;
+import mindustry.world.blocks.production.HeatCrafter;
+import mindustry.world.blocks.production.SolidPump;
 import mindustry.world.consumers.ConsumeCoolant;
 import mindustry.world.draw.*;
+import mindustry.world.meta.Attribute;
+import mindustry.world.meta.BlockGroup;
 import mindustry.world.meta.Env;
 import tantros.content.world.blocks.power.PassiveGenerator;
 import tantros.content.world.blocks.production.Sifter;
@@ -40,10 +54,10 @@ public class TantrosBlocks {
             pressurizedDuct,
 
             //drills
-            copperBore, siltSifter,
+            copperBore, siltSifter, seawaterIntake,
 
             //crafters
-            metaglassAnnealer, graphiticDecomposer,
+            metaglassAnnealer, graphiticDecomposer, atmosphereIntake,
 
             //ore
             wallOreCopper, wallOreLead, wallOreCoal,
@@ -99,8 +113,6 @@ public class TantrosBlocks {
             consumeLiquid(Liquids.hydrogen, 0.25f / 60f).boost();
         }};
 
-
-
         siltSifter = new Sifter("silt-sifter"){{
             requirements(Category.production, with(Items.copper, 16));
             tier = 1;
@@ -116,6 +128,28 @@ public class TantrosBlocks {
             //silt sifter only works underwater
             envEnabled = Env.underwater;
             researchCost = with(Items.copper, 10);
+        }};
+
+        seawaterIntake = new GenericCrafter("seawater-intake"){{
+            requirements(Category.crafting, with(Items.metaglass, 15, Items.graphite, 5, Items.copper, 10));
+            size = 1;
+            hasLiquids = true;
+
+            drawer = new DrawMulti(new DrawRegion("-bottom"), new DrawLiquidTile(Liquids.water, 4.1f), new DrawDefault(),
+                    new DrawParticles(){{
+                        color = Liquids.water.color;
+                        alpha = 0.4f;
+                        particleSize = 2f;
+                        particles = 5;
+                        particleRad = 4f;
+                        particleLife = 280f;
+                    }});
+
+            liquidCapacity = 10f;
+            ambientSound = Sounds.extractLoop;
+            ambientSoundVolume = 0.06f;
+
+            outputLiquid = new LiquidStack(Liquids.water, 6f / 60f);
         }};
         //endregion
 
@@ -204,6 +238,59 @@ public class TantrosBlocks {
             ignoreLiquidFullness = true;
             consumePower(30f / 60f);
         }};
+
+        atmosphereIntake = new GenericCrafter("atmosphere-intake"){{
+            requirements(Category.crafting, with(Items.copper, 40, Items.lead, 15, Items.metaglass, 50, Items.graphite, 30));
+            craftEffect = Fx.none;
+            outputLiquids = LiquidStack.with(
+                    Liquids.ozone, 1f / 60f,
+                    Liquids.nitrogen, 4f / 60f
+            );
+            craftTime = 120;
+            size = 3;
+            hasPower = true;
+            hasLiquids = true;
+            liquidCapacity = 30;
+            rotate = true;
+            invertFlip = true;
+            group = BlockGroup.liquids;
+            regionRotated1 = 10;
+            liquidOutputDirections = new int[]{1, 3};
+
+            drawer = new DrawMulti(
+                    new DrawRegion("-bottom"),
+                    new DrawLiquidTile(Liquids.nitrogen),
+                    new DrawRegion(),
+                    new DrawLiquidOutputs(),
+                    new DrawRegion("-vent-shadow"){{
+                        x = -(size * Vars.tilesize) / 2f;
+                        y = -(size * Vars.tilesize) / 2f;
+                        rotation = 45f;
+                    }},
+                    new DrawRegion("-vent"){
+                        {
+                            layer = Layer.light + 1.1f;
+                        }
+                    },
+                    new DrawParticles(){
+                        {
+                            color = Liquids.nitrogen.color;
+                            alpha = 0.6f;
+                            particleSize = 4f;
+                            particles = 10;
+                            particleRad = 12f;
+                            particleLife = 140f;
+                        }
+                        @Override
+                        public void draw(Building build){
+                            Draw.z(Layer.light + 1.1f);
+                            super.draw(build);
+                        }
+                    });
+            ignoreLiquidFullness = true;
+            consumePower(45f / 60f);
+        }};
+
         //endregion
 
         //region defense

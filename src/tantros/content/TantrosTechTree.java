@@ -8,10 +8,22 @@ public class TantrosTechTree {
     public static void load(){
         Planets.tantros.techTree = TechTree.nodeRoot("tantros", Blocks.coreShard, true, () -> {
             TechTree.node(TantrosBlocks.copperDuct, () -> {
+                TechTree.node(TantrosBlocks.copperDuctRouter, () -> {
+                    TechTree.node(TantrosBlocks.copperDuctBridge, () -> {
 
+                    });
+                });
             });
             TechTree.node(TantrosBlocks.copperBore, () -> {
+                TechTree.node(Blocks.conduit, () -> {
+                    TechTree.node(Blocks.liquidJunction, () -> {
+                        TechTree.node(Blocks.liquidRouter, () -> {
+                            TechTree.node(Blocks.bridgeConduit, () -> {
 
+                            });
+                        });
+                    });
+                });
             });
             TechTree.node(TantrosBlocks.siltSifter, () -> {
 
@@ -26,6 +38,9 @@ public class TantrosTechTree {
 
             });
             TechTree.node(TantrosBlocks.graphiticDecomposer, () -> {
+
+            });
+            TechTree.node(TantrosBlocks.atmosphereIntake, () -> {
 
             });
             TechTree.node(TantrosBlocks.bident, () -> {
