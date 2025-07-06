@@ -4,7 +4,6 @@ import arc.util.io.Reads;
 import arc.util.io.Writes;
 import mindustry.graphics.Pal;
 import mindustry.ui.Bar;
-import mindustry.world.blocks.power.NuclearReactor;
 import mindustry.world.blocks.production.GenericCrafter;
 
 public class Boiler extends GenericCrafter {
@@ -51,7 +50,7 @@ public class Boiler extends GenericCrafter {
                 damage(pressureDamage);
             }
             if (!didOverflow) {
-                pressure += -0.1f;
+                pressure -= 0.1f;
             }
         }
 

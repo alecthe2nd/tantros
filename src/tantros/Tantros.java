@@ -1,12 +1,8 @@
 package tantros;
 
-import arc.graphics.Color;
 import mindustry.content.Planets;
-import mindustry.graphics.g3d.HexMesh;
-import mindustry.maps.planet.TantrosPlanetGenerator;
 import mindustry.mod.*;
 import mindustry.type.Planet;
-import mindustry.world.meta.Env;
 import tantros.content.TantrosBlocks;
 import tantros.content.TantrosTechTree;
 import tantros.content.world.TantrosLiquids;
