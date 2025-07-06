@@ -9,6 +9,7 @@ import mindustry.type.Planet;
 import mindustry.world.meta.Env;
 import tantros.content.TantrosBlocks;
 import tantros.content.TantrosTechTree;
+import tantros.content.world.TantrosLiquids;
 import tantros.content.world.TantrosUnitTypes;
 import tantros.gen.*;
 
@@ -22,6 +23,7 @@ public class Tantros extends Mod{
         Planets.tantros.accessible = true;
         Planets.tantros.visible = true;
         Planets.tantros.alwaysUnlocked = true;
+        TantrosLiquids.load();
         TantrosBlocks.load();
         TantrosTechTree.load();
         TantrosUnitTypes.load();

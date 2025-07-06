@@ -32,6 +32,8 @@ import mindustry.world.blocks.distribution.Duct;
 import mindustry.world.blocks.distribution.DuctBridge;
 import mindustry.world.blocks.distribution.DuctRouter;
 import mindustry.world.blocks.environment.OreBlock;
+import mindustry.world.blocks.power.ConsumeGenerator;
+import mindustry.world.blocks.power.PowerGenerator;
 import mindustry.world.blocks.power.PowerNode;
 import mindustry.world.blocks.production.BeamDrill;
 import mindustry.world.blocks.production.GenericCrafter;
@@ -42,7 +44,9 @@ import mindustry.world.draw.*;
 import mindustry.world.meta.Attribute;
 import mindustry.world.meta.BlockGroup;
 import mindustry.world.meta.Env;
+import tantros.content.world.TantrosLiquids;
 import tantros.content.world.blocks.power.PassiveGenerator;
+import tantros.content.world.blocks.production.Boiler;
 import tantros.content.world.blocks.production.Sifter;
 import tantros.content.world.draw.DrawLayeredRegion;
 import tantros.content.world.draw.DrawSpin;
@@ -63,12 +67,14 @@ public class TantrosBlocks {
             metaglassAnnealer, graphiticDecomposer,
                     atmosphereIntake,
                     siliconPressureSmelter,
+                    combustionBoiler,
 
             //ore
             wallOreCopper, wallOreLead, wallOreCoal,
 
             //power
             sealed_node, tidal_turbine,
+                    steamTurbine,
 
             //defense
             copperBulkhead, largeCopperBulkhead,
@@ -109,7 +115,7 @@ public class TantrosBlocks {
         copperBore = new BeamDrill("copper-bore"){{
             requirements(Category.production, with(Items.copper, 12));
 
-            drillTime = 360f;
+            drillTime = 180f;
             tier = 2;
             size = 2;
             range = 2;
@@ -138,6 +144,8 @@ public class TantrosBlocks {
         seawaterIntake = new GenericCrafter("seawater-intake"){{
             requirements(Category.production, with(Items.metaglass, 15, Items.graphite, 5, Items.copper, 10));
             size = 1;
+            envEnabled |= Env.underwater;
+
             hasLiquids = true;
 
             drawer = new DrawMulti(new DrawRegion("-bottom"), new DrawLiquidTile(Liquids.water, 4.1f), new DrawDefault(),
@@ -185,6 +193,25 @@ public class TantrosBlocks {
             envEnabled = Env.underwater;
             drawer = new DrawMulti(new DrawSpin("-rotator", 0.6f), new DrawDefault());
             size = 6;
+        }};
+
+        steamTurbine = new ConsumeGenerator("steam-turbine"){{
+            requirements(Category.power, with(Items.metaglass, 35, Items.copper, 30, Items.lead, 15));
+            powerProduction = 2f;
+            envEnabled |= Env.underwater;
+
+            drawer = new DrawMulti(
+                    new DrawDefault(),
+                    new DrawLiquidTile(),
+                    new DrawBlurSpin("-rotator", 6f),
+                    new DrawRegion("-top")
+            );
+            hasPower = true;
+            hasLiquids = true;
+            liquidCapacity = 12f;
+            consumeLiquids(LiquidStack.with(TantrosLiquids.steam, 6f/60f));
+
+            size = 1;
         }};
         //endregion
 
@@ -240,7 +267,7 @@ public class TantrosBlocks {
                     }},
                     new DrawDefault());
             consumeItems(with(Items.coal, 2));
-            dumpExtraLiquid = true;
+            ignoreLiquidFullness = true;
             consumePower(30f / 60f);
         }};
 
@@ -248,8 +275,8 @@ public class TantrosBlocks {
             requirements(Category.production, with(Items.copper, 40, Items.lead, 15, Items.metaglass, 50, Items.graphite, 30));
             craftEffect = Fx.none;
             outputLiquids = LiquidStack.with(
-                    Liquids.ozone, 1f / 60f,
-                    Liquids.nitrogen, 4f / 60f
+                    Liquids.ozone, 2f / 60f,
+                    Liquids.nitrogen, 8f / 60f
             );
             craftTime = 120;
             size = 3;
@@ -319,10 +346,12 @@ public class TantrosBlocks {
             craftTime = 60f;
             size = 3;
             hasPower = true;
+            hasItems = true;
             hasLiquids = true;
             envEnabled |= Env.space | Env.underwater;
             envDisabled = Env.none;
             itemCapacity = 30;
+            liquidCapacity = 30;
             drawer = new DrawMulti(new DrawRegion("-bottom"), new DrawArcSmelt(), new DrawDefault());
             fogRadius = 3;
             ambientSound = Sounds.smelter;
@@ -333,6 +362,33 @@ public class TantrosBlocks {
             consumePower(120f/60f);
         }};
 
+        combustionBoiler = new Boiler("combustion-boiler"){
+            {
+                requirements(Category.crafting, with(Items.copper, 20, Items.lead, 10, Items.metaglass, 30));
+                craftEffect = Fx.none;
+
+                size = 2;
+                drawer = new DrawMulti(
+                        new DrawRegion("-bottom"),
+                        new DrawLiquidTile(Liquids.water, 2f),
+                        new DrawBubbles(),
+                        new DrawDefault(),
+                        new DrawWarmupRegion()
+                );
+                craftTime = 120f;
+
+                hasItems = true;
+                hasLiquids = true;
+                itemCapacity = 30;
+                liquidCapacity = 50;
+                envDisabled |= Env.oxygen;
+                consumeLiquids(LiquidStack.with(Liquids.water, 6f/60f, Liquids.ozone, 1f/60f));
+                consumeItems(with(Items.coal, 1));
+
+                outputLiquids = LiquidStack.with(TantrosLiquids.steam, 12f/60f);
+                craftTime = 60f;
+            }
+        };
         //endregion
 
         //region defense
@@ -341,12 +397,14 @@ public class TantrosBlocks {
             requirements(Category.defense, with(Items.copper, 6));
             health = 320;
             researchCostMultiplier = 0.1f;
+            envEnabled |= Env.underwater;
         }};
 
         largeCopperBulkhead = new Wall("copper-bulkhead-large"){{
             requirements(Category.defense, ItemStack.mult(copperBulkhead.requirements, 4));
             health = copperBulkhead.health * 4;
             size = 2;
+            envEnabled |= Env.underwater;
         }};
 
         //endregion

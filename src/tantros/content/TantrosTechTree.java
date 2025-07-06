@@ -2,6 +2,7 @@ package tantros.content;
 
 
 import mindustry.content.*;
+import tantros.content.world.TantrosLiquids;
 
 public class TantrosTechTree {
 
@@ -30,6 +31,9 @@ public class TantrosTechTree {
             });
             TechTree.node(TantrosBlocks.tidal_turbine, () -> {
                 TechTree.node(TantrosBlocks.sealed_node, () -> {
+                    TechTree.node(TantrosBlocks.steamTurbine, () -> {
+
+                    });
 
                 });
             });
@@ -37,6 +41,9 @@ public class TantrosTechTree {
                 TechTree.node(TantrosBlocks.graphiticDecomposer, () -> {
                     TechTree.node(TantrosBlocks.atmosphereIntake, () -> {
                         TechTree.node(TantrosBlocks.siliconPressureSmelter, () -> {
+
+                        });
+                        TechTree.node(TantrosBlocks.combustionBoiler, () -> {
 
                         });
                     });
@@ -54,6 +61,9 @@ public class TantrosTechTree {
 
                                 });
                                 TechTree.node(Liquids.ozone, () -> {
+
+                                });
+                                TechTree.node(TantrosLiquids.steam, () -> {
 
                                 });
                             });
