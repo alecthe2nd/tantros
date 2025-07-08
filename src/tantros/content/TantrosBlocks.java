@@ -1,5 +1,7 @@
 package tantros.content;
 
+import arc.Events;
+import arc.graphics.Color;
 import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.TextureRegion;
 import arc.math.Interp;
@@ -8,6 +10,7 @@ import mindustry.Vars;
 import mindustry.content.Fx;
 import mindustry.content.Items;
 import mindustry.content.Liquids;
+import mindustry.content.UnitTypes;
 import mindustry.entities.bullet.BasicBulletType;
 import mindustry.entities.part.RegionPart;
 import mindustry.entities.pattern.ShootAlternate;
@@ -29,14 +32,19 @@ import mindustry.world.blocks.power.ConsumeGenerator;
 import mindustry.world.blocks.power.PowerNode;
 import mindustry.world.blocks.production.BeamDrill;
 import mindustry.world.blocks.production.GenericCrafter;
+import mindustry.world.blocks.storage.CoreBlock;
 import mindustry.world.consumers.ConsumeCoolant;
 import mindustry.world.draw.*;
 import mindustry.world.meta.BlockGroup;
+import mindustry.world.meta.BuildVisibility;
 import mindustry.world.meta.Env;
 import tantros.content.world.TantrosLiquids;
+import tantros.content.world.blocks.effect.GroundPenetratingRadar;
+import tantros.content.world.blocks.environment.DeepOreBlock;
 import tantros.content.world.blocks.power.PassiveGenerator;
 import tantros.content.world.blocks.production.Boiler;
 import tantros.content.world.blocks.production.Sifter;
+import tantros.content.world.blocks.storage.CustomCoreBlock;
 import tantros.content.world.draw.DrawLayeredRegion;
 import tantros.content.world.draw.DrawSpin;
 import tantros.content.world.draw.DrawSurfaceRipples;
@@ -52,6 +60,9 @@ public class TantrosBlocks {
             //drills
             copperBore, siltSifter, seawaterIntake,
 
+            //storage
+            coreShell,
+
             //crafters
             metaglassAnnealer, graphiticDecomposer,
                     atmosphereIntake,
@@ -60,6 +71,14 @@ public class TantrosBlocks {
 
             //ore
             wallOreCopper, wallOreLead, wallOreCoal,
+                    deepOreCopper,
+                    deepOreLead,
+                    deepOreCoal,
+                    deepOreScrap,
+                    deepOreTitanium,
+                    deepOreBeryllium,
+                    deepOreTungsten,
+                    deepOreThorium,
 
             //power
             sealed_node, tidal_turbine,
@@ -67,6 +86,7 @@ public class TantrosBlocks {
 
             //defense
             copperBulkhead, largeCopperBulkhead,
+                    deepSonar,
 
             //turrets
             bident;
@@ -153,9 +173,42 @@ public class TantrosBlocks {
 
             outputLiquid = new LiquidStack(Liquids.water, 6f / 60f);
         }};
+
+        //endregion
+        //region storage
+
+        coreShell = new CustomCoreBlock("core-shell"){{
+            requirements(Category.effect, BuildVisibility.coreZoneOnly, with(Items.copper, 800, Items.lead, 800, Items.metaglass, 1000));
+            alwaysUnlocked = true;
+            squareSprite = false;
+            isFirstTier = true;
+            unitType = UnitTypes.alpha;
+            health = 1100;
+            hasItems = true;
+            itemCapacity = 4000;
+            size = 4;
+            buildCostMultiplier = 2f;
+
+            unitCapModifier = 8;
+        }};
+
         //endregion
 
         //region ore
+        deepOreCopper = new DeepOreBlock("ore-deep-copper", Items.copper);
+
+        deepOreLead = new DeepOreBlock("ore-deep-lead", Items.lead);
+
+        deepOreCoal = new DeepOreBlock("ore-deep-coal", Items.coal);
+
+        deepOreTitanium = new DeepOreBlock("ore-deep-titanium", Items.titanium);
+
+        deepOreBeryllium = new DeepOreBlock("ore-deep-beryllium", Items.beryllium);
+
+        deepOreTungsten = new DeepOreBlock("ore-deep-tungsten", Items.tungsten);
+
+        deepOreThorium = new DeepOreBlock("ore-deep-thorium", Items.thorium);
+
         wallOreCopper = new OreBlock("ore-wall-copper", Items.copper){{
             wallOre = true;
         }};
@@ -474,5 +527,17 @@ public class TantrosBlocks {
         }};
 
         //endregion
+
+        //region effect
+
+        deepSonar = new GroundPenetratingRadar("deep-sonar"){{
+            requirements(Category.effect, with( Items.copper, 10, Items.lead, 10, Items.metaglass, 30, Items.silicon, 20));
+            glowColor = outlineColor = Color.valueOf("00ffb2");
+            fogRadius = 12;
+            envEnabled |= Env.underwater;
+            consumePower(6f/60f);
+        }};
+
+        // endregion
     }
 }

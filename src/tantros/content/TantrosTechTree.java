@@ -7,7 +7,7 @@ import tantros.content.world.TantrosLiquids;
 public class TantrosTechTree {
 
     public static void load(){
-        Planets.tantros.techTree = TechTree.nodeRoot("tantros", Blocks.coreShard, true, () -> {
+        Planets.tantros.techTree = TechTree.nodeRoot("tantros", TantrosBlocks.coreShell, true, () -> {
             TechTree.node(TantrosBlocks.copperDuct, () -> {
                 TechTree.node(TantrosBlocks.copperDuctRouter, () -> {
                     TechTree.node(TantrosBlocks.copperDuctBridge, () -> {
@@ -77,6 +77,9 @@ public class TantrosTechTree {
                         });
                     });
                 });
+            });
+            TechTree.node(TantrosBlocks.deepSonar,()->{
+
             });
         });
     }
