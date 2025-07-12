@@ -1,6 +1,5 @@
 package tantros.content;
 
-import arc.Events;
 import arc.graphics.Color;
 import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.TextureRegion;
@@ -32,13 +31,13 @@ import mindustry.world.blocks.power.ConsumeGenerator;
 import mindustry.world.blocks.power.PowerNode;
 import mindustry.world.blocks.production.BeamDrill;
 import mindustry.world.blocks.production.GenericCrafter;
-import mindustry.world.blocks.storage.CoreBlock;
 import mindustry.world.consumers.ConsumeCoolant;
 import mindustry.world.draw.*;
 import mindustry.world.meta.BlockGroup;
 import mindustry.world.meta.BuildVisibility;
 import mindustry.world.meta.Env;
 import tantros.content.world.TantrosLiquids;
+import tantros.content.world.blocks.drill.CustomDrawerDrill;
 import tantros.content.world.blocks.effect.GroundPenetratingRadar;
 import tantros.content.world.blocks.environment.DeepOreBlock;
 import tantros.content.world.blocks.power.PassiveGenerator;
@@ -46,6 +45,7 @@ import tantros.content.world.blocks.production.Boiler;
 import tantros.content.world.blocks.production.Sifter;
 import tantros.content.world.blocks.storage.CustomCoreBlock;
 import tantros.content.world.draw.DrawLayeredRegion;
+import tantros.content.world.draw.DrawLowered;
 import tantros.content.world.draw.DrawSpin;
 import tantros.content.world.draw.DrawSurfaceRipples;
 
@@ -58,7 +58,10 @@ public class TantrosBlocks {
             pressurizedDuct,
 
             //drills
-            copperBore, siltSifter, seawaterIntake,
+            copperBore,
+            siltSifter,
+            seawaterIntake,
+            deepBoreDrill,
 
             //storage
             coreShell,
@@ -174,6 +177,46 @@ public class TantrosBlocks {
             outputLiquid = new LiquidStack(Liquids.water, 6f / 60f);
         }};
 
+        deepBoreDrill = new CustomDrawerDrill("deep-bore-drill"){{
+            requirements(Category.production, with(Items.copper, 12, Items.metaglass, 30, Items.graphite, 25, Items.silicon, 10));
+            tier = 3;
+            drillTime = 60;
+            size = 3;
+            squareSprite = false;
+
+            drawer = new DrawMulti(
+                    new DrawDefault(),
+                    new DrawLowered(
+                            new DrawMulti(
+                                new DrawSpin("-rotator", 6f, Building::totalProgress),
+                                new DrawRegion("-rotator-rig")
+                            ),
+                            Building::warmup
+                    ){{
+                        lowerScale = 0.65f;
+                        lowerBrightness = 0.75f;
+                    }},
+                    new DrawRegion("-top")
+            );
+
+            //space ore sources cannot be deep enough to warrant this drill
+            envEnabled ^= Env.space;
+
+            //this device is designed for underwater usage
+            envEnabled |= Env.underwater;
+
+            //moderate power usage
+            consumePower(20f/60f);
+
+            liquidCapacity = 10;
+
+            //needs nitrogen to maintain an inert atmosphere within the drill
+            consumeLiquid(Liquids.nitrogen, 2f/60f);
+
+            //optional ozone input burns away unwanted dust
+            consumeLiquid(Liquids.ozone, 1f/60f).boost();
+        }};
+
         //endregion
         //region storage
 
@@ -239,7 +282,7 @@ public class TantrosBlocks {
 
         steamTurbine = new ConsumeGenerator("steam-turbine"){{
             requirements(Category.power, with(Items.metaglass, 35, Items.copper, 30, Items.lead, 15));
-            powerProduction = 2f;
+            powerProduction = 1f;
             envEnabled |= Env.underwater;
 
             drawer = new DrawMulti(

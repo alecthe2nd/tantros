@@ -12,6 +12,7 @@ public class DeepOreBlock extends OreBlock {
 
     public DeepOreBlock(String name, Item ore) {
         super(name, ore);
+        playerUnmineable = true;
     }
 
     public DeepOreBlock(Item ore) {
@@ -20,6 +21,7 @@ public class DeepOreBlock extends OreBlock {
 
     public DeepOreBlock(String name) {
         super(name);
+        playerUnmineable = true;
     }
 
     @Override

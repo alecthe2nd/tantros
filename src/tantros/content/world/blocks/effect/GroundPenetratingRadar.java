@@ -21,9 +21,10 @@ public class GroundPenetratingRadar extends Radar {
         public void draw() {
             super.draw();
 
-            Draw.color(outlineColor);
+            //Draw.color(outlineColor);
+            Draw.alpha(0.75f);
             int range = Mathf.ceil(fogRadius());
-            if (Vars.player.unit().dst(this) < range * Vars.tilesize * 2) {
+            if (Vars.player.unit() != null && Vars.player.unit().dst(this) < range * Vars.tilesize * 2) {
                 for (int i = -range; i < range + 1; i++) {
                     for (int j = -range; j < range + 1; j++) {
                         Tile tile = Vars.world.tile(this.tileX() + i, this.tileY() + j);

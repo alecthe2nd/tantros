@@ -37,8 +37,16 @@ public class Sifter extends Drill {
     @Override
     public boolean canMine(Tile tile){
         if(tile == null || tile.block().isStatic()) return false;
-        Item drops = tile.drop();
-        return super.canMine(tile) && (itemsWhiteList == null || itemsWhiteList.contains(drops));
+        Item drops = tile.floor().itemDrop;
+        return drops != null
+                && drops.hardness <= tier
+                && (blockedItems == null || !blockedItems.contains(drops))
+                && (itemsWhiteList == null || itemsWhiteList.contains(drops));
+    }
+
+    @Override
+    public Item getDrop(Tile tile) {
+        return tile.floor().itemDrop;
     }
 
     public class SifterBuild extends DrillBuild{

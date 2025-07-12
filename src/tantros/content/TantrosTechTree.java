@@ -24,6 +24,9 @@ public class TantrosTechTree {
                             });
                         });
                     });
+                    TechTree.node(TantrosBlocks.deepBoreDrill, () -> {
+
+                    });
                 });
                 TechTree.node(TantrosBlocks.siltSifter, () -> {
 
@@ -74,6 +77,14 @@ public class TantrosTechTree {
                     });
                     TechTree.node(Items.coal, () -> {
                         TechTree.node(Items.graphite, () -> {
+                            TechTree.node(Items.silicon, () -> {
+                                TechTree.node(Items.titanium, () -> {
+
+                                });
+                                TechTree.node(Items.beryllium, () -> {
+
+                                });
+                            });
                         });
                     });
                 });
