@@ -1,24 +1,15 @@
 package tantros.content.world.draw;
 
-import arc.func.Cons;
-import arc.func.Func;
 import arc.graphics.g2d.Draw;
-import arc.struct.Seq;
-import arc.util.Eachable;
-import arc.util.Timer;
-import mindustry.entities.units.BuildPlan;
 import mindustry.gen.Building;
-import mindustry.world.Block;
 import mindustry.world.draw.DrawBlock;
 import mindustry.world.draw.DrawMulti;
 import mindustry.world.draw.DrawRegion;
+import tantros.content.world.draw.util.NumberProviderConsumer;
 
-import java.util.function.Function;
-import java.util.function.Supplier;
+public class DrawLowered extends DrawMulti implements NumberProviderConsumer {
 
-public class DrawLowered extends DrawMulti {
-
-    public Func<Building, Float> depthSource;
+    public String depthSourceName;
 
     public float upperScale = 1f;
 
@@ -28,20 +19,21 @@ public class DrawLowered extends DrawMulti {
 
     public float lowerBrightness = 0.1f;
 
-    public DrawLowered( String suffix, Func<Building, Float> depthSource){
-        this(new DrawRegion(suffix), depthSource);
+    public DrawLowered( String suffix, String depthSourceName){
+        this(new DrawRegion(suffix), depthSourceName);
     }
 
-    public DrawLowered( DrawBlock drawer, Func<Building, Float> depthSource){
+    public DrawLowered( DrawBlock drawer, String depthSourceName){
         this.drawers = new DrawBlock[]{
                 drawer
         };
-        this.depthSource = depthSource;
+        this.depthSourceName = depthSourceName;
     }
 
     @Override
     public void draw(Building build) {
-        float scaleFactor = (1 - depthSource.get(build));
+
+        float scaleFactor = (1 - getValue(depthSourceName, build));
 
         Draw.scl((scaleFactor * (upperScale - lowerScale)) + lowerScale);
         Draw.colorl((scaleFactor * (upperBrightness - lowerBrightness)) + lowerBrightness);

@@ -4,12 +4,10 @@ import arc.graphics.Color;
 import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.TextureRegion;
 import arc.math.Interp;
+import arc.math.Mathf;
 import arc.struct.Seq;
 import mindustry.Vars;
-import mindustry.content.Fx;
-import mindustry.content.Items;
-import mindustry.content.Liquids;
-import mindustry.content.UnitTypes;
+import mindustry.content.*;
 import mindustry.entities.bullet.BasicBulletType;
 import mindustry.entities.part.RegionPart;
 import mindustry.entities.pattern.ShootAlternate;
@@ -27,6 +25,7 @@ import mindustry.world.blocks.distribution.Duct;
 import mindustry.world.blocks.distribution.DuctBridge;
 import mindustry.world.blocks.distribution.DuctRouter;
 import mindustry.world.blocks.environment.OreBlock;
+import mindustry.world.blocks.environment.StaticWall;
 import mindustry.world.blocks.power.ConsumeGenerator;
 import mindustry.world.blocks.power.PowerNode;
 import mindustry.world.blocks.production.BeamDrill;
@@ -44,17 +43,32 @@ import tantros.content.world.blocks.power.PassiveGenerator;
 import tantros.content.world.blocks.production.Boiler;
 import tantros.content.world.blocks.production.Sifter;
 import tantros.content.world.blocks.storage.CustomCoreBlock;
-import tantros.content.world.draw.DrawLayeredRegion;
-import tantros.content.world.draw.DrawLowered;
-import tantros.content.world.draw.DrawSpin;
-import tantros.content.world.draw.DrawSurfaceRipples;
+import tantros.content.world.draw.*;
+import tantros.content.world.draw.DrawFade;
+import tantros.content.world.draw.util.WarmupCooldownProvider;
 
 import static mindustry.type.ItemStack.with;
 
 public class TantrosBlocks {
 
     public static Block
-            copperDuct, copperDuctRouter, copperDuctBridge,
+
+            //wall
+            redmatWall,
+            bluematWall,
+
+            //ore
+            wallOreCopper, wallOreLead, wallOreCoal,
+            deepOreCopper,
+            deepOreLead,
+            deepOreCoal,
+            deepOreScrap,
+            deepOreTitanium,
+            deepOreBeryllium,
+            deepOreTungsten,
+            deepOreThorium,
+
+    copperDuct, copperDuctRouter, copperDuctBridge,
             pressurizedDuct,
 
             //drills
@@ -62,6 +76,7 @@ public class TantrosBlocks {
             siltSifter,
             seawaterIntake,
             deepBoreDrill,
+            deepLaserDrill,
 
             //storage
             coreShell,
@@ -71,18 +86,8 @@ public class TantrosBlocks {
                     atmosphereIntake,
                     siliconPressureSmelter,
                     combustionBoiler,
-
-            //ore
-            wallOreCopper, wallOreLead, wallOreCoal,
-                    deepOreCopper,
-                    deepOreLead,
-                    deepOreCoal,
-                    deepOreScrap,
-                    deepOreTitanium,
-                    deepOreBeryllium,
-                    deepOreTungsten,
-                    deepOreThorium,
-
+                    waterCooledOxidizer,
+                    electrolysisChamber,
             //power
             sealed_node, tidal_turbine,
                     steamTurbine,
@@ -95,6 +100,40 @@ public class TantrosBlocks {
             bident;
 
     public static void load(){
+
+        //region wall
+        redmatWall = new StaticWall("redmat-wall"){{
+            Blocks.redmat.asFloor().wall = this;
+        }};
+
+
+        //endregion
+
+        //region ore
+        deepOreCopper = new DeepOreBlock("ore-deep-copper", Items.copper);
+
+        deepOreLead = new DeepOreBlock("ore-deep-lead", Items.lead);
+
+        deepOreCoal = new DeepOreBlock("ore-deep-coal", Items.coal);
+
+        deepOreTitanium = new DeepOreBlock("ore-deep-titanium", Items.titanium);
+
+        deepOreBeryllium = new DeepOreBlock("ore-deep-beryllium", Items.beryllium);
+
+        deepOreTungsten = new DeepOreBlock("ore-deep-tungsten", Items.tungsten);
+
+        deepOreThorium = new DeepOreBlock("ore-deep-thorium", Items.thorium);
+
+        wallOreCopper = new OreBlock("ore-wall-copper", Items.copper){{
+            wallOre = true;
+        }};
+        wallOreLead = new OreBlock("ore-wall-lead", Items.lead){{
+            wallOre = true;
+        }};
+        wallOreCoal = new OreBlock("ore-wall-coal", Items.coal){{
+            wallOre = true;
+        }};
+        //endregion
 
         //region distribution
         copperDuctRouter = new DuctRouter("copper-duct-router"){{
@@ -184,6 +223,12 @@ public class TantrosBlocks {
             size = 3;
             squareSprite = false;
 
+            setNumberSource("warmup", () ->{
+                WarmupCooldownProvider result = new WarmupCooldownProvider();
+                result.warmupSpeed = 0.01f;
+                return result;
+            });
+
             drawer = new DrawMulti(
                     new DrawDefault(),
                     new DrawLowered(
@@ -191,7 +236,7 @@ public class TantrosBlocks {
                                 new DrawSpin("-rotator", 6f, Building::totalProgress),
                                 new DrawRegion("-rotator-rig")
                             ),
-                            Building::warmup
+                            "warmup"
                     ){{
                         lowerScale = 0.65f;
                         lowerBrightness = 0.75f;
@@ -206,7 +251,7 @@ public class TantrosBlocks {
             envEnabled |= Env.underwater;
 
             //moderate power usage
-            consumePower(20f/60f);
+            consumePower(40f/60f);
 
             liquidCapacity = 10;
 
@@ -215,6 +260,58 @@ public class TantrosBlocks {
 
             //optional ozone input burns away unwanted dust
             consumeLiquid(Liquids.ozone, 1f/60f).boost();
+        }};
+
+        deepLaserDrill = new CustomDrawerDrill("deep-laser-drill"){{
+            requirements(Category.production, with(Items.beryllium, 35, Items.oxide, 50, Items.graphite, 35, Items.silicon, 20));
+            tier = 5;
+            drillTime = 60;
+            size = 4;
+            squareSprite = false;
+
+            setNumberSource("laser_fade", () ->{
+                return (build)->{
+                    return (build.efficiency > 0)? Mathf.sin(build.totalProgress(), 6f, 1f) * Mathf.clamp(build.warmup()): 0f;
+                };
+            });
+
+            drawer = new DrawMulti(
+                    new DrawDefault(),
+                    new DrawSpin("-rotator", 6f, Building::totalProgress),
+                    new DrawIf(
+                            new DrawFade(
+                                    new DrawMulti(
+                                            new DrawSpin("-rotator-laser", 6f, Building::totalProgress){{
+                                                useSpinSprite = false;
+                                            }},
+                                            new DrawRegion("-point")
+                                    ),
+                                    "laser_fade"
+                            ){{
+                                lowerFade = 0.65f;
+                            }},
+                            (build) -> build.efficiency > 0
+                    ),
+
+                    new DrawRegion("-top")
+            );
+
+            //space ore sources cannot be deep enough to warrant this drill
+            envEnabled ^= Env.space;
+
+            //this device is designed for underwater usage
+            envEnabled |= Env.underwater;
+
+            //moderate power usage
+            consumePower(80f/60f);
+
+            liquidCapacity = 10;
+
+            //needs nitrogen to maintain an inert atmosphere within the drill
+            consumeLiquid(Liquids.nitrogen, 4f/60f);
+
+            //optional ozone input burns away unwanted dust
+            consumeLiquid(Liquids.ozone, 3f/60f).boost();
         }};
 
         //endregion
@@ -235,32 +332,6 @@ public class TantrosBlocks {
             unitCapModifier = 8;
         }};
 
-        //endregion
-
-        //region ore
-        deepOreCopper = new DeepOreBlock("ore-deep-copper", Items.copper);
-
-        deepOreLead = new DeepOreBlock("ore-deep-lead", Items.lead);
-
-        deepOreCoal = new DeepOreBlock("ore-deep-coal", Items.coal);
-
-        deepOreTitanium = new DeepOreBlock("ore-deep-titanium", Items.titanium);
-
-        deepOreBeryllium = new DeepOreBlock("ore-deep-beryllium", Items.beryllium);
-
-        deepOreTungsten = new DeepOreBlock("ore-deep-tungsten", Items.tungsten);
-
-        deepOreThorium = new DeepOreBlock("ore-deep-thorium", Items.thorium);
-
-        wallOreCopper = new OreBlock("ore-wall-copper", Items.copper){{
-            wallOre = true;
-        }};
-        wallOreLead = new OreBlock("ore-wall-lead", Items.lead){{
-            wallOre = true;
-        }};
-        wallOreCoal = new OreBlock("ore-wall-coal", Items.coal){{
-            wallOre = true;
-        }};
         //endregion
 
         //region power
@@ -302,8 +373,6 @@ public class TantrosBlocks {
 
         //region crafters
 
-
-
         metaglassAnnealer = new GenericCrafter("metaglass-annealer"){{
             requirements(Category.crafting, with(Items.copper, 80, Items.lead, 40));
             craftEffect = Fx.bubble;
@@ -328,7 +397,7 @@ public class TantrosBlocks {
             requirements(Category.crafting, with(Items.copper, 40, Items.lead, 10, Items.metaglass, 30));
             craftEffect = Fx.none;
             outputItem = new ItemStack(Items.graphite, 1);
-            outputLiquid = new LiquidStack(Liquids.hydrogen, 1f / 60f);
+            outputLiquid = new LiquidStack(Liquids.hydrogen, 0.5f / 60f);
             craftTime = 120f;
             size = 2;
             hasPower = true;
@@ -443,7 +512,7 @@ public class TantrosBlocks {
             ambientSoundVolume = 0.12f;
 
             consumeItems(with(Items.coal, 1, Items.sand, 3));
-            consumeLiquids(LiquidStack.with(Liquids.nitrogen, 3.5f/60f));
+            consumeLiquids(LiquidStack.with(Liquids.hydrogen, 0.5f/60f));
             consumePower(120f/60f);
         }};
 
@@ -471,9 +540,83 @@ public class TantrosBlocks {
                 consumeItems(with(Items.coal, 1));
 
                 outputLiquids = LiquidStack.with(TantrosLiquids.steam, 12f/60f);
-                craftTime = 60f;
             }
         };
+
+        waterCooledOxidizer = new Boiler("water-cooled-oxidizer"){
+            {
+                requirements(Category.crafting, with(Items.metaglass, 20, Items.graphite, 10, Items.beryllium, 30));
+
+                drawer = new DrawMulti(
+                        new DrawRegion("-bottom"),
+                        new DrawLiquidRegion(),
+                        new DrawDefault(),
+                        new DrawGlowRegion()
+                );
+
+
+                size = 3;
+                craftTime = 240f;
+
+
+
+                hasItems = true;
+                hasLiquids = true;
+                itemCapacity = 30;
+                liquidCapacity = 50;
+                envDisabled |= Env.oxygen;
+
+                consumeLiquids(LiquidStack.with(Liquids.water, 1f/60f, Liquids.ozone, 3f/60f));
+                consumeItems(with(Items.beryllium, 5));
+                consumePower(120f/60f);
+
+                outputLiquids = LiquidStack.with(TantrosLiquids.steam, 6f/60f);
+                outputItems = ItemStack.with(Items.oxide, 5);
+            }
+        };
+
+        electrolysisChamber = new GenericCrafter("electrolysis-chamber"){{
+            requirements(Category.crafting, with(Items.copper, 20, Items.metaglass, 30, Items.silicon, 15, Items.graphite, 20));
+            size = 2;
+
+            craftTime = 10f;
+            rotate = true;
+            invertFlip = true;
+            group = BlockGroup.liquids;
+            itemCapacity = 0;
+
+            liquidCapacity = 50f;
+
+            consumeLiquid(Liquids.water, 5f / 60f);
+            consumePower(30f/60f);
+
+            drawer = new DrawMulti(
+                    new DrawRegion("-bottom"),
+                    new DrawLiquidTile(Liquids.water, 1f),
+                    new DrawBubbles(Color.valueOf("7693e3")){{
+                        sides = 10;
+                        recurrence = 3f;
+                        spread = 6;
+                        radius = 1.5f;
+                        amount = 20;
+                    }},
+                    new DrawRegion(),
+                    new DrawLiquidOutputs(),
+                    new DrawGlowRegion(){{
+                        alpha = 0.7f;
+                        color = Color.valueOf("c4bdf3");
+                        glowIntensity = 0.3f;
+                        glowScale = 6f;
+                    }}
+            );
+
+            ambientSound = Sounds.electricHum;
+            ambientSoundVolume = 0.08f;
+
+            regionRotated1 = 3;
+            outputLiquids = LiquidStack.with(Liquids.ozone, 2f / 60, Liquids.hydrogen, 3f / 60);
+            liquidOutputDirections = new int[]{1, 3};
+        }};
         //endregion
 
         //region defense

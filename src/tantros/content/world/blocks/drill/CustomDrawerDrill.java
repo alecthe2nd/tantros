@@ -1,17 +1,27 @@
 package tantros.content.world.blocks.drill;
 
+import arc.func.Func;
 import arc.graphics.g2d.TextureRegion;
 import arc.math.Mathf;
 import arc.struct.Seq;
 import arc.util.Eachable;
 import mindustry.entities.units.BuildPlan;
+import mindustry.gen.Building;
 import mindustry.world.blocks.production.Drill;
 import mindustry.world.draw.DrawBlock;
 import mindustry.world.draw.DrawDefault;
+import tantros.content.world.draw.util.ConstantProvider;
+import tantros.content.world.draw.util.NumberProviderc;
 
-public class CustomDrawerDrill extends Drill {
+import java.util.HashMap;
+import java.util.Map;
+import java.util.function.Supplier;
+
+public class CustomDrawerDrill extends Drill implements NumberProviderc {
 
     public DrawBlock drawer = new DrawDefault();
+
+    public Map<String,Supplier<Func<Building,Float>>> providerSourceMap = new HashMap<>();
 
     public CustomDrawerDrill(String name) {
         super(name);
@@ -38,10 +48,26 @@ public class CustomDrawerDrill extends Drill {
         drawer.getRegionsToOutline(this, out);
     }
 
-    public class CustomDrawerDrillBuild extends DrillBuild{
+    @Override
+    public void setNumberSource(String name, Supplier<Func<Building, Float>> source) {
+        providerSourceMap.put(name, source);
+    }
+
+    @Override
+    public Supplier<Func<Building, Float>> getSource(String name) {
+        if(!providerSourceMap.containsKey(name) || providerSourceMap.get(name) == null){
+            providerSourceMap.put(name, ConstantProvider::new);
+        }
+        return providerSourceMap.get(name);
+    }
+
+    public class CustomDrawerDrillBuild extends DrillBuild implements NumberProviderBuildc{
 
         private float lastResult = 0f;
         private float lastEfficiency = 0f;
+
+        public Map<String,Func<Building,Float>> providerMap = new HashMap<>();
+
 
         @Override
         public float totalProgress() {
@@ -50,24 +76,7 @@ public class CustomDrawerDrill extends Drill {
 
         @Override
         public float warmup() {
-            boolean canValueLower = efficiency <= 1.0E-7F;
-            float result = 0f;
-            if(canValueLower){
-                if(warmup > 1.0E-7F) {
-                    result = (this.lastEfficiency > 1.0E-7F)? warmup / this.lastEfficiency: 0f;
-                } else{
-                    this.lastResult = 0f;
-                    this.lastEfficiency = 0f;
-                    return 0f;
-                }
-            } else{
-                this.lastEfficiency = efficiency;
-                result = warmup / efficiency;
-            }
-
-            this.lastResult = Mathf.clamp((canValueLower)? result : Math.max(result, this.lastResult));
-
-            return this.lastResult;
+            return warmup;
         }
 
         @Override
@@ -81,5 +90,12 @@ public class CustomDrawerDrill extends Drill {
             drawer.drawLight(this);
         }
 
+        @Override
+        public Func<Building, Float> get(String name) {
+            if(!providerMap.containsKey(name) || providerMap.get(name) == null){
+                providerMap.put(name, getSource(name).get());
+            }
+            return providerMap.get(name);
+        }
     }
 }

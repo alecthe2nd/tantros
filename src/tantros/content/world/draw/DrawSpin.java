@@ -2,6 +2,7 @@ package tantros.content.world.draw;
 
 import arc.Core;
 import arc.func.Func;
+import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.TextureRegion;
 import mindustry.gen.Building;
 import mindustry.graphics.Drawf;
@@ -15,6 +16,8 @@ public class DrawSpin extends DrawBlock {
     public TextureRegion region;
     public String suffix = "";
     public float rotateSpeed = 1f, x, y;
+
+    public boolean useSpinSprite = true;
 
     public Func<Building, Float> timeSource;
 
@@ -36,7 +39,11 @@ public class DrawSpin extends DrawBlock {
         if (timeSource == null){
             timeSource = Building::totalProgress;
         }
-        Drawf.spinSprite(region, build.x + x, build.y + y, timeSource.get(build) * rotateSpeed);
+        if(useSpinSprite) {
+            Drawf.spinSprite(region, build.x + x, build.y + y, timeSource.get(build) * rotateSpeed);
+        } else {
+            Draw.rect(region, build.x + x, build.y + y, timeSource.get(build) * rotateSpeed);
+        }
     }
 
     @Override
