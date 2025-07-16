@@ -36,7 +36,9 @@ import mindustry.world.meta.BlockGroup;
 import mindustry.world.meta.BuildVisibility;
 import mindustry.world.meta.Env;
 import tantros.content.world.TantrosLiquids;
+import tantros.content.world.blocks.distribution.BoostDuct;
 import tantros.content.world.blocks.drill.CustomDrawerDrill;
+import tantros.content.world.blocks.effect.FacingBooster;
 import tantros.content.world.blocks.effect.GroundPenetratingRadar;
 import tantros.content.world.blocks.environment.DeepOreBlock;
 import tantros.content.world.blocks.power.PassiveGenerator;
@@ -45,6 +47,10 @@ import tantros.content.world.blocks.production.Sifter;
 import tantros.content.world.blocks.storage.CustomCoreBlock;
 import tantros.content.world.draw.*;
 import tantros.content.world.draw.DrawFade;
+import tantros.content.world.draw.output.DrawLiquidOutputRegion;
+import tantros.content.world.draw.output.DrawMultiLiquidOutput;
+import tantros.content.world.draw.output.DrawOutputLiquid;
+import tantros.content.world.draw.output.DrawOutputRegion;
 import tantros.content.world.draw.util.WarmupCooldownProvider;
 
 import static mindustry.type.ItemStack.with;
@@ -69,7 +75,7 @@ public class TantrosBlocks {
             deepOreThorium,
 
     copperDuct, copperDuctRouter, copperDuctBridge,
-            pressurizedDuct,
+            pneumaticDuct,
 
             //drills
             copperBore,
@@ -94,7 +100,10 @@ public class TantrosBlocks {
 
             //defense
             copperBulkhead, largeCopperBulkhead,
-                    deepSonar,
+
+            //effect
+            deepSonar,
+            pneumaticPump,
 
             //turrets
             bident;
@@ -139,7 +148,7 @@ public class TantrosBlocks {
         copperDuctRouter = new DuctRouter("copper-duct-router"){{
             requirements(Category.distribution, with(Items.copper, 3));
             health = 90;
-            speed = 12.28f;
+            speed = 15f;
             regionRotated1 = 1;
             solid = false;
             researchCost = with(Items.copper, 5);
@@ -148,18 +157,23 @@ public class TantrosBlocks {
         copperDuctBridge = new DuctBridge("copper-duct-bridge"){{
             requirements(Category.distribution, with(Items.copper, 3));
             health = 90;
-            speed = 12.28f;
+            speed = 15f;
             researchCost = with(Items.copper, 5, Items.lead, 5);
         }};
 
         copperDuct = new Duct("copper-duct"){{
             requirements(Category.distribution, with(Items.copper, 1));
             health = 90;
-            speed = 12.28f;
+            speed = 15f;
             researchCost = with(Items.copper, 5);
             bridgeReplacement = copperDuctBridge;
         }};
-        pressurizedDuct = new Block("pressurized-duct");
+        pneumaticDuct = new BoostDuct("pneumatic-duct"){{
+            requirements(Category.distribution, with(Items.metaglass, 3, Items.graphite, 2));
+            health = 180;
+            speed = 10f;
+            bridgeReplacement = copperDuctBridge;
+        }};
         //endregion
 
         //region production
@@ -585,7 +599,8 @@ public class TantrosBlocks {
             group = BlockGroup.liquids;
             itemCapacity = 0;
 
-            liquidCapacity = 50f;
+            hasLiquids = true;
+            liquidCapacity = 15f;
 
             consumeLiquid(Liquids.water, 5f / 60f);
             consumePower(30f/60f);
@@ -601,13 +616,11 @@ public class TantrosBlocks {
                         amount = 20;
                     }},
                     new DrawRegion(),
-                    new DrawLiquidOutputs(),
-                    new DrawGlowRegion(){{
-                        alpha = 0.7f;
-                        color = Color.valueOf("c4bdf3");
-                        glowIntensity = 0.3f;
-                        glowScale = 6f;
-                    }}
+                    new DrawMultiLiquidOutput(
+                            new DrawOutputRegion("-bottom"),
+                            new DrawOutputLiquid(),
+                            new DrawLiquidOutputRegion(false)
+                    )
             );
 
             ambientSound = Sounds.electricHum;
@@ -722,6 +735,16 @@ public class TantrosBlocks {
             fogRadius = 12;
             envEnabled |= Env.underwater;
             consumePower(6f/60f);
+        }};
+
+        pneumaticPump = new FacingBooster("pneumatic-pump"){{
+            requirements(Category.effect, with(Items.copper, 10, Items.metaglass, 20, Items.graphite, 15));
+            boost = 1.5f;
+
+            hasLiquids = true;
+            liquidCapacity = 9f;
+
+            consumeLiquid(Liquids.hydrogen, 3f/60f);
         }};
 
         // endregion

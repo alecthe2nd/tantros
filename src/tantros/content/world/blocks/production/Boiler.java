@@ -1,10 +1,13 @@
 package tantros.content.world.blocks.production;
 
+import arc.Core;
+import arc.math.Mathf;
 import arc.util.io.Reads;
 import arc.util.io.Writes;
 import mindustry.graphics.Pal;
 import mindustry.ui.Bar;
 import mindustry.world.blocks.production.GenericCrafter;
+import tantros.content.world.blocks.distribution.BoostDuct;
 
 public class Boiler extends GenericCrafter {
 
@@ -20,7 +23,7 @@ public class Boiler extends GenericCrafter {
     @Override
     public void setBars(){
         super.setBars();
-        addBar("pressure", (Boiler.BoilerBuild entity) -> new Bar("bar.pressure", Pal.lightishGray, () -> entity.pressure / stressCapacity));
+        addBar("pressure", (Boiler.BoilerBuild entity) -> new Bar(() -> Core.bundle.format("bar.pressure", Mathf.round(Math.max((entity.pressure), 0))), () -> Pal.lightishGray, () -> entity.pressure / stressCapacity));
     }
 
     public class BoilerBuild extends GenericCrafterBuild{

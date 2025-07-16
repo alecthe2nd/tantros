@@ -44,6 +44,7 @@ public class DrawSpin extends DrawBlock {
         } else {
             Draw.rect(region, build.x + x, build.y + y, timeSource.get(build) * rotateSpeed);
         }
+        region.flip(true, false);
     }
 
     @Override
