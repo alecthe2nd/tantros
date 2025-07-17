@@ -7,6 +7,8 @@ public class TantrosStats {
 
     public static Stat
 
-            pressureRange = new Stat("pressurerange", StatCat.function);
+            pressureRange = new Stat("pressurerange", StatCat.function),
+
+            maxPressure = new Stat("maxpressure", StatCat.function);
 
 }

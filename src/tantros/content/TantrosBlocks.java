@@ -37,8 +37,10 @@ import mindustry.world.meta.BuildVisibility;
 import mindustry.world.meta.Env;
 import tantros.content.world.TantrosLiquids;
 import tantros.content.world.blocks.distribution.BoostDuct;
+import tantros.content.world.blocks.distribution.BoostDuctBridge;
+import tantros.content.world.blocks.distribution.BoostDuctRouter;
 import tantros.content.world.blocks.drill.CustomDrawerDrill;
-import tantros.content.world.blocks.effect.FacingBooster;
+import tantros.content.world.blocks.effect.FacingPressureBooster;
 import tantros.content.world.blocks.effect.GroundPenetratingRadar;
 import tantros.content.world.blocks.environment.DeepOreBlock;
 import tantros.content.world.blocks.power.PassiveGenerator;
@@ -74,8 +76,12 @@ public class TantrosBlocks {
             deepOreTungsten,
             deepOreThorium,
 
-    copperDuct, copperDuctRouter, copperDuctBridge,
+            copperDuct,
+            copperDuctRouter,
+            copperDuctBridge,
             pneumaticDuct,
+            pneumaticDuctRouter,
+            pneumaticDuctBridge,
 
             //drills
             copperBore,
@@ -88,12 +94,17 @@ public class TantrosBlocks {
             coreShell,
 
             //crafters
-            metaglassAnnealer, graphiticDecomposer,
-                    atmosphereIntake,
-                    siliconPressureSmelter,
-                    combustionBoiler,
-                    waterCooledOxidizer,
-                    electrolysisChamber,
+            metaglassAnnealer,
+            graphiticDecomposer,
+            atmosphereIntake,
+            siliconPressureSmelter,
+            electrolysisChamber,
+
+            //boilers
+            electricBoiler,
+            combustionBoiler,
+            oxidizationReactor,
+
             //power
             sealed_node, tidal_turbine,
                     steamTurbine,
@@ -168,11 +179,31 @@ public class TantrosBlocks {
             researchCost = with(Items.copper, 5);
             bridgeReplacement = copperDuctBridge;
         }};
-        pneumaticDuct = new BoostDuct("pneumatic-duct"){{
+
+        pneumaticDuctRouter = new BoostDuctRouter("pneumatic-duct-router"){{
             requirements(Category.distribution, with(Items.metaglass, 3, Items.graphite, 2));
+            health = 90;
+            speed = 15f;
+            regionRotated1 = 1;
+            solid = false;
+            researchCost = with(Items.copper, 5);
+            max_pressure = 20;
+        }};
+
+        pneumaticDuctBridge = new BoostDuctBridge("pneumatic-duct-bridge"){{
+            requirements(Category.distribution, with(Items.metaglass, 5, Items.graphite, 4));
+            health = 90;
+            speed = 15f;
+            researchCost = with(Items.copper, 5, Items.lead, 5);
+            max_pressure = 20;
+        }};
+
+        pneumaticDuct = new BoostDuct("pneumatic-duct"){{
+            requirements(Category.distribution, with(Items.metaglass, 2, Items.graphite, 1));
             health = 180;
             speed = 10f;
             bridgeReplacement = copperDuctBridge;
+            max_pressure = 20;
         }};
         //endregion
 
@@ -530,6 +561,31 @@ public class TantrosBlocks {
             consumePower(120f/60f);
         }};
 
+        electricBoiler = new Boiler("electric-boiler"){
+            {
+                requirements(Category.crafting, with(Items.copper, 20, Items.lead, 10, Items.metaglass, 30));
+                craftEffect = Fx.none;
+
+                size = 1;
+                drawer = new DrawMulti(
+                        //new DrawRegion("-bottom"),
+                        new DrawLiquidTile(Liquids.water, 2f),
+                        new DrawBubbles()//,
+                        //new DrawDefault(),
+                        //new DrawWarmupRegion()
+                );
+                craftTime = 10f;
+
+                hasLiquids = true;
+                liquidCapacity = 50;
+                envDisabled |= Env.oxygen;
+                consumePower(30f/60f);
+                consumeLiquids(LiquidStack.with(Liquids.water, 3f/60f));
+
+                outputLiquids = LiquidStack.with(TantrosLiquids.steam, 6f/60f);
+            }
+        };
+
         combustionBoiler = new Boiler("combustion-boiler"){
             {
                 requirements(Category.crafting, with(Items.copper, 20, Items.lead, 10, Items.metaglass, 30));
@@ -557,7 +613,7 @@ public class TantrosBlocks {
             }
         };
 
-        waterCooledOxidizer = new Boiler("water-cooled-oxidizer"){
+        oxidizationReactor = new Boiler("oxidization-reactor"){
             {
                 requirements(Category.crafting, with(Items.metaglass, 20, Items.graphite, 10, Items.beryllium, 30));
 
@@ -572,19 +628,17 @@ public class TantrosBlocks {
                 size = 3;
                 craftTime = 240f;
 
-
-
                 hasItems = true;
                 hasLiquids = true;
                 itemCapacity = 30;
-                liquidCapacity = 50;
+                liquidCapacity = 360;
                 envDisabled |= Env.oxygen;
 
-                consumeLiquids(LiquidStack.with(Liquids.water, 1f/60f, Liquids.ozone, 3f/60f));
+                consumeLiquids(LiquidStack.with(Liquids.ozone, 5f/60f, Liquids.water, 18f/60f));
                 consumeItems(with(Items.beryllium, 5));
                 consumePower(120f/60f);
 
-                outputLiquids = LiquidStack.with(TantrosLiquids.steam, 6f/60f);
+                outputLiquids = LiquidStack.with(TantrosLiquids.steam, 36f/60f);
                 outputItems = ItemStack.with(Items.oxide, 5);
             }
         };
@@ -737,14 +791,16 @@ public class TantrosBlocks {
             consumePower(6f/60f);
         }};
 
-        pneumaticPump = new FacingBooster("pneumatic-pump"){{
+        pneumaticPump = new FacingPressureBooster("pneumatic-pump"){{
             requirements(Category.effect, with(Items.copper, 10, Items.metaglass, 20, Items.graphite, 15));
             boost = 1.5f;
+            pressure_range = 20;
 
             hasLiquids = true;
             liquidCapacity = 9f;
 
-            consumeLiquid(Liquids.hydrogen, 3f/60f);
+            consumeLiquid(Liquids.hydrogen, 1f/60f);
+
         }};
 
         // endregion

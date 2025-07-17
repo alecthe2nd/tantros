@@ -20,6 +20,8 @@ public class Tantros extends Mod{
 
     public static SonarTracking sonarTracking;
 
+    public static float waterToSteamConversion = 6f;
+
     @Override
     public void loadContent(){
         EntityRegistry.register();
