@@ -1,7 +1,11 @@
 package tantros.content;
 
 
+import arc.struct.Seq;
 import mindustry.content.*;
+import mindustry.game.Objectives;
+import tantros.content.blocks.TantrosBlocks;
+import tantros.content.blocks.TantrosSource;
 import tantros.content.world.TantrosLiquids;
 
 public class TantrosTechTree {
@@ -15,22 +19,25 @@ public class TantrosTechTree {
                     });
                 });
             });
-            TechTree.node(TantrosBlocks.copperBore, () -> {
-                TechTree.node(Blocks.conduit, () -> {
-                    TechTree.node(Blocks.liquidJunction, () -> {
-                        TechTree.node(Blocks.liquidRouter, () -> {
-                            TechTree.node(Blocks.bridgeConduit, () -> {
+            TechTree.node(TantrosSource.mechanicalBore, () -> {
+                TechTree.node(TantrosSource.seawaterIntake, () -> {
+                    TechTree.node(Blocks.conduit, () -> {
+                        TechTree.node(Blocks.liquidJunction, () -> {
+                            TechTree.node(Blocks.liquidRouter, () -> {
+                                TechTree.node(Blocks.bridgeConduit, () -> {
+
+                                });
+                            });
+                        });
+                        TechTree.node(TantrosSource.deepBoreDrill, () -> {
+                            TechTree.node(TantrosSource.deepLaserDrill, () -> {
 
                             });
                         });
                     });
-                    TechTree.node(TantrosBlocks.deepBoreDrill, () -> {
-                        TechTree.node(TantrosBlocks.deepLaserDrill, () -> {
-
-                        });
-                    });
                 });
-                TechTree.node(TantrosBlocks.siltSifter, () -> {
+
+                TechTree.node(TantrosSource.siltSifter, () -> {
 
                 });
             });
@@ -44,13 +51,16 @@ public class TantrosTechTree {
             });
             TechTree.node(TantrosBlocks.metaglassAnnealer, () -> {
                 TechTree.node(TantrosBlocks.graphiticDecomposer, () -> {
-                    TechTree.node(TantrosBlocks.atmosphereIntake, () -> {
-                        TechTree.node(TantrosBlocks.siliconPressureSmelter, () -> {
+                    TechTree.node(TantrosBlocks.siliconPressureSmelter, () -> {
+
+                    });
+                    TechTree.node(TantrosBlocks.electrolysisChamber, () -> {
+                        TechTree.node(TantrosBlocks.combustionBoiler, Seq.with(new Objectives.Research(Liquids.hydrogen), new Objectives.Research(Liquids.hydrogen)), () -> {
 
                         });
-                        TechTree.node(TantrosBlocks.combustionBoiler, () -> {
+                    });
+                    TechTree.node(TantrosSource.atmosphereIntakeTower, () -> {
 
-                        });
                     });
                 });
             });
@@ -71,9 +81,9 @@ public class TantrosTechTree {
                                 TechTree.node(TantrosLiquids.steam, () -> {
 
                                 });
-                            });
-                            TechTree.node(Liquids.nitrogen, () -> {
+                                TechTree.node(Liquids.nitrogen, () -> {
 
+                                });
                             });
                         });
                     });
