@@ -5,6 +5,8 @@ import arc.struct.Seq;
 import mindustry.content.*;
 import mindustry.game.Objectives;
 import tantros.content.blocks.TantrosBlocks;
+import tantros.content.blocks.TantrosEffect;
+import tantros.content.blocks.TantrosPower;
 import tantros.content.blocks.TantrosSource;
 import tantros.content.world.TantrosLiquids;
 
@@ -41,7 +43,7 @@ public class TantrosTechTree {
 
                 });
             });
-            TechTree.node(TantrosBlocks.tidal_turbine, () -> {
+            TechTree.node(TantrosPower.tidalTurbine, () -> {
                 TechTree.node(TantrosBlocks.sealed_node, () -> {
                     TechTree.node(TantrosBlocks.steamTurbine, () -> {
 
@@ -103,7 +105,7 @@ public class TantrosTechTree {
                     });
                 });
             });
-            TechTree.node(TantrosBlocks.deepSonar,()->{
+            TechTree.node(TantrosEffect.deepSonar,()->{
 
             });
         });

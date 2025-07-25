@@ -4,13 +4,14 @@ import arc.graphics.g2d.Draw;
 import mindustry.type.Liquid;
 import tantros.content.world.blocks.effect.GenericProjector;
 import tantros.content.world.blocks.effect.projector.EnvEmitter;
+import tantros.world.environment.LocalEnv;
 
 public class DrawEnvIconEmitter implements DrawEmitter<EnvEmitter> {
     @Override
     public void drawSelect(EnvEmitter emitter, GenericProjector.GenericProjectorBuild build) {
-        if(emitter.env == null) return;
-        Liquid liq = emitter.env.liquids.first();
-        if (liq == null) return;
+        LocalEnv emittedEnv = emitter.env(build);
+        if(emittedEnv == null || emittedEnv.liquids.isEmpty()) return;
+        Liquid liq = emittedEnv.liquids.first();
         Draw.rect(liq.fullIcon, build.x, build.y);
     }
 

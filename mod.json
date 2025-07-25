@@ -2,7 +2,7 @@
     "displayName": "Tantros",
     "description": "Breathes life into Tantros, the planet Anuke has ceased working on. This mod is meant to faithfully recreate what Tantros could have been, had work not ceased.",
     "version": "v1.0",
-    "minGameVersion": "149",
+    "minGameVersion": "150",
     "author": "Alecthe2nd",
     "java": true,
     "main": "tantros.Tantros"

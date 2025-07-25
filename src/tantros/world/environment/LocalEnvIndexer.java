@@ -2,9 +2,9 @@ package tantros.world.environment;
 
 import arc.Events;
 import arc.func.Cons;
-import arc.func.Func;
 import arc.math.geom.Position;
 import arc.struct.Seq;
+import arc.util.Log;
 import mindustry.Vars;
 import mindustry.game.EventType;
 import mindustry.gen.Building;
@@ -18,7 +18,7 @@ public class LocalEnvIndexer {
 
     public Seq<GenericProjectorBuild> localEnvs = new Seq<>();
     
-    public LocalEnv defaultEnv;
+    public LocalEnv defaultEnv = new LocalEnv();
 
     public LocalEnvIndexer(){
 
@@ -45,8 +45,9 @@ public class LocalEnvIndexer {
         localEnvs.clear();
         
         defaultEnv = LocalEnv.with(Vars.state.getPlanet().defaultEnv);
+        Log.log(Log.LogLevel.info, "Loaded default env" + defaultEnv + defaultEnv.liquids);
         for (Tile tile : Vars.world.tiles){
-            if (tile.build != null){
+            if (tile.build != null && tile.isCenter()){
                 doIfLocalEnvEmitter(tile.build, localEnvs::add);
             }
         }
@@ -82,14 +83,15 @@ public class LocalEnvIndexer {
                         if (env == null) {
                             env = new LocalEnv();
                         }
-                        if(envEmitter.env != null) {
-                            env.mergeIn(envEmitter.env);
+                        LocalEnv emittedEnv = envEmitter.env(build);
+                        if(emittedEnv != null) {
+                            env.mergeIn(emittedEnv);
                         }
                     }
                 }
             }
         }
-        return env;
+        return (env != null)? env: defaultEnv;
     }
 
 }

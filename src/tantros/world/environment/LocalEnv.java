@@ -24,10 +24,13 @@ public class LocalEnv {
         }
     }
 
+    public void replaceWith(LocalEnv env){
+        liquids.clear();
+        mergeIn(env);
+    }
+
     public Color computeColor(){
         switch (liquids.size){
-            case 0:
-                return Color.black;
             case 1:
                 return liquids.first().color;
             case 2:
@@ -63,6 +66,11 @@ public class LocalEnv {
             newEnv.liquids.addUnique(liq);
         }
         return newEnv;
+    }
+
+    public boolean meets(LocalEnv requirement){
+
+        return requirement == null || this.liquids.containsAll(requirement.liquids);
     }
 
 }

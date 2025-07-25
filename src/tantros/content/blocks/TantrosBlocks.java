@@ -54,6 +54,8 @@ import tantros.content.world.draw.output.DrawMultiLiquidOutput;
 import tantros.content.world.draw.output.DrawOutputLiquid;
 import tantros.content.world.draw.output.DrawOutputRegion;
 import tantros.content.world.draw.util.WarmupCooldownProvider;
+import tantros.world.consumers.ConsumeEnv;
+import tantros.world.environment.LocalEnv;
 
 import static mindustry.type.ItemStack.with;
 
@@ -104,10 +106,6 @@ public class TantrosBlocks {
 
             //defense
             copperBulkhead, largeCopperBulkhead,
-
-            //effect
-            deepSonar,
-            pneumaticPump,
 
             //turrets
             bident;
@@ -226,15 +224,6 @@ public class TantrosBlocks {
             buildCostMultiplier = 2.5f;
         }};
 
-        tidal_turbine = new PassiveGenerator("tidal-turbine"){{
-            requirements(Category.power, with(Items.copper, 25, Items.lead, 10));
-            powerProduction = 1f;
-
-            envEnabled = Env.underwater;
-            drawer = new DrawMulti(new DrawSpin("-rotator", 0.6f), new DrawDefault());
-            size = 6;
-        }};
-
         steamTurbine = new ConsumeGenerator("steam-turbine"){{
             requirements(Category.power, with(Items.metaglass, 35, Items.copper, 30, Items.lead, 15));
             powerProduction = 1f;
@@ -259,7 +248,7 @@ public class TantrosBlocks {
 
         metaglassAnnealer = new GenericCrafter("metaglass-annealer"){{
             requirements(Category.crafting, with(Items.copper, 80, Items.lead, 40));
-            craftEffect = Fx.bubble;
+            craftEffect = Fx.airBubble;
             outputItem = new ItemStack(Items.metaglass, 4);
             craftTime = 120f;
             size = 3;
@@ -553,36 +542,6 @@ public class TantrosBlocks {
         //endregion
 
         //region effect
-
-        deepSonar = new GroundPenetratingRadar("deep-sonar"){{
-            requirements(Category.effect, with( Items.copper, 10, Items.lead, 10, Items.metaglass, 30, Items.silicon, 20));
-            glowColor = outlineColor = Color.valueOf("00ffb2");
-            fogRadius = 12;
-            envEnabled |= Env.underwater;
-            consumePower(6f/60f);
-        }};
-
-        pneumaticPump = new FacingPressureBooster("pneumatic-pump"){{
-            requirements(Category.effect, with(Items.copper, 10, Items.metaglass, 20, Items.graphite, 15));
-            boost = 1.5f;
-            pressure_range = 20;
-            squareSprite = false;
-
-            hasLiquids = true;
-            liquidCapacity = 9f;
-
-            drawer = new DrawMulti(
-                    new DrawRegion(),
-                    new DrawRegion("-top"){{
-                        buildingRotate = true;
-                    }}
-            );
-
-            regionRotated1 = 1;
-
-            consumeLiquid(Liquids.hydrogen, 1f/60f);
-
-        }};
 
 
 

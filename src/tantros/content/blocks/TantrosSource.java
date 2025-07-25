@@ -19,11 +19,16 @@ import mindustry.world.blocks.production.GenericCrafter;
 import mindustry.world.draw.*;
 import mindustry.world.meta.BlockGroup;
 import mindustry.world.meta.Env;
+import tantros.content.world.blocks.drill.CustomDrawerBeamDrill;
 import tantros.content.world.blocks.drill.CustomDrawerDrill;
+import tantros.content.world.blocks.production.EnvCrafter;
 import tantros.content.world.blocks.production.Sifter;
 import tantros.content.world.draw.*;
 import tantros.content.world.draw.DrawFade;
 import tantros.content.world.draw.util.WarmupCooldownProvider;
+import tantros.content.world.draw.wallDrill.DrawDrillBit;
+import tantros.world.consumers.ConsumeEnv;
+import tantros.world.environment.LocalEnv;
 
 import static mindustry.type.ItemStack.with;
 
@@ -39,7 +44,7 @@ public class TantrosSource {
 
     public static void load(){
 
-        mechanicalBore = new BeamDrill("mechanical-bore"){{
+        mechanicalBore = new CustomDrawerBeamDrill("mechanical-bore"){{
             requirements(Category.production, with(Items.copper, 12));
 
             drillTime = 180f;
@@ -48,7 +53,12 @@ public class TantrosSource {
             range = 2;
             researchCost = with(Items.copper, 10);
 
-            consumeLiquid(Liquids.hydrogen, 0.25f / 60f).boost();
+            drawer = new DrawMulti(
+                    new DrawDrillBit(),
+                    new DrawDefault()
+            );
+            consume(new ConsumeEnv(LocalEnv.with(Liquids.hydrogen))).boost();
+            //consumeLiquid(Liquids.hydrogen, 0.25f / 60f).boost();
         }};
 
         siltSifter = new Sifter("silt-sifter"){{
@@ -66,6 +76,8 @@ public class TantrosSource {
             //silt sifter only works underwater
             envEnabled = Env.underwater;
             researchCost = with(Items.copper, 10);
+
+            consume(new ConsumeEnv(LocalEnv.with(Liquids.water)));
         }};
 
         deepBoreDrill = new CustomDrawerDrill("deep-bore-drill"){{
@@ -191,6 +203,8 @@ public class TantrosSource {
             ambientSoundVolume = 0.06f;
 
             outputLiquid = new LiquidStack(Liquids.water, 6f / 60f);
+            consume(new ConsumeEnv(LocalEnv.with(Liquids.water)));
+
         }};
 
         atmosphereIntakeTower = new GenericCrafter("atmosphere-intake"){{

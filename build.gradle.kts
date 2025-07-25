@@ -81,6 +81,7 @@ allprojects{
 
         // Use xpdustry's non-buggy repository for release Mindustry and Arc builds.
         if(!useJitpack) maven("https://maven.xpdustry.com/mindustry")
+        maven( "https://raw.githubusercontent.com/Zelaux/MindustryRepo/master/repository" )
         maven("https://jitpack.io")
     }
 

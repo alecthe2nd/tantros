@@ -33,8 +33,9 @@ public class DrawFieldArea<E extends FieldEmitter<E>> implements DrawEmitter<E> 
             if(radius > 0.001f){
 
                 Draw.reset();
-                Draw.color(emitter.color(build), Color.white, Mathf.clamp(hit));
-                //Draw.color(Color.white);
+                Draw.color(emitter.color(build), build.team().color, Mathf.clamp(hit));
+
+                
                 if(renderer.animateShields){
                     Draw.z(Layer.shields + 0.001f * hit);
                     Draw.alpha(1);

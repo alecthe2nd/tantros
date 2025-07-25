@@ -2,19 +2,24 @@ package tantros.content.world.blocks.effect.projector;
 
 import arc.math.geom.Position;
 import mindustry.world.blocks.ExplosionShield;
+import mindustry.world.meta.BlockFlag;
 import tantros.content.world.blocks.effect.GenericProjector.GenericProjectorBuild;
 import tantros.content.world.blocks.effect.projector.draw.DrawEmitter;
+
+import arc.struct.EnumSet;
 
 public abstract class ProjectorEmitter<E extends ProjectorEmitter<E>> implements ExplosionShield {
 
     public float range = 0f;
 
+    public EnumSet<BlockFlag> flags = EnumSet.of();
+
     public DrawEmitter<E> drawer;
 
-    abstract void effect(GenericProjectorBuild projector);
+    public abstract void effect(GenericProjectorBuild projector);
 
     public float range(GenericProjectorBuild projector){
-        return range * projector.efficiency;
+        return range;
     };
 
     public boolean inRange(GenericProjectorBuild projector, Position pos){
@@ -36,4 +41,6 @@ public abstract class ProjectorEmitter<E extends ProjectorEmitter<E>> implements
     public boolean absorbExplosion(float x, float y, float damage) {
         return false;
     }
+
+    public abstract float maxRange();
 }
