@@ -48,7 +48,7 @@ public class TantrosEffect {
         }};
 
         pneumaticPump = new FacingPressureBooster("pneumatic-pump"){{
-            requirements(Category.effect, with(Items.copper, 10, Items.metaglass, 20, Items.graphite, 15));
+            requirements(Category.effect, with(Items.copper, 5, Items.metaglass, 10, Items.graphite, 7));
             boost = 1.5f;
             pressure_range = 20;
             squareSprite = false;
@@ -65,7 +65,7 @@ public class TantrosEffect {
 
             regionRotated1 = 1;
 
-            consumeLiquid(Liquids.hydrogen, 1f/60f);
+            consumeLiquid(Liquids.hydrogen, 0.25f/60f);
 
         }};
 
@@ -87,10 +87,11 @@ public class TantrosEffect {
         }};
 
         atmosphereProjector = new GenericProjector("atmosphere-projector"){{
-            requirements(Category.effect, with(Items.copper, 2, Items.lead, 6));
+            requirements(Category.effect, with(Items.copper, 15, Items.lead, 30, Items.metaglass, 60, Items.silicon, 25));
             size = 2;
 
             hasLiquids = true;
+            liquidCapacity = 20;
 
             emitters = Seq.with(
                     new EnvEmitter(){

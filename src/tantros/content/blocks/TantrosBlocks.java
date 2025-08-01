@@ -1,19 +1,12 @@
 package tantros.content.blocks;
 
 import arc.graphics.Color;
-import arc.graphics.g2d.Draw;
-import arc.graphics.g2d.TextureRegion;
 import arc.math.Interp;
-import arc.math.Mathf;
-import arc.struct.Seq;
-import mindustry.Vars;
 import mindustry.content.*;
 import mindustry.entities.bullet.BasicBulletType;
 import mindustry.entities.part.RegionPart;
 import mindustry.entities.pattern.ShootAlternate;
-import mindustry.gen.Building;
 import mindustry.gen.Sounds;
-import mindustry.graphics.Layer;
 import mindustry.graphics.Pal;
 import mindustry.type.Category;
 import mindustry.type.ItemStack;
@@ -28,7 +21,6 @@ import mindustry.world.blocks.environment.OreBlock;
 import mindustry.world.blocks.environment.StaticWall;
 import mindustry.world.blocks.power.ConsumeGenerator;
 import mindustry.world.blocks.power.PowerNode;
-import mindustry.world.blocks.production.BeamDrill;
 import mindustry.world.blocks.production.GenericCrafter;
 import mindustry.world.consumers.ConsumeCoolant;
 import mindustry.world.draw.*;
@@ -36,36 +28,23 @@ import mindustry.world.meta.BlockGroup;
 import mindustry.world.meta.BuildVisibility;
 import mindustry.world.meta.Env;
 import tantros.content.world.TantrosLiquids;
+import tantros.content.world.TantrosUnitTypes;
 import tantros.content.world.blocks.distribution.BoostDuct;
 import tantros.content.world.blocks.distribution.BoostDuctBridge;
 import tantros.content.world.blocks.distribution.BoostDuctRouter;
-import tantros.content.world.blocks.drill.CustomDrawerDrill;
-import tantros.content.world.blocks.effect.FacingPressureBooster;
-import tantros.content.world.blocks.effect.GroundPenetratingRadar;
 import tantros.content.world.blocks.environment.DeepOreBlock;
-import tantros.content.world.blocks.power.PassiveGenerator;
 import tantros.content.world.blocks.production.Boiler;
-import tantros.content.world.blocks.production.Sifter;
 import tantros.content.world.blocks.storage.CustomCoreBlock;
-import tantros.content.world.draw.*;
-import tantros.content.world.draw.DrawFade;
 import tantros.content.world.draw.output.DrawLiquidOutputRegion;
 import tantros.content.world.draw.output.DrawMultiLiquidOutput;
 import tantros.content.world.draw.output.DrawOutputLiquid;
 import tantros.content.world.draw.output.DrawOutputRegion;
-import tantros.content.world.draw.util.WarmupCooldownProvider;
-import tantros.world.consumers.ConsumeEnv;
-import tantros.world.environment.LocalEnv;
 
 import static mindustry.type.ItemStack.with;
 
 public class TantrosBlocks {
 
     public static Block
-
-            //wall
-            redmatWall,
-            bluematWall,
 
             //ore
             wallOreCopper, wallOreLead, wallOreCoal,
@@ -91,7 +70,6 @@ public class TantrosBlocks {
             //crafters
             metaglassAnnealer,
             graphiticDecomposer,
-            atmosphereIntake,
             siliconPressureSmelter,
             electrolysisChamber,
 
@@ -111,11 +89,6 @@ public class TantrosBlocks {
             bident;
 
     public static void load(){
-
-        //region wall
-        redmatWall = new StaticWall("redmat-wall"){{
-            Blocks.redmat.asFloor().wall = this;
-        }};
 
 
         //endregion
@@ -174,7 +147,7 @@ public class TantrosBlocks {
         pneumaticDuctRouter = new BoostDuctRouter("pneumatic-duct-router"){{
             requirements(Category.distribution, with(Items.metaglass, 3, Items.graphite, 2));
             health = 90;
-            speed = 15f;
+            speed = 10f;
             regionRotated1 = 1;
             solid = false;
             researchCost = with(Items.copper, 5);
@@ -184,7 +157,7 @@ public class TantrosBlocks {
         pneumaticDuctBridge = new BoostDuctBridge("pneumatic-duct-bridge"){{
             requirements(Category.distribution, with(Items.metaglass, 5, Items.graphite, 4));
             health = 90;
-            speed = 15f;
+            speed = 10f;
             researchCost = with(Items.copper, 5, Items.lead, 5);
             max_pressure = 20;
         }};
@@ -204,7 +177,7 @@ public class TantrosBlocks {
             alwaysUnlocked = true;
             squareSprite = false;
             isFirstTier = true;
-            unitType = UnitTypes.alpha;
+            unitType = TantrosUnitTypes.enact;
             health = 1100;
             hasItems = true;
             itemCapacity = 4000;
@@ -225,7 +198,7 @@ public class TantrosBlocks {
         }};
 
         steamTurbine = new ConsumeGenerator("steam-turbine"){{
-            requirements(Category.power, with(Items.metaglass, 35, Items.copper, 30, Items.lead, 15));
+            requirements(Category.power, with(Items.metaglass, 15, Items.copper, 10, Items.lead, 8));
             powerProduction = 1f;
             envEnabled |= Env.underwater;
 
@@ -363,7 +336,7 @@ public class TantrosBlocks {
 
                 hasItems = true;
                 hasLiquids = true;
-                itemCapacity = 30;
+                itemCapacity = 10;
                 liquidCapacity = 50;
                 envDisabled |= Env.oxygen;
                 consumeLiquids(LiquidStack.with(Liquids.water, 6f/60f, Liquids.ozone, 1f/60f));
@@ -546,5 +519,9 @@ public class TantrosBlocks {
 
 
         // endregion
+        TantrosEnvironment.load();
+        TantrosSource.load();
+        TantrosEffect.load();
+        TantrosPower.load();
     }
 }

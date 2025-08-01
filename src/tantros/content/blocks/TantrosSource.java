@@ -97,7 +97,8 @@ public class TantrosSource {
                     new DrawDefault(),
                     new DrawLowered(
                             new DrawMulti(
-                                    new DrawSpin("-rotator", 6f, Building::totalProgress),
+                                    //new DrawSpin("-rotator", 6f, Building::totalProgress),
+                                    new DrawRegion("-rotator", 6f),
                                     new DrawRegion("-rotator-rig")
                             ),
                             "warmup"
@@ -138,6 +139,7 @@ public class TantrosSource {
             drillTime = 60;
             size = 4;
             squareSprite = false;
+            liquidBoostIntensity = 1f;
 
             setNumberSource("laser_fade", () ->{
                 return (build)->{

@@ -7,6 +7,7 @@ import mindustry.Vars;
 import mindustry.world.Tile;
 import mindustry.world.blocks.defense.Radar;
 import tantros.Tantros;
+import tantros.TantrosVars;
 import tantros.content.world.blocks.environment.DeepOreBlock;
 
 public class GroundPenetratingRadar extends Radar {
@@ -29,12 +30,12 @@ public class GroundPenetratingRadar extends Radar {
                     for (int j = -range; j < range + 1; j++) {
                         Tile tile = Vars.world.tile(this.tileX() + i, this.tileY() + j);
                         if (tile != null) {
-                            if (Tantros.sonarTracking.ores.contains(tile.pos())) continue;
+                            if (TantrosVars.sonarTracking.ores.contains(tile.pos())) continue;
 
                             if ( tile.dst(this) < range * Vars.tilesize && tile.overlay() != null && tile.overlay() instanceof DeepOreBlock ore) {
 
                                 ore.drawDeep(tile);
-                                Tantros.sonarTracking.ores.add(tile.pos());
+                                TantrosVars.sonarTracking.ores.add(tile.pos());
                             }
                         }
                     }
