@@ -4,11 +4,9 @@ package tantros.content;
 import arc.struct.Seq;
 import mindustry.content.*;
 import mindustry.game.Objectives;
-import tantros.content.blocks.TantrosBlocks;
-import tantros.content.blocks.TantrosEffect;
-import tantros.content.blocks.TantrosPower;
-import tantros.content.blocks.TantrosSource;
+import tantros.content.blocks.*;
 import tantros.content.world.TantrosLiquids;
+import tantros.content.world.TantrosUnitTypes;
 
 public class TantrosTechTree {
 
@@ -18,6 +16,15 @@ public class TantrosTechTree {
                 TechTree.node(TantrosBlocks.copperDuctRouter, () -> {
                     TechTree.node(TantrosBlocks.copperDuctBridge, () -> {
 
+                    });
+                });
+            });
+            TechTree.node(TantrosPayload.smallUnitAssembler, ()->{
+                TechTree.node(TantrosUnitTypes.delegate, () -> {
+                    TechTree.node(TantrosPayload.smallMechAssemblyModule, ()->{
+                        TechTree.node(TantrosUnitTypes.aquas, ()->{
+
+                        });
                     });
                 });
             });

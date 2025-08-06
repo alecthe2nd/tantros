@@ -1,39 +1,29 @@
 package tantros.content.world;
 
-import arc.graphics.Color;
-import arc.graphics.g2d.Lines;
-import arc.math.Interp;
 import arc.struct.Seq;
+
+import static mindustry.Vars.indexer;
+import static mindustry.ai.UnitCommand.*;
+
+import mindustry.Vars;
+import mindustry.ai.ItemUnitStance;
 import mindustry.ai.UnitCommand;
-import mindustry.ai.types.BoostAI;
-import mindustry.ai.types.BuilderAI;
-import mindustry.ai.types.SuicideAI;
+import mindustry.ai.UnitStance;
+import mindustry.ai.types.*;
 import mindustry.content.*;
-import mindustry.entities.Effect;
 import mindustry.entities.abilities.*;
 import mindustry.entities.bullet.*;
 import mindustry.entities.effect.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
-import mindustry.input.Binding;
 import mindustry.type.*;
-import mindustry.type.unit.ErekirUnitType;
 import mindustry.type.weapons.*;
 import mindustry.world.meta.*;
-import tantros.ai.types.BurrowAI;
+import static tantros.ai.TantrosUnitCommands.*;
 import tantros.gen.*;
 import tantros.type.units.*;
 
-import static arc.graphics.g2d.Draw.color;
-import static arc.graphics.g2d.Lines.stroke;
-
 public class TantrosUnitTypes {
-
-    public static UnitCommand
-
-            burrowCommand
-    ;
-        ;
 
     public static UnitType
 
@@ -45,13 +35,6 @@ public class TantrosUnitTypes {
     ;
 
     public static void load(){
-
-
-        burrowCommand = new UnitCommand("burrow", "down", null, u -> new BurrowAI()){{
-            switchToMove = false;
-            drawTarget = true;
-            resetTarget = false;
-        }};
 
         testBoat = new UnitType("testBoat"){{
             shadowElevationScl = 10.0f;
@@ -106,11 +89,8 @@ public class TantrosUnitTypes {
                     height = 9f;
                     lifetime = 60f;
 
-                    //trailLength = 5;
-                    //trailWidth = 1.5f;
                     trailEffect = Fx.airBubble;
                     trailChance = 0.05f;
-                    //trailColor = backColor;
                 }};
             }});
         }};
@@ -219,15 +199,9 @@ public class TantrosUnitTypes {
             targetable = true;
             hittable = true;
 
-            /*setEnginesMirror(
-                    new UnitEngine(21 / 4f, 19 / 4f, 2.2f, 45f),
-                    new UnitEngine(23 / 4f, -22 / 4f, 2.2f, 315f)
-            );*/
-
             abilities = Seq.with(
                     new MoveEffectAbility(0,0,Liquids.water.color, new MultiEffect(Fx.airBubble,Fx.airBubble,Fx.airBubble), 10)
             );
-
 
             weapons.add(new RepairBeamWeapon(){{
                 widthSinMag = 0.11f;
@@ -258,30 +232,32 @@ public class TantrosUnitTypes {
 
         delegate = new UnitType("delegate"){{
             constructor = LegsUnit::create;
-            defaultCommand = UnitCommand.mineCommand;
+            defaultCommand = groundMineCommand;
+
+            drawBuildBeam = true;
 
             commands.add(
                         Seq.with(
-                        UnitCommand.moveCommand,
-                        UnitCommand.enterPayloadCommand,
-                        UnitCommand.repairCommand,
-                        UnitCommand.mineCommand,
-                        UnitCommand.assistCommand
+                        moveCommand,
+                        enterPayloadCommand,
+                        groundRepairCommand,
+                        groundMineCommand,
+                        groundRebuildCommand,
+                        groundAssistCommand
                     )
             );
             speed = 0.72f;
             drag = 0.11f;
             hitSize = 9f;
             rotateSpeed = 3f;
-            health = 680;
-            armor = 4f;
+            health = 160;
             legStraightness = 0.3f;
             stepShake = 0f;
 
             rotateToBuilding = true;
 
-            legCount = 3;
-            legLength = 8f;
+            legCount = 4;
+            legLength = 6f;
             lockLegBase = true;
             legContinuousMove = true;
             legExtension = -2f;
@@ -291,7 +267,7 @@ public class TantrosUnitTypes {
             legLengthScl = 0.96f;
             legForwardScl = 1.1f;
             legGroupSize = 1;
-            rippleScale = 0.2f;
+            rippleScale = 0.1f;
 
             legMoveSpace = 1f;
             allowLegStep = true;
@@ -303,13 +279,19 @@ public class TantrosUnitTypes {
             targetAir = false;
             researchCostMultiplier = 0f;
 
+            mineFloor = false;
+            mineWalls = true;
             mineTier = 2;
-            mineSpeed = 3.5f;
+            mineSpeed = 0.5f;
+
+            buildSpeed = 0.1f;
+            buildRange = Vars.buildingRange * 0.25f;
 
             abilities.add(new RepairFieldAbility(5f, 60f * 8, 50f));
 
             weapons.add(
                 new RepairBeamWeapon(){{
+
                     widthSinMag = 0.11f;
                     reload = 20f;
                     x = 0f;
@@ -336,7 +318,25 @@ public class TantrosUnitTypes {
                 }}
             );
 
-        }};
+        }
+            @Override
+            public void getUnitStances(Unit unit, Seq<UnitStance> out){
+                //return mining stances based on present items
+                if(unit.controller() instanceof CommandAI ai && ai.currentCommand() == groundMineCommand){
+                    out.add(UnitStance.mineAuto);
+                    for(Item item : indexer.getAllPresentOres()){
+                        if(unit.canMine(item) && ((mineFloor && indexer.hasOre(item)) || (mineWalls && indexer.hasWallOre(item)))){
+                            var itemStance = ItemUnitStance.getByItem(item);
+                            if(itemStance != null){
+                                out.add(itemStance);
+                            }
+                        }
+                    }
+                }else{
+                    out.addAll(stances);
+                }
+            }
+        };
 
     }
 }

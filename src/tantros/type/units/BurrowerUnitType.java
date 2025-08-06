@@ -1,14 +1,12 @@
 package tantros.type.units;
 
 import static mindustry.Vars.*;
-
-import arc.math.Mathf;
 import mindustry.entities.units.AIController;
 import mindustry.gen.Player;
 import mindustry.gen.Unit;
 import mindustry.type.UnitType;
 import tantros.ai.types.BurrowAI;
-import tantros.content.world.TantrosUnitTypes;
+import static tantros.ai.TantrosUnitCommands.*;
 import tantros.gen.Burrowerc;
 
 public class BurrowerUnitType extends UnitType {
@@ -19,7 +17,7 @@ public class BurrowerUnitType extends UnitType {
     @Override
     public void init() {
         super.init();
-        commands.add(TantrosUnitTypes.burrowCommand);
+        commands.add(burrowCommand);
     }
 
     @Override

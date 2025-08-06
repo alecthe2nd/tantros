@@ -2,6 +2,7 @@ package tantros;
 
 import mindustry.mod.*;
 import mindustry.type.*;
+import tantros.ai.TantrosUnitCommands;
 import tantros.content.blocks.*;
 import tantros.content.planets.*;
 import tantros.content.world.*;
@@ -17,6 +18,7 @@ public class Tantros extends Mod{
 
         TantrosVars.load();
         TantrosLiquids.load();
+        TantrosUnitCommands.load();
         TantrosUnitTypes.load();
         TantrosBlocks.load();
         TantrosOverride.override();

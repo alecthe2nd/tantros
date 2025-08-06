@@ -523,5 +523,6 @@ public class TantrosBlocks {
         TantrosSource.load();
         TantrosEffect.load();
         TantrosPower.load();
+        TantrosPayload.load();
     }
 }
