@@ -35,6 +35,7 @@ import tantros.content.world.blocks.distribution.BoostDuctRouter;
 import tantros.content.world.blocks.environment.DeepOreBlock;
 import tantros.content.world.blocks.production.Boiler;
 import tantros.content.world.blocks.storage.CustomCoreBlock;
+import tantros.content.world.draw.DrawIconOverride;
 import tantros.content.world.draw.output.DrawLiquidOutputRegion;
 import tantros.content.world.draw.output.DrawMultiLiquidOutput;
 import tantros.content.world.draw.output.DrawOutputLiquid;
@@ -77,10 +78,10 @@ public class TantrosBlocks {
             electricBoiler,
             combustionBoiler,
             oxidizationReactor,
+            steamCombustor,
 
             //power
-            sealed_node, tidal_turbine,
-                    steamTurbine,
+            sealed_node,
 
             //defense
             copperBulkhead, largeCopperBulkhead,
@@ -90,6 +91,9 @@ public class TantrosBlocks {
 
     public static void load(){
 
+
+        Blocks.redmat.asFloor().liquidDrop = Liquids.ozone;
+        Blocks.bluemat.asFloor().liquidDrop = Liquids.hydrogen;
 
         //endregion
 
@@ -120,55 +124,6 @@ public class TantrosBlocks {
         //endregion
 
         //region distribution
-        copperDuctRouter = new DuctRouter("copper-duct-router"){{
-            requirements(Category.distribution, with(Items.copper, 3));
-            health = 90;
-            speed = 15f;
-            regionRotated1 = 1;
-            solid = false;
-            researchCost = with(Items.copper, 5);
-        }};
-
-        copperDuctBridge = new DuctBridge("copper-duct-bridge"){{
-            requirements(Category.distribution, with(Items.copper, 3));
-            health = 90;
-            speed = 15f;
-            researchCost = with(Items.copper, 5, Items.lead, 5);
-        }};
-
-        copperDuct = new Duct("copper-duct"){{
-            requirements(Category.distribution, with(Items.copper, 1));
-            health = 90;
-            speed = 15f;
-            researchCost = with(Items.copper, 5);
-            bridgeReplacement = copperDuctBridge;
-        }};
-
-        pneumaticDuctRouter = new BoostDuctRouter("pneumatic-duct-router"){{
-            requirements(Category.distribution, with(Items.metaglass, 3, Items.graphite, 2));
-            health = 90;
-            speed = 10f;
-            regionRotated1 = 1;
-            solid = false;
-            researchCost = with(Items.copper, 5);
-            max_pressure = 20;
-        }};
-
-        pneumaticDuctBridge = new BoostDuctBridge("pneumatic-duct-bridge"){{
-            requirements(Category.distribution, with(Items.metaglass, 5, Items.graphite, 4));
-            health = 90;
-            speed = 10f;
-            researchCost = with(Items.copper, 5, Items.lead, 5);
-            max_pressure = 20;
-        }};
-
-        pneumaticDuct = new BoostDuct("pneumatic-duct"){{
-            requirements(Category.distribution, with(Items.metaglass, 2, Items.graphite, 1));
-            health = 180;
-            speed = 10f;
-            bridgeReplacement = copperDuctBridge;
-            max_pressure = 20;
-        }};
         //endregion
         //region storage
 
@@ -195,25 +150,6 @@ public class TantrosBlocks {
             maxNodes = 10;
             laserRange = 6;
             buildCostMultiplier = 2.5f;
-        }};
-
-        steamTurbine = new ConsumeGenerator("steam-turbine"){{
-            requirements(Category.power, with(Items.metaglass, 15, Items.copper, 10, Items.lead, 8));
-            powerProduction = 1f;
-            envEnabled |= Env.underwater;
-
-            drawer = new DrawMulti(
-                    new DrawDefault(),
-                    new DrawLiquidTile(),
-                    new DrawBlurSpin("-rotator", 6f),
-                    new DrawRegion("-top")
-            );
-            hasPower = true;
-            hasLiquids = true;
-            liquidCapacity = 12f;
-            consumeLiquids(LiquidStack.with(TantrosLiquids.steam, 6f/60f));
-
-            size = 1;
         }};
         //endregion
 
@@ -285,6 +221,7 @@ public class TantrosBlocks {
             itemCapacity = 30;
             liquidCapacity = 30;
             drawer = new DrawMulti(new DrawRegion("-bottom"), new DrawArcSmelt(), new DrawDefault());
+            squareSprite = false;
             fogRadius = 3;
             ambientSound = Sounds.smelter;
             ambientSoundVolume = 0.12f;
@@ -296,26 +233,42 @@ public class TantrosBlocks {
 
         electricBoiler = new Boiler("electric-boiler"){
             {
-                requirements(Category.crafting, with(Items.copper, 20, Items.lead, 10, Items.metaglass, 30));
+                requirements(Category.crafting, with(Items.copper, 20, Items.metaglass, 30, Items.graphite, 30));
                 craftEffect = Fx.none;
 
                 size = 1;
                 drawer = new DrawMulti(
-                        //new DrawRegion("-bottom"),
-                        new DrawLiquidTile(Liquids.water, 2f),
-                        new DrawBubbles()//,
-                        //new DrawDefault(),
-                        //new DrawWarmupRegion()
+                    new DrawRegion("-bottom"),
+                    new DrawLiquidTile(Liquids.water, 1f),
+                    //new DrawRegion("-heater"),
+                    new DrawBubbles(){{
+                        radius = 1;
+                        spread = 2;
+                        sides = 8;
+                    }},
+                    new DrawParticles(){{
+                        color = TantrosLiquids.steam.color;
+                        reverse = true;
+                        particleSize = 2f;
+                        particles = 10;
+                        particleRad = 4f;
+                        particleLife = 60f;
+                    }},
+                    new DrawDefault()
+                    //new DrawWarmupRegion(),
+                    //new DrawRegion("-glass")
                 );
+                squareSprite = false;
+
                 craftTime = 10f;
 
                 hasLiquids = true;
-                liquidCapacity = 50;
+                liquidCapacity = 5;
                 envDisabled |= Env.oxygen;
-                consumePower(30f/60f);
-                consumeLiquids(LiquidStack.with(Liquids.water, 3f/60f));
+                consumePower(120f/60f);
+                consumeLiquids(LiquidStack.with(Liquids.water, 2.5f/60f));
 
-                outputLiquids = LiquidStack.with(TantrosLiquids.steam, 6f/60f);
+                outputLiquids = LiquidStack.with(TantrosLiquids.steam, 5f/60f);
             }
         };
 
@@ -326,23 +279,70 @@ public class TantrosBlocks {
 
                 size = 2;
                 drawer = new DrawMulti(
-                        new DrawRegion("-bottom"),
-                        new DrawLiquidTile(Liquids.water, 2f),
-                        new DrawBubbles(),
-                        new DrawDefault(),
-                        new DrawWarmupRegion()
+                    new DrawRegion("-bottom"),
+                    new DrawLiquidTile(Liquids.water, 2f),
+                    new DrawBubbles(),
+                    new DrawParticles(){{
+                        color = TantrosLiquids.steam.color;
+                        reverse = true;
+                        particleSize = 2f;
+                        particles = 20;
+                        particleRad = 8f;
+                        particleLife = 60f;
+                    }},
+                    new DrawDefault(),
+                    new DrawWarmupRegion()
                 );
+                squareSprite = false;
+
                 craftTime = 120f;
 
                 hasItems = true;
                 hasLiquids = true;
                 itemCapacity = 10;
-                liquidCapacity = 50;
+                liquidCapacity = 10;
                 envDisabled |= Env.oxygen;
-                consumeLiquids(LiquidStack.with(Liquids.water, 6f/60f, Liquids.ozone, 1f/60f));
+                consumeLiquids(LiquidStack.with(Liquids.water, 5f/60f, Liquids.ozone, 1f/60f));
                 consumeItems(with(Items.coal, 1));
 
-                outputLiquids = LiquidStack.with(TantrosLiquids.steam, 12f/60f);
+                outputLiquids = LiquidStack.with(TantrosLiquids.steam, 10f/60f);
+            }
+        };
+
+        steamCombustor = new Boiler("steam-combustor"){
+            {
+                requirements(Category.crafting, with(Items.copper, 30, Items.lead, 15, Items.metaglass, 36));
+                craftEffect = Fx.none;
+
+                size = 2;
+                drawer = new DrawMulti(
+                        new DrawRegion("-bottom"),
+                        new DrawParticles(){{
+                            color = TantrosLiquids.steam.color;
+                            reverse = true;
+                            particleSize = 2f;
+                            particles = 20;
+                            particleRad = 8f;
+                            particleLife = 60f;
+                        }},
+                        new DrawDefault(),
+                        new DrawWarmupRegion(),
+                        new DrawGlowRegion(){{
+                            color = Liquids.hydrogen.color;
+                        }}
+                );
+                squareSprite = false;
+
+                craftTime = 120f;
+
+                hasItems = true;
+                hasLiquids = true;
+                itemCapacity = 10;
+                liquidCapacity = 10;
+                envDisabled |= Env.oxygen;
+                consumeLiquids(LiquidStack.with(Liquids.ozone, 2f / 60, Liquids.hydrogen, 3f / 60));
+
+                outputLiquids = LiquidStack.with(TantrosLiquids.steam, 10f / 60f);
             }
         };
 
@@ -356,23 +356,23 @@ public class TantrosBlocks {
                         new DrawDefault(),
                         new DrawGlowRegion()
                 );
-
+                squareSprite = false;
 
                 size = 3;
-                craftTime = 240f;
+                craftTime = 60f * 2f;
 
                 hasItems = true;
                 hasLiquids = true;
                 itemCapacity = 30;
-                liquidCapacity = 360;
+                liquidCapacity = 30;
                 envDisabled |= Env.oxygen;
 
-                consumeLiquids(LiquidStack.with(Liquids.ozone, 5f/60f, Liquids.water, 18f/60f));
-                consumeItems(with(Items.beryllium, 5));
-                consumePower(120f/60f);
+                consumeLiquids(LiquidStack.with(Liquids.ozone, 4f / 60f, Liquids.water, 15f/60f));
+                consumeItems(with(Items.beryllium, 2));
+                consumePower(30f/60f);
 
-                outputLiquids = LiquidStack.with(TantrosLiquids.steam, 36f/60f);
-                outputItems = ItemStack.with(Items.oxide, 5);
+                outputLiquids = LiquidStack.with(TantrosLiquids.steam, 30f/60f);
+                outputItems = ItemStack.with(Items.oxide, 2);
             }
         };
 
@@ -389,10 +389,11 @@ public class TantrosBlocks {
             hasLiquids = true;
             liquidCapacity = 15f;
 
-            consumeLiquid(Liquids.water, 5f / 60f);
+            consumeLiquid(TantrosLiquids.steam, 10f / 60f);
             consumePower(30f/60f);
 
-            drawer = new DrawMulti(
+            drawer = new DrawIconOverride(
+                new DrawMulti(
                     new DrawRegion("-bottom"),
                     new DrawLiquidTile(Liquids.water, 1f),
                     new DrawBubbles(Color.valueOf("7693e3")){{
@@ -408,7 +409,9 @@ public class TantrosBlocks {
                             new DrawOutputLiquid(),
                             new DrawLiquidOutputRegion(false)
                     )
+                )
             );
+            squareSprite = false;
 
             ambientSound = Sounds.electricHum;
             ambientSoundVolume = 0.08f;
@@ -520,6 +523,7 @@ public class TantrosBlocks {
 
         // endregion
         TantrosEnvironment.load();
+        TantrosDistribution.load();
         TantrosSource.load();
         TantrosEffect.load();
         TantrosPower.load();

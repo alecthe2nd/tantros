@@ -12,11 +12,13 @@ public class TantrosTechTree {
 
     public static void load(){
         Planets.tantros.techTree = TechTree.nodeRoot("tantros", TantrosBlocks.coreShell, true, () -> {
-            TechTree.node(TantrosBlocks.copperDuct, () -> {
-                TechTree.node(TantrosBlocks.copperDuctRouter, () -> {
-                    TechTree.node(TantrosBlocks.copperDuctBridge, () -> {
-
-                    });
+            TechTree.node(TantrosDistribution.copperDuct, () -> {
+                TechTree.node(TantrosDistribution.copperDuctRouter, () -> {
+                    TechTree.node(TantrosDistribution.copperOverflowDuct);
+                    TechTree.node(TantrosDistribution.copperUnderflowDuct);
+                });
+                TechTree.node(TantrosDistribution.copperDuctBridge, () -> {
+                    TechTree.node(TantrosDistribution.copperDuctUnloader);
                 });
             });
             TechTree.node(TantrosPayload.smallUnitAssembler, ()->{
@@ -24,6 +26,10 @@ public class TantrosTechTree {
                     TechTree.node(TantrosPayload.smallMechAssemblyModule, ()->{
                         TechTree.node(TantrosUnitTypes.aquas, ()->{
 
+                        });
+                    });
+                    TechTree.node(TantrosPayload.smallExplosiveAssemblyModule, ()->{
+                        TechTree.node(TantrosUnitTypes.roach , ()->{
                         });
                     });
                 });
@@ -52,7 +58,7 @@ public class TantrosTechTree {
             });
             TechTree.node(TantrosPower.tidalTurbine, () -> {
                 TechTree.node(TantrosBlocks.sealed_node, () -> {
-                    TechTree.node(TantrosBlocks.steamTurbine, () -> {
+                    TechTree.node(TantrosPower.steamTurbine, () -> {
 
                     });
 

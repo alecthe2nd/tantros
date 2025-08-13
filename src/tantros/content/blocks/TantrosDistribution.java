@@ -1,0 +1,107 @@
+package tantros.content.blocks;
+
+import mindustry.content.Items;
+import mindustry.type.Category;
+import mindustry.world.Block;
+import mindustry.world.blocks.distribution.*;
+import tantros.content.world.blocks.distribution.BoostDuct;
+import tantros.content.world.blocks.distribution.BoostDuctBridge;
+import tantros.content.world.blocks.distribution.BoostDuctRouter;
+
+import static mindustry.type.ItemStack.with;
+
+public class TantrosDistribution {
+
+    public static Block
+
+            copperDuct,
+            copperDuctRouter,
+            copperDuctBridge,
+            copperDuctUnloader,
+            copperOverflowDuct,
+            copperUnderflowDuct,
+
+            pneumaticDuct,
+            pneumaticDuctRouter,
+            pneumaticDuctBridge
+                    ;
+
+    public static void load() {
+
+        copperDuctRouter = new DuctRouter("copper-duct-router"){{
+            requirements(Category.distribution, with(Items.copper, 3));
+            health = 90;
+            speed = 15f;
+            regionRotated1 = 1;
+            solid = false;
+            researchCost = with(Items.copper, 5);
+        }};
+
+        copperDuctBridge = new DuctBridge("copper-duct-bridge"){{
+            requirements(Category.distribution, with(Items.copper, 3));
+            health = 90;
+            speed = 15f;
+            researchCost = with(Items.copper, 5, Items.lead, 5);
+        }};
+
+        copperDuct = new Duct("copper-duct"){{
+            requirements(Category.distribution, with(Items.copper, 1));
+            health = 90;
+            speed = 15f;
+            researchCost = with(Items.copper, 5);
+            bridgeReplacement = copperDuctBridge;
+        }};
+
+        copperOverflowDuct = new OverflowDuct("copper-overflow-duct"){{
+            requirements(Category.distribution, with(Items.copper, 5));
+            health = 90;
+            speed = 15f;
+            solid = false;
+            //researchCostMultiplier = 1.5f;
+        }};
+
+        copperUnderflowDuct = new OverflowDuct("copper-underflow-duct"){{
+            requirements(Category.distribution, with(Items.copper, 5));
+            health = 90;
+            speed = 15f;
+            solid = false;
+            //researchCostMultiplier = 1.5f;
+            invert = true;
+        }};
+
+        copperDuctUnloader = new DirectionalUnloader("copper-duct-unloader") {{
+            requirements(Category.distribution, with(Items.copper, 30, Items.graphite, 10));
+            health = 120;
+            speed = 15f;
+            solid = false;
+            underBullets = true;
+            regionRotated1 = 1;
+        }};
+
+        pneumaticDuctRouter = new BoostDuctRouter("pneumatic-duct-router"){{
+            requirements(Category.distribution, with(Items.metaglass, 3, Items.graphite, 2));
+            health = 90;
+            speed = 10f;
+            regionRotated1 = 1;
+            solid = false;
+            researchCost = with(Items.copper, 5);
+            max_pressure = 20;
+        }};
+
+        pneumaticDuctBridge = new BoostDuctBridge("pneumatic-duct-bridge"){{
+            requirements(Category.distribution, with(Items.metaglass, 5, Items.graphite, 4));
+            health = 90;
+            speed = 10f;
+            researchCost = with(Items.copper, 5, Items.lead, 5);
+            max_pressure = 20;
+        }};
+
+        pneumaticDuct = new BoostDuct("pneumatic-duct"){{
+            requirements(Category.distribution, with(Items.metaglass, 2, Items.graphite, 1));
+            health = 180;
+            speed = 10f;
+            bridgeReplacement = copperDuctBridge;
+            max_pressure = 20;
+        }};
+    }
+}

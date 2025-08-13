@@ -22,9 +22,11 @@ import mindustry.type.LiquidStack;
 import mindustry.type.PayloadStack;
 import mindustry.type.UnitType;
 import mindustry.ui.Styles;
+import mindustry.world.blocks.payloads.PayloadBlock;
 import mindustry.world.blocks.payloads.UnitPayload;
 import mindustry.world.blocks.units.*;
 import mindustry.world.meta.Stat;
+import mindustry.world.meta.StatUnit;
 import mindustry.world.meta.StatValues;
 
 import static mindustry.Vars.net;
@@ -42,6 +44,32 @@ public class BranchableUnitAssembler extends UnitAssembler {
 
     @Override
     public void setStats(){
+
+        stats.add(Stat.size, "@x@", size, size);
+
+        if(synthetic()){
+            stats.add(Stat.health, health, StatUnit.none);
+            if(armor > 0){
+                stats.add(Stat.armor, armor, StatUnit.none);
+            }
+        }
+
+        if(canBeBuilt() && requirements.length > 0){
+            stats.add(Stat.buildTime, buildTime / 60, StatUnit.seconds);
+            stats.add(Stat.buildCost, StatValues.items(false, requirements));
+        }
+
+        if(instantTransfer){
+            stats.add(Stat.maxConsecutive, 2, StatUnit.none);
+        }
+
+        for(var c : consumers){
+            c.display(stats);
+        }
+
+        //Note: Power stats are added by the consumers.
+        if(hasLiquids) stats.add(Stat.liquidCapacity, liquidCapacity, StatUnit.liquidUnits);
+        if(hasItems && itemCapacity > 0) stats.add(Stat.itemCapacity, itemCapacity, StatUnit.items);
 
         stats.add(Stat.output, table -> {
             table.row();

@@ -14,8 +14,11 @@ import mindustry.graphics.Layer;
 import mindustry.type.Category;
 import mindustry.type.LiquidStack;
 import mindustry.world.Block;
+import mindustry.world.blocks.production.AttributeCrafter;
 import mindustry.world.blocks.production.BeamDrill;
 import mindustry.world.blocks.production.GenericCrafter;
+import mindustry.world.blocks.production.Pump;
+import mindustry.world.consumers.ConsumeLiquidFilter;
 import mindustry.world.draw.*;
 import mindustry.world.meta.BlockGroup;
 import mindustry.world.meta.Env;
@@ -35,12 +38,14 @@ import static mindustry.type.ItemStack.with;
 public class TantrosSource {
 
     public static Block
-    mechanicalBore,
-    siltSifter,
-    deepBoreDrill,
-    deepLaserDrill,
-    seawaterIntake,
-    atmosphereIntakeTower;
+            mechanicalBore,
+            siltSifter,
+            deepBoreDrill,
+            deepLaserDrill,
+            seawaterIntake,
+            effervescenceCollector,
+            atmosphereIntakeTower
+    ;
 
     public static void load(){
 
@@ -204,7 +209,36 @@ public class TantrosSource {
             ambientSound = Sounds.extractLoop;
             ambientSoundVolume = 0.06f;
 
-            outputLiquid = new LiquidStack(Liquids.water, 6f / 60f);
+            outputLiquid = new LiquidStack(Liquids.water, 5f / 60f);
+            consume(new ConsumeEnv(LocalEnv.with(Liquids.water)));
+
+        }};
+
+        effervescenceCollector = new Pump("effervescence-collector"){{
+            requirements(Category.production, with(Items.metaglass, 15, Items.graphite, 5, Items.copper, 10));
+            size = 3;
+            envEnabled |= Env.underwater;
+
+            drawer = new DrawMulti(
+                        //new DrawRegion("-bottom"),
+                        //new DrawLiquidTile(Liquids.water, 4.1f),
+                        new DrawDefault()//,
+                        /*new DrawParticles(){{
+                            color = Liquids.water.color;
+                            alpha = 0.4f;
+                            particleSize = 2f;
+                            particles = 5;
+                            particleRad = 4f;
+                            particleLife = 280f;
+                        }}*/
+            );
+
+            pumpAmount = 3f/(60f*size*size);
+            liquidCapacity = 10f;
+            ambientSound = Sounds.extractLoop;
+            ambientSoundVolume = 0.06f;
+
+            //consumePower(20f/60f);
             consume(new ConsumeEnv(LocalEnv.with(Liquids.water)));
 
         }};

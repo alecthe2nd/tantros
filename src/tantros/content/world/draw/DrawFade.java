@@ -28,9 +28,11 @@ public class DrawFade extends DrawMulti implements NumberProviderConsumer {
 
     @Override
     public void draw(Building build) {
+        float oldAlpha = Draw.getColorAlpha();
+
         float scaleFactor = getValue(fadeSourceName, build);
         Draw.alpha((scaleFactor * (upperFade - lowerFade)) + lowerFade);
         super.draw(build);
-        Draw.color();
+        Draw.alpha(oldAlpha);
     }
 }

@@ -4,12 +4,16 @@ import arc.util.Nullable;
 import arc.util.Time;
 import mindustry.entities.Units;
 import mindustry.gen.Building;
+import mindustry.ai.types.RepairAI;
 import mindustry.gen.Teamc;
-import mindustry.world.blocks.ConstructBlock;
+import mindustry.world.blocks.ConstructBlock.*;
 
 public class GroundRepairAI extends BaseGroundAI {
 
-    public static float retreatDst = 160f, fleeRange = 310f, retreatDelay = Time.toSeconds * 3f;
+    public static float
+            retreatDst = 160f,
+            fleeRange = 310f,
+            retreatDelay = Time.toSeconds * 3f;
 
     @Nullable
     Teamc avoid;
@@ -65,10 +69,11 @@ public class GroundRepairAI extends BaseGroundAI {
     public void updateTargeting(){
         if(timer.get(timerTarget, 15)){
             damagedTarget = Units.findDamagedTile(unit.team, unit.x, unit.y);
-            if(damagedTarget instanceof ConstructBlock.ConstructBuild) damagedTarget = null;
+            if(damagedTarget instanceof ConstructBuild) damagedTarget = null;
         }
 
         if(damagedTarget == null){
+            this.target = null;
             super.updateTargeting();
         }else{
             this.target = damagedTarget;

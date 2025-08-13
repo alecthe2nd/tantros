@@ -7,7 +7,6 @@ import static mindustry.ai.UnitCommand.*;
 
 import mindustry.Vars;
 import mindustry.ai.ItemUnitStance;
-import mindustry.ai.UnitCommand;
 import mindustry.ai.UnitStance;
 import mindustry.ai.types.*;
 import mindustry.content.*;
