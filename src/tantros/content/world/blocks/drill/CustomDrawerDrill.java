@@ -2,7 +2,6 @@ package tantros.content.world.blocks.drill;
 
 import arc.func.Func;
 import arc.graphics.g2d.TextureRegion;
-import arc.math.Mathf;
 import arc.struct.Seq;
 import arc.util.Eachable;
 import mindustry.entities.units.BuildPlan;
@@ -62,9 +61,6 @@ public class CustomDrawerDrill extends Drill implements NumberProviderc {
     }
 
     public class CustomDrawerDrillBuild extends DrillBuild implements NumberProviderBuildc{
-
-        private float lastResult = 0f;
-        private float lastEfficiency = 0f;
 
         public Map<String,Func<Building,Float>> providerMap = new HashMap<>();
 

@@ -1,7 +1,6 @@
 package tantros;
 
 import mindustry.mod.*;
-import mindustry.type.*;
 import tantros.ai.TantrosUnitCommands;
 import tantros.content.blocks.*;
 import tantros.content.planets.*;
@@ -10,7 +9,7 @@ import tantros.gen.*;
 
 public class Tantros extends Mod{
 
-    public static float waterToSteamConversion = 6f;
+    public static float waterToSteamConversion = 2f;
 
     @Override
     public void loadContent(){

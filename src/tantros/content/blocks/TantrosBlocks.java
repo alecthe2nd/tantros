@@ -14,12 +14,7 @@ import mindustry.type.LiquidStack;
 import mindustry.world.Block;
 import mindustry.world.blocks.defense.Wall;
 import mindustry.world.blocks.defense.turrets.ItemTurret;
-import mindustry.world.blocks.distribution.Duct;
-import mindustry.world.blocks.distribution.DuctBridge;
-import mindustry.world.blocks.distribution.DuctRouter;
 import mindustry.world.blocks.environment.OreBlock;
-import mindustry.world.blocks.environment.StaticWall;
-import mindustry.world.blocks.power.ConsumeGenerator;
 import mindustry.world.blocks.power.PowerNode;
 import mindustry.world.blocks.production.GenericCrafter;
 import mindustry.world.consumers.ConsumeCoolant;
@@ -29,9 +24,6 @@ import mindustry.world.meta.BuildVisibility;
 import mindustry.world.meta.Env;
 import tantros.content.world.TantrosLiquids;
 import tantros.content.world.TantrosUnitTypes;
-import tantros.content.world.blocks.distribution.BoostDuct;
-import tantros.content.world.blocks.distribution.BoostDuctBridge;
-import tantros.content.world.blocks.distribution.BoostDuctRouter;
 import tantros.content.world.blocks.environment.DeepOreBlock;
 import tantros.content.world.blocks.production.Boiler;
 import tantros.content.world.blocks.storage.CustomCoreBlock;
@@ -52,18 +44,10 @@ public class TantrosBlocks {
             deepOreCopper,
             deepOreLead,
             deepOreCoal,
-            deepOreScrap,
             deepOreTitanium,
             deepOreBeryllium,
             deepOreTungsten,
             deepOreThorium,
-
-            copperDuct,
-            copperDuctRouter,
-            copperDuctBridge,
-            pneumaticDuct,
-            pneumaticDuctRouter,
-            pneumaticDuctBridge,
 
             //storage
             coreShell,

@@ -14,17 +14,13 @@ import mindustry.graphics.Layer;
 import mindustry.type.Category;
 import mindustry.type.LiquidStack;
 import mindustry.world.Block;
-import mindustry.world.blocks.production.AttributeCrafter;
-import mindustry.world.blocks.production.BeamDrill;
 import mindustry.world.blocks.production.GenericCrafter;
 import mindustry.world.blocks.production.Pump;
-import mindustry.world.consumers.ConsumeLiquidFilter;
 import mindustry.world.draw.*;
 import mindustry.world.meta.BlockGroup;
 import mindustry.world.meta.Env;
 import tantros.content.world.blocks.drill.CustomDrawerBeamDrill;
 import tantros.content.world.blocks.drill.CustomDrawerDrill;
-import tantros.content.world.blocks.production.EnvCrafter;
 import tantros.content.world.blocks.production.Sifter;
 import tantros.content.world.draw.*;
 import tantros.content.world.draw.DrawFade;
@@ -146,11 +142,7 @@ public class TantrosSource {
             squareSprite = false;
             liquidBoostIntensity = 1f;
 
-            setNumberSource("laser_fade", () ->{
-                return (build)->{
-                    return (build.efficiency > 0)? Mathf.sin(build.totalProgress(), 6f, 1f) * Mathf.clamp(build.warmup()): 0f;
-                };
-            });
+            setNumberSource("laser_fade", () -> (build)-> (build.efficiency > 0)? Mathf.sin(build.totalProgress(), 6f, 1f) * Mathf.clamp(build.warmup()): 0f);
 
             drawer = new DrawMulti(
                     new DrawDefault(),

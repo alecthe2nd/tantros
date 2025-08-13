@@ -1,10 +1,7 @@
 package tantros.entities.comp;
 
 import ent.anno.Annotations.*;
-import mindustry.entities.units.AIController;
-import mindustry.game.Team;
 import mindustry.gen.*;
-import tantros.ai.types.BurrowAI;
 import tantros.gen.Burrowerc;
 
 @EntityComponent
