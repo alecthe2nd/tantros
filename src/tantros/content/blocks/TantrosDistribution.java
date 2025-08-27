@@ -57,6 +57,7 @@ public class TantrosDistribution {
             health = 90;
             speed = 15f;
             solid = false;
+            squareSprite = false;
             //researchCostMultiplier = 1.5f;
         }};
 
@@ -65,6 +66,7 @@ public class TantrosDistribution {
             health = 90;
             speed = 15f;
             solid = false;
+            squareSprite = false;
             //researchCostMultiplier = 1.5f;
             invert = true;
         }};

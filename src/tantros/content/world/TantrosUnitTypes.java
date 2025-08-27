@@ -30,12 +30,14 @@ public class TantrosUnitTypes {
     aquas,
     roach,
     enact,
-    delegate
+    delegate,
+    largeFisk
     ;
 
     public static void load(){
 
         testBoat = new UnitType("testBoat"){{
+            envEnabled = Env.underwater;
             shadowElevationScl = 10.0f;
             constructor = UnitEntity::create;
             flyingLayer = Layer.light + 1f;
@@ -163,7 +165,6 @@ public class TantrosUnitTypes {
                 }};
             }});
         }});
-
 
         enact = new UnitType("enact"){{
             coreUnitDock = true;
@@ -336,6 +337,35 @@ public class TantrosUnitTypes {
                 }
             }
         };
+
+        largeFisk = new UnitType("large-fisk"){{
+
+            playerControllable = false;
+            logicControllable = false;
+            targetable = false;
+            hittable = false;
+            drawCell = false;
+
+            deathExplosionEffect = Fx.none;
+
+            constructor = UnitEntity::create;
+            isEnemy = false;
+            envDisabled = 0;
+            envEnabled = Env.underwater;
+
+            flying = true;
+
+            omniMovement = false;
+            drag = 0.08f;
+            speed = 2f;
+            rotateSpeed = 2.5f;
+            accel = 0.07f;
+
+            health = 300f;
+            armor = 1f;
+            hitSize = 16f;
+
+        }};
 
     }
 }

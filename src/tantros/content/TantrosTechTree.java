@@ -64,13 +64,13 @@ public class TantrosTechTree {
 
                 });
             });
-            TechTree.node(TantrosBlocks.metaglassAnnealer, () -> {
-                TechTree.node(TantrosBlocks.graphiticDecomposer, () -> {
-                    TechTree.node(TantrosBlocks.siliconPressureSmelter, () -> {
+            TechTree.node(TantrosProduction.metaglassAnnealer, () -> {
+                TechTree.node(TantrosProduction.graphiticDecomposer, () -> {
+                    TechTree.node(TantrosProduction.siliconPressureSmelter, () -> {
 
                     });
-                    TechTree.node(TantrosBlocks.electrolysisChamber, () -> {
-                        TechTree.node(TantrosBlocks.combustionBoiler, Seq.with(new Objectives.Research(Liquids.hydrogen), new Objectives.Research(Liquids.hydrogen)), () -> {
+                    TechTree.node(TantrosProduction.electrolysisChamber, () -> {
+                        TechTree.node(TantrosProduction.combustionBoiler, Seq.with(new Objectives.Research(Liquids.hydrogen), new Objectives.Research(Liquids.hydrogen)), () -> {
 
                         });
                     });

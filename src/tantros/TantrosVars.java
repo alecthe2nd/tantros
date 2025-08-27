@@ -3,6 +3,8 @@ package tantros;
 import arc.Events;
 import mindustry.game.EventType;
 import mindustry.game.EventType.*;
+import tantros.ai.OneTimeSpawner;
+import tantros.ai.spawn.SpawnType;
 import tantros.ai.types.BurrowAI;
 import tantros.gen.BurrowerUnit;
 import tantros.gen.Burrowerc;
@@ -15,8 +17,14 @@ public class TantrosVars {
 
     public static SonarTracking sonarTracking;
 
+    public static OneTimeSpawner ambientSpawner;
+
     public static void load(){
         sonarTracking = new SonarTracking();
+        ambientSpawner = new OneTimeSpawner(){{
+            type = SpawnType.ambient;
+            Events.run(Trigger.afterGameUpdate, this::trySpawn);
+        }};
 
         Events.on(EventType.UnitDamageEvent.class, (event)->{
             if(event.unit instanceof BurrowerUnit burrower){

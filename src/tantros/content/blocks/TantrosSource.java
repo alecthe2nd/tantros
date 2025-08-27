@@ -210,19 +210,27 @@ public class TantrosSource {
             requirements(Category.production, with(Items.metaglass, 15, Items.graphite, 5, Items.copper, 10));
             size = 3;
             envEnabled |= Env.underwater;
+            customShadow = true;
 
             drawer = new DrawMulti(
-                        //new DrawRegion("-bottom"),
-                        //new DrawLiquidTile(Liquids.water, 4.1f),
-                        new DrawDefault()//,
-                        /*new DrawParticles(){{
+                        new DrawParticles(){{
                             color = Liquids.water.color;
                             alpha = 0.4f;
                             particleSize = 2f;
-                            particles = 5;
-                            particleRad = 4f;
+                            particles = 20;
+                            particleRad = 10f;
                             particleLife = 280f;
-                        }}*/
+                        }},
+                        new DrawDefault(),
+                        new DrawParticles(){{
+                            color = Liquids.water.color;
+                            alpha = 0.4f;
+                            particleSize = 2f;
+                            particles = 10;
+                            particleRad = 6f;
+                            particleLife = 140f;
+                            reverse = true;
+                        }}
             );
 
             pumpAmount = 3f/(60f*size*size);
