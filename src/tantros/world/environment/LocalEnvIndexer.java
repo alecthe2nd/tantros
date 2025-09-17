@@ -9,10 +9,10 @@ import mindustry.Vars;
 import mindustry.game.EventType;
 import mindustry.gen.Building;
 import mindustry.world.Tile;
-import tantros.content.world.blocks.effect.GenericProjector;
-import tantros.content.world.blocks.effect.GenericProjector.GenericProjectorBuild;
-import tantros.content.world.blocks.effect.projector.EnvEmitter;
-import tantros.content.world.blocks.effect.projector.ProjectorEmitter;
+import tantros.world.blocks.effect.GenericProjector;
+import tantros.world.blocks.effect.GenericProjector.GenericProjectorBuild;
+import tantros.world.blocks.effect.projector.EnvEmitter;
+import tantros.world.blocks.effect.projector.ProjectorEmitter;
 
 public class LocalEnvIndexer {
 

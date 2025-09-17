@@ -1,10 +1,15 @@
 package tantros.type.units;
 
 import static mindustry.Vars.*;
+
+import arc.struct.Seq;
+import mindustry.entities.bullet.BulletType;
 import mindustry.entities.units.AIController;
+import mindustry.gen.Bullet;
 import mindustry.gen.Player;
 import mindustry.gen.Unit;
 import mindustry.type.UnitType;
+import mindustry.world.blocks.defense.turrets.*;
 import tantros.ai.types.BurrowAI;
 import static tantros.ai.TantrosUnitCommands.*;
 import tantros.gen.Burrowerc;
@@ -13,6 +18,8 @@ public class BurrowerUnitType extends UnitType {
     public BurrowerUnitType(String name) {
         super(name);
     }
+
+    private static Seq<BulletType> tempBullSeq = new Seq<>();
 
     @Override
     public void init() {
@@ -46,4 +53,32 @@ public class BurrowerUnitType extends UnitType {
         }
 
     }
+
+    public static boolean canDislodge(Bullet bullet){
+        return canDislodge(bullet.type());
+    }
+
+    public static boolean canDislodge(BulletType bullet){
+        return bullet.splashDamage > 0;
+    }
+
+    public static boolean canTurretTargetBurrowed(Turret turret){
+        if(turret instanceof ItemTurret itemTurret){
+            return itemTurret.ammoTypes.values().toSeq(tempBullSeq).find(BurrowerUnitType::canDislodge) != null;
+        }
+        if(turret instanceof LiquidTurret liquidTurret){
+            return liquidTurret.ammoTypes.values().toSeq(tempBullSeq).find(BurrowerUnitType::canDislodge) != null;
+        }
+        if(turret instanceof PowerTurret powerTurret){
+            return BurrowerUnitType.canDislodge(powerTurret.shootType);
+        }
+        if(turret instanceof PayloadAmmoTurret payloadTurret){
+            return payloadTurret.ammoTypes.values().toSeq(tempBullSeq).find(BurrowerUnitType::canDislodge) != null;
+        }
+        if(turret instanceof ContinuousLiquidTurret liquidTurret){
+            return liquidTurret.ammoTypes.values().toSeq(tempBullSeq).find(BurrowerUnitType::canDislodge) != null;
+        }
+        return false;
+    }
+
 }

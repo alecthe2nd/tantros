@@ -9,6 +9,8 @@ import mindustry.gen.Bullet;
 import tantros.gen.BurrowerUnit;
 import tantros.gen.Burrowerc;
 
+import static tantros.type.units.BurrowerUnitType.canDislodge;
+
 //not meant to be used outside RTS-AI-controlled units
 public class BurrowAI extends AIController{
 
@@ -39,7 +41,7 @@ public class BurrowAI extends AIController{
 
 
     public static void hit(BurrowerUnit unit, Bullet bullet) {
-        if(bullet.type.splashDamage > 0){
+        if(canDislodge(bullet)){
             unit.triggerCooldown();
         }
     }

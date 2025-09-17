@@ -58,10 +58,21 @@ public class TantrosTechTree {
             });
             TechTree.node(TantrosPower.tidalTurbine, () -> {
                 TechTree.node(TantrosBlocks.sealed_node, () -> {
-                    TechTree.node(TantrosPower.steamTurbine, () -> {
+                });
+                TechTree.node(TantrosProduction.combustionHeater, () -> {
+                    TechTree.node(TantrosProduction.copperBoiler,() -> {
+                        TechTree.node(TantrosPower.steamTurbine, () -> {
+                            TechTree.node(TantrosPower.steamDynamo, () -> {
+
+                            });
+                        });
+                    });
+                    TechTree.node(TantrosProduction.hydrogenCatalysisHeater, () -> {
 
                     });
+                    TechTree.node(TantrosProduction.hydrogenCombustionHeater, () -> {
 
+                    });
                 });
             });
             TechTree.node(TantrosProduction.metaglassAnnealer, () -> {
@@ -70,17 +81,17 @@ public class TantrosTechTree {
 
                     });
                     TechTree.node(TantrosProduction.electrolysisChamber, () -> {
-                        TechTree.node(TantrosProduction.combustionBoiler, Seq.with(new Objectives.Research(Liquids.hydrogen), new Objectives.Research(Liquids.hydrogen)), () -> {
 
-                        });
                     });
                     TechTree.node(TantrosSource.atmosphereIntakeTower, () -> {
 
                     });
                 });
             });
-            TechTree.node(TantrosBlocks.bident, () -> {
+            TechTree.node(TantrosTurret.bident, () -> {
+                TechTree.node(TantrosTurret.jetstream, () -> {
 
+                });
             });
             TechTree.node(Items.copper, () -> {
                 TechTree.node(Items.lead, () -> {

@@ -5,18 +5,22 @@ import arc.math.Interp;
 import mindustry.content.Fx;
 import mindustry.content.Items;
 import mindustry.content.Liquids;
+import mindustry.entities.effect.MultiEffect;
 import mindustry.gen.Sounds;
+import mindustry.graphics.Pal;
 import mindustry.type.Category;
 import mindustry.type.ItemStack;
 import mindustry.type.LiquidStack;
 import mindustry.world.Block;
+import mindustry.world.blocks.heat.HeatProducer;
 import mindustry.world.blocks.production.GenericCrafter;
 import mindustry.world.draw.*;
 import mindustry.world.meta.BlockGroup;
 import mindustry.world.meta.Env;
 import tantros.content.world.TantrosLiquids;
-import tantros.content.world.blocks.production.Boiler;
+import tantros.world.blocks.production.Boiler;
 import tantros.content.world.draw.DrawIconOverride;
+import tantros.content.world.draw.DrawLight;
 import tantros.content.world.draw.output.DrawLiquidOutputRegion;
 import tantros.content.world.draw.output.DrawMultiLiquidOutput;
 import tantros.content.world.draw.output.DrawOutputLiquid;
@@ -31,7 +35,11 @@ public class TantrosProduction {
             graphiticDecomposer,
             siliconPressureSmelter,
             electrolysisChamber,
+            combustionHeater,
+            hydrogenCatalysisHeater,
+            hydrogenCombustionHeater,
             electricBoiler,
+            copperBoiler,
             combustionBoiler,
             hydrogenCatalysisBoiler,
             oxidizationReactor,
@@ -116,6 +124,124 @@ public class TantrosProduction {
             consumePower(120f/60f);
         }};
 
+        combustionHeater = new HeatProducer("combustion-heater"){
+            {
+                requirements(Category.crafting, with(Items.copper, 20, Items.lead, 10, Items.metaglass, 30));
+                craftEffect = new MultiEffect(Fx.airBubble,Fx.airBubble,Fx.airBubble,Fx.airBubble);
+
+                size = 2;
+                drawer = new DrawMulti(
+                        new DrawRegion("-bottom"),
+                        new DrawWarmupRegion(){{
+                            color = Pal.darkFlame;
+                        }},
+                        new DrawParticles(){{
+                            color = Color.valueOf("ed8e38");
+                            reverse = true;
+                            particleSize = 2f;
+                            particles = 20;
+                            particleRad = 8f;
+                            particleLife = 60f;
+                        }},
+                        new DrawDefault(),
+                        new DrawHeatOutput(){{
+                            glowMult = 1.8f;
+                        }},
+                        new DrawLight()
+                );
+
+                craftTime = 120f;
+
+                hasItems = true;
+                hasLiquids = true;
+                itemCapacity = 10;
+                liquidCapacity = 10;
+                envDisabled |= Env.oxygen;
+                consumeLiquids(LiquidStack.with(Liquids.ozone, 1f/60f));
+                consumeItems(with(Items.coal, 1));
+
+                ambientSound = Sounds.fire;
+                emitLight = true;
+
+                heatOutput = 5;
+            }
+        };
+
+        hydrogenCatalysisHeater = new HeatProducer("hydrogen-catalysis-heater"){
+            {
+                requirements(Category.crafting, with(Items.copper, 20, Items.lead, 10, Items.metaglass, 30));
+                craftEffect = new MultiEffect(Fx.airBubble,Fx.airBubble,Fx.airBubble,Fx.airBubble);
+
+                size = 2;
+                drawer = new DrawMulti(
+                        //new DrawRegion("-bottom"),
+                        new DrawDefault(),
+                        new DrawHeatOutput(){{
+                            drawGlow = false;
+                        }}
+                );
+
+                craftTime = 120f;
+
+                hasItems = true;
+                hasLiquids = true;
+                itemCapacity = 10;
+                liquidCapacity = 10;
+                envDisabled |= Env.oxygen;
+                consumeLiquids(LiquidStack.with(Liquids.hydrogen, 1f/60f));
+                consumeItems(with(Items.coal, 1));
+
+                ambientSound = Sounds.bioLoop;
+                emitLight = true;
+
+                heatOutput = 5;
+            }
+        };
+
+        hydrogenCombustionHeater = new HeatProducer("hydrogen-combustion-heater"){
+            {
+                requirements(Category.crafting, with(Items.copper, 20, Items.lead, 10, Items.metaglass, 30));
+                craftEffect = Fx.none;
+
+                size = 2;
+                drawer = new DrawMulti(
+                        new DrawRegion("-bottom"),
+                        new DrawWarmupRegion(){{
+                            color = Liquids.hydrogen.color;
+                        }},
+                        new DrawParticles(){{
+                            color = Liquids.hydrogen.gasColor;
+                            reverse = true;
+                            particleSize = 2f;
+                            particles = 20;
+                            particleRad = 8f;
+                            particleLife = 60f;
+                        }},
+                        new DrawDefault(),
+                        new DrawHeatOutput(){{
+                            glowMult = 1.8f;
+                        }},
+                        new DrawLight()
+                );
+
+                craftTime = 120f;
+
+                hasItems = true;
+                hasLiquids = true;
+                itemCapacity = 10;
+                liquidCapacity = 10;
+                envDisabled |= Env.oxygen;
+                consumeLiquids(LiquidStack.with(Liquids.ozone, 2f / 60f, Liquids.hydrogen, 3f / 60f));
+
+                ambientSound = Sounds.fire;
+                emitLight = true;
+
+                outputLiquids = LiquidStack.with(TantrosLiquids.steam, 10f / 60f);
+                ignoreLiquidFullness = true;
+                heatOutput = 5;
+            }
+        };
+
         electricBoiler = new Boiler("electric-boiler"){
             {
                 requirements(Category.crafting, with(Items.copper, 20, Items.metaglass, 30, Items.graphite, 30));
@@ -157,9 +283,9 @@ public class TantrosProduction {
             }
         };
 
-        combustionBoiler = new Boiler("combustion-boiler"){
+        copperBoiler = new Boiler("copper-boiler"){
             {
-                requirements(Category.crafting, with(Items.copper, 20, Items.lead, 10, Items.metaglass, 30));
+                requirements(Category.crafting, with(Items.copper, 30, Items.metaglass, 20));
                 craftEffect = Fx.none;
 
                 size = 2;
@@ -176,55 +302,23 @@ public class TantrosProduction {
                             particleLife = 60f;
                         }},
                         new DrawDefault(),
-                        new DrawWarmupRegion()
+                        //new DrawWarmupRegion(),
+                        new DrawHeatInput()
                 );
                 squareSprite = false;
 
-                craftTime = 120f;
+                craftTime = 60f;
 
-                hasItems = true;
                 hasLiquids = true;
-                itemCapacity = 10;
-                liquidCapacity = 10;
+                liquidCapacity = 40;
                 envDisabled |= Env.oxygen;
-                consumeLiquids(LiquidStack.with(Liquids.water, 5f/60f, Liquids.ozone, 1f/60f));
-                consumeItems(with(Items.coal, 1));
+                consumeLiquids(LiquidStack.with(Liquids.water, 5f/60f));
 
-                outputLiquids = LiquidStack.with(TantrosLiquids.steam, 10f/60f);
-            }
-        };
-        hydrogenCatalysisBoiler = new Boiler("hydrogen-catalysis-boiler"){
-            {
-                requirements(Category.crafting, with(Items.copper, 20, Items.lead, 10, Items.metaglass, 30));
-                craftEffect = Fx.none;
+                heatRequirement = 5f;
 
-                size = 2;
-                drawer = new DrawMulti(
-                        new DrawRegion("-bottom"),
-                        new DrawLiquidTile(Liquids.water, 2f),
-                        new DrawBubbles(),
-                        new DrawParticles(){{
-                            color = TantrosLiquids.steam.color;
-                            reverse = true;
-                            particleSize = 2f;
-                            particles = 20;
-                            particleRad = 8f;
-                            particleLife = 60f;
-                        }},
-                        new DrawDefault(),
-                        new DrawWarmupRegion()
-                );
-                squareSprite = false;
+                overheatScale = 1.0f;
 
-                craftTime = 120f;
-
-                hasItems = true;
-                hasLiquids = true;
-                itemCapacity = 10;
-                liquidCapacity = 10;
-                envDisabled |= Env.oxygen;
-                consumeLiquids(LiquidStack.with(Liquids.water, 5f/60f, Liquids.hydrogen, 1f/60f));
-                consumeItems(with(Items.coal, 1));
+                maxEfficiency = 6f;
 
                 outputLiquids = LiquidStack.with(TantrosLiquids.steam, 10f/60f);
             }

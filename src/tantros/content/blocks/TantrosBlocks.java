@@ -1,37 +1,17 @@
 package tantros.content.blocks;
 
-import arc.graphics.Color;
-import arc.math.Interp;
 import mindustry.content.*;
-import mindustry.entities.bullet.BasicBulletType;
-import mindustry.entities.part.RegionPart;
-import mindustry.entities.pattern.ShootAlternate;
-import mindustry.gen.Sounds;
-import mindustry.graphics.Pal;
 import mindustry.type.Category;
 import mindustry.type.ItemStack;
-import mindustry.type.LiquidStack;
 import mindustry.world.Block;
 import mindustry.world.blocks.defense.Wall;
-import mindustry.world.blocks.defense.turrets.ItemTurret;
 import mindustry.world.blocks.environment.OreBlock;
 import mindustry.world.blocks.power.PowerNode;
-import mindustry.world.blocks.production.GenericCrafter;
-import mindustry.world.consumers.ConsumeCoolant;
-import mindustry.world.draw.*;
-import mindustry.world.meta.BlockGroup;
 import mindustry.world.meta.BuildVisibility;
 import mindustry.world.meta.Env;
-import tantros.content.world.TantrosLiquids;
 import tantros.content.world.TantrosUnitTypes;
-import tantros.content.world.blocks.environment.DeepOreBlock;
-import tantros.content.world.blocks.production.Boiler;
-import tantros.content.world.blocks.storage.CustomCoreBlock;
-import tantros.content.world.draw.DrawIconOverride;
-import tantros.content.world.draw.output.DrawLiquidOutputRegion;
-import tantros.content.world.draw.output.DrawMultiLiquidOutput;
-import tantros.content.world.draw.output.DrawOutputLiquid;
-import tantros.content.world.draw.output.DrawOutputRegion;
+import tantros.world.blocks.environment.DeepOreBlock;
+import tantros.world.blocks.storage.CustomCoreBlock;
 
 import static mindustry.type.ItemStack.with;
 
@@ -56,11 +36,8 @@ public class TantrosBlocks {
             sealed_node,
 
             //defense
-            copperBulkhead, largeCopperBulkhead,
-
-            //turrets
-            bident;
-
+            copperBulkhead, largeCopperBulkhead
+                    ;
     public static void load(){
 
 
@@ -147,88 +124,6 @@ public class TantrosBlocks {
 
         //endregion
 
-        //region turrets
-
-        bident = new ItemTurret("bident"){{
-            requirements(Category.turret, with(Items.copper, 35));
-            ammo(
-                    Items.copper,  new BasicBulletType(2f, 9){{
-                        width = 7f;
-                        height = 9f;
-                        lifetime = 60f;
-                        ammoMultiplier = 2;
-
-                        hitEffect = despawnEffect = Fx.hitBulletColor;
-                        hitColor = backColor = trailColor = Pal.copperAmmoBack;
-                        frontColor = Pal.copperAmmoFront;
-                    }},
-                    Items.metaglass, new BasicBulletType(3.5f, 18){{
-                        width = 9f;
-                        height = 12f;
-                        ammoMultiplier = 4;
-                        lifetime = 60f;
-                        rangeChange = 80f;
-
-                        hitEffect = despawnEffect = Fx.hitBulletColor;
-                        hitColor = backColor = trailColor = Pal.glassAmmoBack;
-                        frontColor = Pal.glassAmmoFront;
-                    }},
-                    Items.silicon, new BasicBulletType(3f, 12){{
-                        width = 7f;
-                        height = 9f;
-                        homingPower = 0.2f;
-                        reloadMultiplier = 1.5f;
-                        ammoMultiplier = 5;
-                        lifetime = 60f;
-
-                        trailLength = 5;
-                        trailWidth = 1.5f;
-
-                        hitEffect = despawnEffect = Fx.hitBulletColor;
-                        hitColor = backColor = trailColor = Pal.siliconAmmoBack;
-                        frontColor = Pal.siliconAmmoFront;
-                    }}
-            );
-
-            shoot = new ShootAlternate(3.5f);
-
-            recoils = 2;
-            drawer = new DrawTurret(){{
-                for(int i = 0; i < 2; i ++){
-                    int f = i;
-                    parts.add(new RegionPart("-barrel-" + (i == 0 ? "l" : "r")){{
-                        progress = PartProgress.recoil;
-                        recoilIndex = f;
-                        under = true;
-                        moveY = -1.5f;
-                    }});
-                }
-            }};
-
-            recoil = 0.5f;
-            shootY = 3f;
-            reload = 20f;
-            range = 80;
-            shootCone = 15f;
-            ammoUseEffect = Fx.casing1;
-            health = 250;
-            inaccuracy = 2f;
-            rotateSpeed = 10f;
-            coolant = consume(new ConsumeCoolant(6f/60f){{
-                filter = liquid -> liquid != Liquids.water && liquid.coolant && (this.allowLiquid && !liquid.gas || this.allowGas && liquid.gas) && liquid.temperature <= maxTemp && liquid.flammability < maxFlammability;
-            }});
-            researchCostMultiplier = 0.05f;
-
-            limitRange(5f);
-        }};
-
-        //endregion
-
-        //region effect
-
-
-
-        // endregion
         TantrosEnvironment.load();
         TantrosDistribution.load();
         TantrosSource.load();
@@ -236,5 +131,6 @@ public class TantrosBlocks {
         TantrosEffect.load();
         TantrosPower.load();
         TantrosPayload.load();
+        TantrosTurret.load();
     }
 }

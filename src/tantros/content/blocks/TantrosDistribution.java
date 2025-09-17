@@ -4,9 +4,17 @@ import mindustry.content.Items;
 import mindustry.type.Category;
 import mindustry.world.Block;
 import mindustry.world.blocks.distribution.*;
-import tantros.content.world.blocks.distribution.BoostDuct;
-import tantros.content.world.blocks.distribution.BoostDuctBridge;
-import tantros.content.world.blocks.distribution.BoostDuctRouter;
+import mindustry.world.blocks.heat.HeatConductor;
+import mindustry.world.draw.DrawDefault;
+import mindustry.world.draw.DrawHeatInput;
+import mindustry.world.draw.DrawHeatOutput;
+import mindustry.world.draw.DrawMulti;
+import mindustry.world.meta.BlockGroup;
+import tantros.world.blocks.distribution.BoostDuct;
+import tantros.world.blocks.distribution.BoostDuctBridge;
+import tantros.world.blocks.distribution.BoostDuctRouter;
+import tantros.world.blocks.distribution.liquidTransport.Pipeline;
+import tantros.world.blocks.distribution.liquidTransport.PipelineRouter;
 
 import static mindustry.type.ItemStack.with;
 
@@ -23,7 +31,14 @@ public class TantrosDistribution {
 
             pneumaticDuct,
             pneumaticDuctRouter,
-            pneumaticDuctBridge
+            pneumaticDuctBridge,
+
+            copperPipeline,
+            copperPipelineRouter,
+
+            pressureReleaseVent,
+
+            sealedHeatRedirector
                     ;
 
     public static void load() {
@@ -104,6 +119,34 @@ public class TantrosDistribution {
             speed = 10f;
             bridgeReplacement = copperDuctBridge;
             max_pressure = 20;
+        }};
+
+        copperPipeline = new Pipeline("copper-pipeline"){{
+            requirements(Category.liquid, with(Items.copper, 1, Items.metaglass, 1));
+            health = 180;
+            speed = 80f;
+            leaks = true;
+        }};
+
+        copperPipelineRouter = new PipelineRouter("copper-pipeline-router"){{
+            requirements(Category.liquid, with(Items.copper, 3, Items.metaglass, 2));
+            health = 180;
+            speed = 80f;
+        }};
+
+        sealedHeatRedirector = new HeatConductor("sealed-heat-redirector"){{
+            requirements(Category.crafting, with(Items.copper, 8, Items.metaglass, 3));
+
+            researchCostMultiplier = 10f;
+
+            group = BlockGroup.heat;
+            size = 2;
+            drawer = new DrawMulti(
+                    new DrawDefault(),
+                    new DrawHeatOutput(),
+                    new DrawHeatInput("-heat")
+            );
+            regionRotated1 = 1;
         }};
     }
 }

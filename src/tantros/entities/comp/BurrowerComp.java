@@ -4,6 +4,8 @@ import ent.anno.Annotations.*;
 import mindustry.gen.*;
 import tantros.gen.Burrowerc;
 
+import static tantros.type.units.BurrowerUnitType.canDislodge;
+
 @EntityComponent
 abstract public class BurrowerComp implements Legsc {
 
@@ -35,7 +37,7 @@ abstract public class BurrowerComp implements Legsc {
     @Replace(1)
     @Override
     public boolean collides(Hitboxc other) {
-        return hittable() && (!burrowed || (other instanceof Burrowerc burrower && burrower.burrowed()) || ((other instanceof Bullet bullet) && bullet.type.splashDamage > 0)) ;
+        return hittable() && (!burrowed || (other instanceof Burrowerc burrower && burrower.burrowed()) || ((other instanceof Bullet bullet) && canDislodge(bullet))) ;
     }
 
 
