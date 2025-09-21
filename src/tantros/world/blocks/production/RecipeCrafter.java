@@ -6,6 +6,7 @@ import arc.math.Mathf;
 import arc.math.geom.Geometry;
 import arc.scene.ui.layout.Table;
 import arc.struct.EnumSet;
+import arc.struct.IntSet;
 import arc.struct.Seq;
 import arc.util.Eachable;
 import arc.util.Time;
@@ -24,6 +25,7 @@ import mindustry.type.ItemStack;
 import mindustry.type.LiquidStack;
 import mindustry.world.Block;
 import mindustry.world.blocks.heat.HeatBlock;
+import mindustry.world.blocks.heat.HeatConductor;
 import mindustry.world.blocks.heat.HeatConsumer;
 import mindustry.world.draw.DrawBlock;
 import mindustry.world.draw.DrawDefault;
@@ -33,6 +35,8 @@ import mindustry.world.meta.StatUnit;
 import mindustry.world.meta.StatValues;
 import tantros.type.Recipe;
 import tantros.world.consumers.ConsumeRecipes;
+
+import java.util.Arrays;
 
 import static mindustry.Vars.tilesize;
 import static tantros.world.meta.TantrosStats.displayRecipe;
@@ -82,7 +86,38 @@ public class RecipeCrafter extends Block {
         consume(cons);
         consume(cons.powerCons);
 
+        for(Recipe recipe: cons.recipes){
+            initRecipe(recipe);
+        }
+
         super.init();
+    }
+
+    public void initRecipe(Recipe recipe){
+        if(recipe.cost.items.size > 0) {
+            this.hasItems = true;
+            this.acceptsItems = true;
+        }
+
+        if(recipe.cost.liquids.size > 0){
+            this.hasLiquids = true;
+        }
+
+        if(recipe.cost.power > 0){
+            this.hasPower = true;
+        }
+
+        if(recipe.output.items.size > 0) {
+            this.hasItems = true;
+        }
+
+        if(recipe.output.liquids.size > 0){
+            this.hasLiquids = true;
+        }
+
+        if(recipe.output.power > 0){
+            this.hasPower = true;
+        }
     }
 
     @Override
@@ -190,7 +225,6 @@ public class RecipeCrafter extends Block {
 
         @Override
         public void updateTile(){
-
             inputHeat = calculateHeat(sideHeat);
 
             //heat approaches target at the same speed regardless of efficiency
@@ -376,6 +410,75 @@ public class RecipeCrafter extends Block {
         @Override
         public float heat(){
             return outputHeat;
+        }
+
+        @Override
+        public float calculateHeat(float[] sideHeat, IntSet cameFrom) {
+            Arrays.fill(sideHeat, 0.0F);
+            if (cameFrom != null) {
+                cameFrom.clear();
+            }
+
+            float heat = 0.0F;
+
+            for(Building build : this.proximity) {
+                if (build != null && build.team == this.team && build instanceof HeatBlock) {
+                    HeatBlock heater;
+                    boolean var10000;
+                    label59: {
+                        heater = (HeatBlock)build;
+                        Block var9 = build.block;
+                        if (var9 instanceof HeatConductor) {
+                            HeatConductor cond = (HeatConductor)var9;
+                            if (cond.splitHeat) {
+                                var10000 = true;
+                                break label59;
+                            }
+                        }
+
+                        var10000 = false;
+                    }
+
+                    boolean split = var10000;
+                    if (!build.block.rotate || !split && (this.relativeTo(build) + 2) % 4 == build.rotation || split && this.relativeTo(build) != build.rotation) {
+                        float add = 0;
+                        label70: {
+                            if (build instanceof HeatConductor.HeatConductorBuild) {
+                                HeatConductor.HeatConductorBuild hc = (HeatConductor.HeatConductorBuild)build;
+                                if (hc.cameFrom.contains(this.id()) && this.outputHeat > 0) {
+                                    break label70;
+                                }
+                            }
+
+                            float diff = Math.min(Math.abs(build.x - this.x), Math.abs(build.y - this.y)) / 8.0F;
+                            int contactPoints = Math.min((int)((float)this.block.size / 2.0F + (float)build.block.size / 2.0F - diff), Math.min(build.block.size, this.block.size));
+                            add = heater.heat() / (float)build.block.size * (float)contactPoints;
+                            if (split) {
+                                add /= 3.0F;
+                            }
+
+                            int var10001 = Mathf.mod(this.relativeTo(build), 4);
+                            sideHeat[var10001] += add;
+                            heat += add;
+                        }
+
+                        if (cameFrom != null) {
+                            cameFrom.add(build.id);
+                            if (build instanceof HeatConductor.HeatConductorBuild) {
+                                HeatConductor.HeatConductorBuild hc = (HeatConductor.HeatConductorBuild)build;
+                                cameFrom.addAll(hc.cameFrom);
+                            }
+                        }
+
+                        if (heater instanceof HeatConductor.HeatConductorBuild) {
+                            HeatConductor.HeatConductorBuild cond = (HeatConductor.HeatConductorBuild)heater;
+                            cond.updateHeat();
+                        }
+                    }
+                }
+            }
+
+            return heat;
         }
     }
 }

@@ -1,14 +1,17 @@
 package tantros.world.meta;
 
 import mindustry.content.Items;
+import mindustry.content.Liquids;
 import mindustry.type.ItemStack;
+import mindustry.type.LiquidStack;
 import tantros.type.Recipe;
 import tantros.type.Resource;
 
 public class TantrosRecipes {
 
     public static Recipe
-        metaglassAnnealing
+        metaglassAnnealing,
+        coalDecomposition
         ;
 
     public static void load(){
@@ -19,6 +22,18 @@ public class TantrosRecipes {
             ;
             output = new Resource()
                    .withItems(new ItemStack(Items.metaglass, 4))
+            ;
+            overheat = 5;
+            craftTime = 120f;
+        }};
+        coalDecomposition = new Recipe("coal-decomposition"){{
+            cost = new Resource()
+                    .withItems(ItemStack.with(Items.coal, 2))
+                    .withPower(0.5f);
+            ;
+            output = new Resource()
+                    .withItems(new ItemStack(Items.graphite, 1))
+                    .withLiquids(new LiquidStack(Liquids.hydrogen, 0.5f / 60f))
             ;
             overheat = 5;
             craftTime = 120f;

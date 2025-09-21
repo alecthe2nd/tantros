@@ -66,36 +66,11 @@ public class TantrosProduction {
             ambientSoundVolume = 0.12f;
         }};
 
-        /*metaglassAnnealer = new GenericCrafter("metaglass-annealer"){{
-            requirements(Category.crafting, with(Items.copper, 80, Items.lead, 40));
-            craftEffect = Fx.airBubble;
-            outputItem = new ItemStack(Items.metaglass, 4);
-            craftTime = 120f;
-            size = 3;
-            hasPower = true;
-            hasLiquids = false;
-            envEnabled |= Env.underwater;
-            envDisabled = Env.none;
-            itemCapacity = 30;
-            drawer = new DrawMulti(new DrawDefault(), new DrawWarmupRegion());
-            fogRadius = 3;
-            ambientSound = Sounds.smelter;
-            ambientSoundVolume = 0.12f;
-
-            consumeItems(with(Items.lead, 2, Items.sand, 3));
-            consumePower(1.5f);
-        }};*/
-
-        graphiticDecomposer = new GenericCrafter("graphitic-decomposer"){{
+        graphiticDecomposer = new RecipeCrafter("graphitic-decomposer"){{
             requirements(Category.crafting, with(Items.copper, 40, Items.lead, 10, Items.metaglass, 30));
+            cons = new ConsumeRecipes(Seq.with(TantrosRecipes.coalDecomposition));
             craftEffect = Fx.none;
-            outputItem = new ItemStack(Items.graphite, 1);
-            outputLiquid = new LiquidStack(Liquids.hydrogen, 0.5f / 60f);
-            craftTime = 120f;
             size = 2;
-            hasPower = true;
-            hasLiquids = true;
-            hasItems = true;
             itemCapacity = 30;
             liquidCapacity = 30;
 
@@ -113,9 +88,7 @@ public class TantrosProduction {
                         particleSizeInterp = Interp.one;
                     }},
                     new DrawDefault());
-            consumeItems(with(Items.coal, 2));
             ignoreLiquidFullness = true;
-            consumePower(30f / 60f);
         }};
 
         siliconPressureSmelter = new GenericCrafter("silicon-pressure-smelter"){{

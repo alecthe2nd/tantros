@@ -5,6 +5,7 @@ import arc.scene.ui.Image;
 import arc.scene.ui.layout.Stack;
 import arc.scene.ui.layout.Table;
 import arc.struct.Seq;
+import arc.util.Log;
 import arc.util.Scaling;
 import mindustry.type.ItemStack;
 import mindustry.type.Liquid;
@@ -87,9 +88,25 @@ public class TantrosStats {
         Table t = new Table(Styles.grayPanel);
         t.add(Core.bundle.get("recipe." + recipe.name + ".name"));
         t.row();
-        t.add(displayResource(recipe.cost, recipe.craftTime)).padRight(5);
+        t.add(displayResource(recipe.cost, recipe.craftTime)).left();
         t.row();
-        t.add(displayResource(recipe.output, recipe.craftTime)).padRight(5);
+        t.add(displayResource(recipe.output, recipe.craftTime)).left();
+        t.row();
+        t.table((t_extra)->{
+            t_extra.table(Styles.grayPanel, (t_overheat)->{
+                t_overheat.add(Core.bundle.get("recipe.generic.overheat.title")).left();
+                t_overheat.row();
+                StatValues.number(recipe.overheat, StatUnit.heatUnits, true).display(t_overheat);
+            }).left().padRight(15);
+            t_extra.table(Styles.grayPanel, (t_eboost)->{
+                t_eboost.add(Core.bundle.get("recipe.generic.efficiency-boost.title")).left();
+                t_eboost.row();
+                t_eboost.add(
+                        Core.bundle.get("recipe.generic.efficiency-boost.format").replace("{0}", StatValues.fixValue(recipe.overheatScale * 100))
+                        + Core.bundle.get("recipe.generic.max-efficiency.format").replace("{0}", StatValues.fixValue(recipe.maxEfficiency * 100))
+                    ).left();
+            }).left();
+        }).left();
 
         return t;
     }
@@ -98,12 +115,22 @@ public class TantrosStats {
         Table t = new Table();
 
         t.table((matter)-> {
+            int count = 0;
             for(ItemStack stack : resource.items){
                 matter.add(displayItem(stack.item, stack.amount, craftTime, true)).padRight(5);
+                if(count % 3 == 2){
+                    matter.row();
+                }
+                count++;
             }
             matter.row();
+            count = 0;
             for(LiquidStack stack: resource.liquids){
                 matter.add(StatValues.displayLiquid(stack.liquid, stack.amount, true));
+                if(count % 3 == 2){
+                    matter.row();
+                }
+                count++;
             }
         });
 
