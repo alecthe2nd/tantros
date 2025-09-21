@@ -1,24 +1,22 @@
-package tantros.content.world.meta;
+package tantros.world.meta;
 
-import arc.func.Boolf;
-import arc.graphics.Color;
+import arc.Core;
 import arc.scene.ui.Image;
 import arc.scene.ui.layout.Stack;
 import arc.scene.ui.layout.Table;
 import arc.struct.Seq;
 import arc.util.Scaling;
-import arc.util.Strings;
+import mindustry.type.ItemStack;
 import mindustry.type.Liquid;
+import mindustry.type.LiquidStack;
 import mindustry.ui.Styles;
-import mindustry.world.meta.Stat;
-import mindustry.world.meta.StatCat;
-import mindustry.world.meta.StatUnit;
-import mindustry.world.meta.StatValue;
+import mindustry.world.meta.*;
+import tantros.type.Recipe;
+import tantros.type.Resource;
 import tantros.world.environment.LocalEnv;
 
-import static mindustry.Vars.content;
 import static mindustry.Vars.iconMed;
-import static mindustry.world.meta.StatValues.displayLiquid;
+import static mindustry.world.meta.StatValues.displayItem;
 import static mindustry.world.meta.StatValues.withTooltip;
 
 public class TantrosStats {
@@ -34,6 +32,8 @@ public class TantrosStats {
             pressureRange = new Stat("pressurerange", StatCat.function),
 
             maxPressure = new Stat("maxpressure", StatCat.function),
+
+            recipes = new Stat("recipes", StatCat.crafting),
 
             requiredEnvironments = new Stat("requiredenvironments", TantrosStats.environment);
 
@@ -72,6 +72,50 @@ public class TantrosStats {
 
         t.add(liquid.localizedName);
 
+        return t;
+    }
+
+    public static StatValue recipes(Seq<Recipe> recipes){
+        return table -> {
+            for(Recipe recipe : recipes){
+                table.add(displayRecipe(recipe)).padRight(5);
+            }
+        };
+    }
+
+    public static Table displayRecipe(Recipe recipe){
+        Table t = new Table(Styles.grayPanel);
+        t.add(Core.bundle.get("recipe." + recipe.name + ".name"));
+        t.row();
+        t.add(displayResource(recipe.cost, recipe.craftTime)).padRight(5);
+        t.row();
+        t.add(displayResource(recipe.output, recipe.craftTime)).padRight(5);
+
+        return t;
+    }
+
+    public static Table displayResource(Resource resource, float craftTime){
+        Table t = new Table();
+
+        t.table((matter)-> {
+            for(ItemStack stack : resource.items){
+                matter.add(displayItem(stack.item, stack.amount, craftTime, true)).padRight(5);
+            }
+            matter.row();
+            for(LiquidStack stack: resource.liquids){
+                matter.add(StatValues.displayLiquid(stack.liquid, stack.amount, true));
+            }
+        });
+
+        t.table((energy)-> {
+            if(resource.heat > 0) {
+                StatValues.number(resource.heat, StatUnit.heatUnits).display(energy);
+            }
+            energy.row();
+            if(resource.power > 0) {
+                StatValues.number(resource.power * 60, StatUnit.powerSecond).display(energy);
+            }
+        });
         return t;
     }
 }

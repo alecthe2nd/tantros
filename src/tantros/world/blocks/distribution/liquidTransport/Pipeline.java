@@ -4,13 +4,9 @@ import arc.Core;
 import arc.graphics.Color;
 import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.TextureRegion;
-import arc.math.Mathf;
 import arc.math.geom.Geometry;
 import arc.util.Nullable;
-import arc.util.Time;
 import arc.util.Tmp;
-import mindustry.content.Fx;
-import mindustry.entities.Puddles;
 import mindustry.entities.TargetPriority;
 import mindustry.gen.Building;
 import mindustry.graphics.Drawf;
@@ -20,21 +16,15 @@ import mindustry.world.Block;
 import mindustry.world.Tile;
 import mindustry.world.blocks.Autotiler;
 import mindustry.world.blocks.distribution.ChainedBuilding;
-import mindustry.world.blocks.distribution.Duct;
-import mindustry.world.blocks.liquid.LiquidBlock;
 
 import static mindustry.Vars.renderer;
 import static mindustry.Vars.tilesize;
 import static mindustry.type.Liquid.animationFrames;
 
-public class Pipeline extends LiquidTransportBlock implements Autotiler {
+public class Pipeline extends PipelineBlock implements Autotiler {
 
     static final float rotatePad = 6, hpad = rotatePad / 2f / 4f;
     static final float[][] rotateOffsets = {{hpad, hpad}, {-hpad, hpad}, {-hpad, -hpad}, {hpad, -hpad}};
-
-
-    /** Whether this block produces puddles at open ends.*/
-    public boolean leaks = true;
 
     public Color transparentColor = new Color(0.4f, 0.4f, 0.4f, 0.1f);
 
@@ -77,8 +67,6 @@ public class Pipeline extends LiquidTransportBlock implements Autotiler {
             botRegions[i] = Core.atlas.find(name + "-bottom-" + i);
         }
 
-        capRegion = Core.atlas.find(name + "-cap");
-
         rotateRegions = new TextureRegion[4][2][animationFrames];
 
         if(renderer != null){
@@ -113,15 +101,16 @@ public class Pipeline extends LiquidTransportBlock implements Autotiler {
         }
     }
 
-    public class PipelineBuild extends LiquidTransportBuild implements ChainedBuilding{
+    @Override
+    public TextureRegion[] icons(){
+        return new TextureRegion[]{botRegions[0], topRegions[0]};
+    }
+
+    public class PipelineBuild extends PipelineBlockBuild implements ChainedBuilding{
 
         public int blendbits, xscl, yscl, blending;
         public @Nullable Building next;
         public @Nullable Pipeline.PipelineBuild nextc;
-
-        public boolean capped, backCapped;
-
-        public float smoothLiquid = 0f;
 
         @Override
         public Building next() {
@@ -145,8 +134,7 @@ public class Pipeline extends LiquidTransportBlock implements Autotiler {
             drawAt(x, y, blendbits, rotation, Autotiler.SliceMode.none);
             Draw.reset();
 
-            if(capped && capRegion.found()) Draw.rect(capRegion, x, y, rotdeg());
-            if(backCapped && capRegion.found()) Draw.rect(capRegion, x, y, rotdeg() + 180);
+            drawCaps();
         }
 
         @Override
@@ -196,32 +184,16 @@ public class Pipeline extends LiquidTransportBlock implements Autotiler {
 
         @Override
         public void updateTile(){
+            super.updateTile();
+        }
 
-            float idealFlow = Math.min(liquids.currentAmount(), (speed/60f) * edelta());
-            float trueFlow = 0;
-
-            if(idealFlow > 0.0001f){
-                Liquid liquid = liquids.current();
-
-                if (next != null ) {
-                    trueFlow = moveLiquid(next.getLiquidDestination(this, liquid), liquid, idealFlow);
-                } else if (leaks){
-                    Tile puddleTile = tile.nearby(rotation);
-                    if(puddleTile != null && !puddleTile.block().solid && !puddleTile.block().hasLiquids) {
-                        Puddles.deposit(puddleTile, tile, liquid, idealFlow, true, true);
-                        liquids.remove(liquid, idealFlow);
-                        trueFlow = idealFlow;
-                    }
-                }
-                noSleep();
-                smoothLiquid = Mathf.lerpDelta(smoothLiquid,  Mathf.clamp(liquids.currentAmount() / liquidCapacity), 0.05f);
-
-            }
+        @Override
+        public void doFlow() {
+            flowForward();
         }
 
         @Override
         public void onProximityUpdate(){
-            super.onProximityUpdate();
 
             int[] bits = buildBlending(tile, rotation, null, true);
             blendbits = bits[0];
@@ -231,9 +203,17 @@ public class Pipeline extends LiquidTransportBlock implements Autotiler {
             next = front();
             Building prev = back();
             nextc = next instanceof Pipeline.PipelineBuild d ? d : null;
+            super.onProximityUpdate();
+        }
 
-            capped = next == null || next.team != team || !next.block.hasLiquids;
-            backCapped = blendbits == 0 && (prev == null || prev.team != team || !prev.block.hasLiquids);
+        @Override
+        public void checkCaps() {
+            super.checkCaps();
+
+            //don't render caps on the sides, and the back cap should only render for straight pipes
+            cappedEdges[1] = false;
+            cappedEdges[2] = cappedEdges[2] && blendbits == 0;
+            cappedEdges[3] = false;
         }
     }
 }

@@ -16,7 +16,7 @@ import mindustry.world.draw.DrawDefault;
 import mindustry.world.meta.Stat;
 import mindustry.world.meta.StatUnit;
 import tantros.world.blocks.distribution.BoostPneumatic;
-import tantros.content.world.meta.TantrosStats;
+import tantros.world.meta.TantrosStats;
 
 public class FacingPressureBooster extends Block {
 

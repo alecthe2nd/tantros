@@ -2,6 +2,7 @@ package tantros.content.blocks;
 
 import arc.graphics.Color;
 import arc.math.Interp;
+import arc.struct.Seq;
 import mindustry.content.Fx;
 import mindustry.content.Items;
 import mindustry.content.Liquids;
@@ -14,10 +15,12 @@ import mindustry.type.LiquidStack;
 import mindustry.world.Block;
 import mindustry.world.blocks.heat.HeatProducer;
 import mindustry.world.blocks.production.GenericCrafter;
+import mindustry.world.blocks.production.HeatCrafter;
 import mindustry.world.draw.*;
 import mindustry.world.meta.BlockGroup;
 import mindustry.world.meta.Env;
 import tantros.content.world.TantrosLiquids;
+import tantros.type.Recipe;
 import tantros.world.blocks.production.Boiler;
 import tantros.content.world.draw.DrawIconOverride;
 import tantros.content.world.draw.DrawLight;
@@ -25,6 +28,9 @@ import tantros.content.world.draw.output.DrawLiquidOutputRegion;
 import tantros.content.world.draw.output.DrawMultiLiquidOutput;
 import tantros.content.world.draw.output.DrawOutputLiquid;
 import tantros.content.world.draw.output.DrawOutputRegion;
+import tantros.world.blocks.production.RecipeCrafter;
+import tantros.world.consumers.ConsumeRecipes;
+import tantros.world.meta.TantrosRecipes;
 
 import static mindustry.type.ItemStack.with;
 
@@ -40,15 +46,27 @@ public class TantrosProduction {
             hydrogenCombustionHeater,
             electricBoiler,
             copperBoiler,
-            combustionBoiler,
-            hydrogenCatalysisBoiler,
             oxidizationReactor,
             steamCombustor
                     ;
 
     public static void load(){
 
-        metaglassAnnealer = new GenericCrafter("metaglass-annealer"){{
+        metaglassAnnealer = new RecipeCrafter("metaglass-annealer"){{
+            requirements(Category.crafting, with(Items.copper, 80, Items.lead, 40));
+            cons = new ConsumeRecipes(Seq.with(TantrosRecipes.metaglassAnnealing));
+            craftEffect = Fx.airBubble;
+            size = 3;
+            envEnabled |= Env.underwater;
+            envDisabled = Env.none;
+            itemCapacity = 30;
+            drawer = new DrawMulti(new DrawDefault(), new DrawWarmupRegion());
+            fogRadius = 3;
+            ambientSound = Sounds.smelter;
+            ambientSoundVolume = 0.12f;
+        }};
+
+        /*metaglassAnnealer = new GenericCrafter("metaglass-annealer"){{
             requirements(Category.crafting, with(Items.copper, 80, Items.lead, 40));
             craftEffect = Fx.airBubble;
             outputItem = new ItemStack(Items.metaglass, 4);
@@ -66,7 +84,7 @@ public class TantrosProduction {
 
             consumeItems(with(Items.lead, 2, Items.sand, 3));
             consumePower(1.5f);
-        }};
+        }};*/
 
         graphiticDecomposer = new GenericCrafter("graphitic-decomposer"){{
             requirements(Category.crafting, with(Items.copper, 40, Items.lead, 10, Items.metaglass, 30));

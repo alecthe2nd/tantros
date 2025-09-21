@@ -6,6 +6,7 @@ import tantros.content.blocks.*;
 import tantros.content.planets.*;
 import tantros.content.world.*;
 import tantros.gen.*;
+import tantros.world.meta.TantrosRecipes;
 
 public class Tantros extends Mod{
 
@@ -19,6 +20,7 @@ public class Tantros extends Mod{
         TantrosLiquids.load();
         TantrosUnitCommands.load();
         TantrosUnitTypes.load();
+        TantrosRecipes.load();
         TantrosBlocks.load();
         TantrosOverride.override();
     }

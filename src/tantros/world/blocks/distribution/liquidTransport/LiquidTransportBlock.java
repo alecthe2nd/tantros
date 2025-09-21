@@ -1,24 +1,71 @@
 package tantros.world.blocks.distribution.liquidTransport;
 
+import arc.graphics.g2d.Draw;
 import arc.math.Mathf;
-import arc.util.Time;
 import mindustry.Vars;
 import mindustry.content.Fx;
+import mindustry.entities.Puddles;
 import mindustry.gen.Building;
+import mindustry.graphics.Drawf;
 import mindustry.type.Liquid;
+import mindustry.world.Tile;
 import mindustry.world.blocks.liquid.LiquidBlock;
 
-public class LiquidTransportBlock extends LiquidBlock {
+public abstract class LiquidTransportBlock extends LiquidBlock {
 
 
     /** In game Liquid units transported per second.*/
     public float speed = 20;
 
+    /** Whether this block produces puddles at open ends.*/
+    public boolean leaks = false;
+
     public LiquidTransportBlock(String name) {
         super(name);
     }
 
-    public class LiquidTransportBuild extends LiquidBuild{
+    public abstract class LiquidTransportBuild extends LiquidBuild{
+
+        public float smoothLiquid = 0f;
+
+        /**
+         * The amount that this building wants to transfer to neighbors this tick.
+         * */
+        public float idealFlow = 0;
+
+        /**
+         * The amount that this building succeeded in transferring this tick.
+         */
+        public float flow = 0;
+
+        @Override
+        public void updateTile() {
+            idealFlow = Math.min(liquids.currentAmount(), (speed/60f) * edelta());
+            if(idealFlow > 0.0001f){
+                this.doFlow();
+            }
+        }
+
+        public abstract Building next();
+
+        public void flowForward(){
+            Liquid liquid = liquids.current();
+            Building next = next();
+            if (next != null ) {
+                flow = moveLiquid(next.getLiquidDestination(this, liquid), liquid, idealFlow);
+            } else if (leaks){
+                Tile puddleTile = tile.nearby(rotation);
+                if(puddleTile != null && !puddleTile.block().solid && !puddleTile.block().hasLiquids) {
+                    Puddles.deposit(puddleTile, tile, liquid, idealFlow, true, true);
+                    liquids.remove(liquid, idealFlow);
+                    flow = idealFlow;
+                }
+            }
+            noSleep();
+            smoothLiquid = Mathf.lerpDelta(smoothLiquid,  Mathf.clamp(liquids.currentAmount() / liquidCapacity), 0.05f);
+        }
+
+        public abstract void doFlow();
 
         public float moveLiquid(Building next, Liquid liquid, float idealFlow){
             if (next.team == team && next.block.hasLiquids && liquids.get(liquid) > 0.0F) {

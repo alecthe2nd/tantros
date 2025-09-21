@@ -15,6 +15,7 @@ import tantros.world.blocks.distribution.BoostDuctBridge;
 import tantros.world.blocks.distribution.BoostDuctRouter;
 import tantros.world.blocks.distribution.liquidTransport.Pipeline;
 import tantros.world.blocks.distribution.liquidTransport.PipelineRouter;
+import tantros.world.blocks.distribution.liquidTransport.PipelineVent;
 
 import static mindustry.type.ItemStack.with;
 
@@ -147,6 +148,12 @@ public class TantrosDistribution {
                     new DrawHeatInput("-heat")
             );
             regionRotated1 = 1;
+        }};
+
+        pressureReleaseVent = new PipelineVent("copper-pipeline-vent"){{
+            requirements(Category.liquid, with(Items.copper, 8, Items.metaglass, 8));
+            speed = 80f;
+            leaks = true;
         }};
     }
 }

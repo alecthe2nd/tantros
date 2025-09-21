@@ -7,7 +7,7 @@ import mindustry.graphics.Pal;
 import mindustry.ui.Bar;
 import mindustry.world.blocks.distribution.DuctRouter;
 import mindustry.world.meta.StatUnit;
-import tantros.content.world.meta.TantrosStats;
+import tantros.world.meta.TantrosStats;
 
 public class BoostDuctRouter extends DuctRouter {
 

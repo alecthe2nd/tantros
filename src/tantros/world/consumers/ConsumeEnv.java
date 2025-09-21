@@ -4,7 +4,7 @@ import mindustry.gen.Building;
 import mindustry.world.consumers.Consume;
 import mindustry.world.meta.Stats;
 import tantros.TantrosVars;
-import tantros.content.world.meta.TantrosStats;
+import tantros.world.meta.TantrosStats;
 import tantros.world.environment.LocalEnv;
 
 public class ConsumeEnv extends Consume {
