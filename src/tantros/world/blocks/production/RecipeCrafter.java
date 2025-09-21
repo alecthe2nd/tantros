@@ -399,7 +399,7 @@ public class RecipeCrafter extends Block {
         public float efficiencyScale(){
             if(currentRecipe == null) return 0f;
             float over = Math.max(inputHeat - currentRecipe.cost.heat, 0f);
-            return Math.min(Mathf.clamp((currentRecipe.cost.heat > 0f)?(inputHeat / currentRecipe.cost.heat):1f) + over / currentRecipe.overheat * currentRecipe.overheatScale, currentRecipe.maxEfficiency);
+            return Math.min(Mathf.clamp((currentRecipe.cost.heat > 0f)?(inputHeat / currentRecipe.cost.heat):1f) + ((currentRecipe.overheat > 0f)?(over / currentRecipe.overheat):0f) * currentRecipe.overheatScale, currentRecipe.maxEfficiency);
         }
 
         @Override

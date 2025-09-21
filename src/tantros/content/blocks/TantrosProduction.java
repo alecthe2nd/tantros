@@ -91,15 +91,11 @@ public class TantrosProduction {
             ignoreLiquidFullness = true;
         }};
 
-        siliconPressureSmelter = new GenericCrafter("silicon-pressure-smelter"){{
+        siliconPressureSmelter = new RecipeCrafter("silicon-pressure-smelter"){{
             requirements(Category.crafting, with(Items.copper, 30, Items.lead, 20, Items.metaglass, 40, Items.graphite, 50));
+            cons = new ConsumeRecipes(Seq.with(TantrosRecipes.siliconPressureSmelting));
             craftEffect = Fx.none;
-            outputItem = new ItemStack(Items.silicon, 3);
-            craftTime = 60f;
             size = 3;
-            hasPower = true;
-            hasItems = true;
-            hasLiquids = true;
             envEnabled |= Env.space | Env.underwater;
             envDisabled = Env.none;
             itemCapacity = 30;
@@ -109,10 +105,6 @@ public class TantrosProduction {
             fogRadius = 3;
             ambientSound = Sounds.smelter;
             ambientSoundVolume = 0.12f;
-
-            consumeItems(with(Items.coal, 1, Items.sand, 3));
-            consumeLiquids(LiquidStack.with(Liquids.hydrogen, 0.5f/60f));
-            consumePower(120f/60f);
         }};
 
         combustionHeater = new HeatProducer("combustion-heater"){

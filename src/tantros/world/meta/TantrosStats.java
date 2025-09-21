@@ -126,7 +126,7 @@ public class TantrosStats {
             matter.row();
             count = 0;
             for(LiquidStack stack: resource.liquids){
-                matter.add(StatValues.displayLiquid(stack.liquid, stack.amount, true));
+                matter.add(StatValues.displayLiquid(stack.liquid, stack.amount * 60, true));
                 if(count % 3 == 2){
                     matter.row();
                 }
