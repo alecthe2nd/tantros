@@ -19,7 +19,7 @@ public class TantrosPayload {
 
     public static BranchableUnitAssembler.BranchedAssemblerUnitPlan
             tantrosUnitTree,
-            aquasPlan,
+            flakPlan,
             roachPlan;
 
     public static void load(){
@@ -27,7 +27,7 @@ public class TantrosPayload {
         tantrosUnitTree = new BranchableUnitAssembler.BranchedAssemblerUnitPlan(TantrosUnitTypes.delegate,60f * 10f, PayloadStack.list()){{
             itemReq = with(Items.lead, 15, Items.silicon, 20);
         }}.addChild(
-                aquasPlan =  new BranchableUnitAssembler.BranchedAssemblerUnitPlan(TantrosUnitTypes.aquas,60f * 20f, PayloadStack.list(TantrosUnitTypes.delegate, 1)){{
+                flakPlan =  new BranchableUnitAssembler.BranchedAssemblerUnitPlan(TantrosUnitTypes.flak,60f * 20f, PayloadStack.list(TantrosUnitTypes.delegate, 1)){{
                     itemReq = with(Items.metaglass, 30);
                 }}
         ).addChild(
@@ -40,7 +40,7 @@ public class TantrosPayload {
         smallMechAssemblyModule = new BranchedUnitAssemblerModule("small-mech-assembly-module"){{
             requirements(Category.units, with(Items.copper, 20, Items.metaglass, 35, Items.silicon, 20));
             tier = 1;
-            plan = aquasPlan;
+            plan = flakPlan;
         }};
 
         smallExplosiveAssemblyModule = new BranchedUnitAssemblerModule("small-explosive-assembly-module"){{

@@ -21,6 +21,7 @@ public class TantrosOverride {
         Planets.tantros.visible = true;
         Planets.tantros.alwaysUnlocked = true;
         Planets.tantros.defaultCore = TantrosBlocks.coreShell;
+        TantrosSectorPresets.load();
         TantrosTechTree.load();
         TantrosLoadouts.load();
         Planets.tantros.generator = new TantrosPlanetGenerator();

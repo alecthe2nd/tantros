@@ -24,9 +24,11 @@ import mindustry.type.Item;
 import mindustry.type.ItemStack;
 import mindustry.type.LiquidStack;
 import mindustry.world.Block;
+import mindustry.world.Tile;
 import mindustry.world.blocks.heat.HeatBlock;
 import mindustry.world.blocks.heat.HeatConductor;
 import mindustry.world.blocks.heat.HeatConsumer;
+import mindustry.world.blocks.liquid.Conduit;
 import mindustry.world.draw.DrawBlock;
 import mindustry.world.draw.DrawDefault;
 import mindustry.world.meta.BlockFlag;
@@ -39,6 +41,7 @@ import tantros.world.consumers.ConsumeRecipes;
 import java.util.Arrays;
 
 import static mindustry.Vars.tilesize;
+import static mindustry.Vars.world;
 import static tantros.world.meta.TantrosStats.displayRecipe;
 
 public class RecipeCrafter extends Block {
@@ -113,11 +116,32 @@ public class RecipeCrafter extends Block {
 
         if(recipe.output.liquids.size > 0){
             this.hasLiquids = true;
+            this.outputsLiquid = true;
         }
 
         if(recipe.output.power > 0){
             this.hasPower = true;
         }
+
+        if(recipe.output.heat > 0){
+            this.rotate = true;
+            this.rotateDraw = false;
+            this.drawArrow = true;
+        }
+    }
+
+    @Override
+    public boolean rotatedOutput(int fromX, int fromY, Tile destination){
+        if(!(destination.build instanceof Conduit.ConduitBuild)) return false;
+
+        Building crafter = world.build(fromX, fromY);
+        if(crafter == null) return false;
+        int relative = Mathf.mod(crafter.relativeTo(destination) - crafter.rotation, 4);
+        for(int dir : liquidOutputDirections){
+            if(dir == -1 || dir == relative) return false;
+        }
+
+        return true;
     }
 
     @Override
@@ -271,7 +295,7 @@ public class RecipeCrafter extends Block {
 
         public boolean isValid(Recipe recipe){
             if(recipe == null) return false;
-            return cons.efficiency(this, recipe) > 0;
+            return cons.efficiency(this, recipe, 1.0f) > 0;
         }
 
         @Override

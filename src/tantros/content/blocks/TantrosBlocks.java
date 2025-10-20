@@ -109,7 +109,7 @@ public class TantrosBlocks {
         //region defense
 
         copperBulkhead = new Wall("copper-bulkhead"){{
-            requirements(Category.defense, with(Items.copper, 6));
+            requirements(Category.defense, with(Items.copper, 4, Items.oxide, 2));
             health = 320;
             researchCostMultiplier = 0.1f;
             envEnabled |= Env.underwater;

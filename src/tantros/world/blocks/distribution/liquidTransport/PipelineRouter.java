@@ -31,12 +31,12 @@ public class PipelineRouter extends PipelineBlock{
 
         @Override
         public void updateTile(){
-            dumpLiquid(liquids.current());
+            super.updateTile();
         }
 
         @Override
         public void doFlow() {
-
+            routeLiquid(liquids.current(), 1, -1);
         }
     }
 }

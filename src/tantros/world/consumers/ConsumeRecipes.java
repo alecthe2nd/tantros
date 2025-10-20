@@ -1,6 +1,7 @@
 package tantros.world.consumers;
 
 import arc.struct.Seq;
+import arc.util.Time;
 import mindustry.gen.Building;
 import mindustry.type.ItemStack;
 import mindustry.type.LiquidStack;
@@ -36,7 +37,14 @@ public class ConsumeRecipes extends Consume {
         return new ConsumePowerDynamic((build)->{
             if(! (build instanceof RecipeCrafter.RecipeCrafterBuild crafter)) throw new ClassCastException("ConsumeRecipes consumers only function for RecipeCrafter blocks.");
             return (crafter.currentRecipe != null)? crafter.currentRecipe.cost.power: 0f;
-        });
+        }){
+            @Override
+            public float efficiency(Building build) {
+                if(! (build instanceof RecipeCrafter.RecipeCrafterBuild crafter)) throw new ClassCastException("ConsumeRecipes consumers only function for RecipeCrafter blocks.");
+                if(crafter.currentRecipe == null) return 0;
+                return (crafter.currentRecipe.cost.power > 0)? super.efficiency(build): 1f;
+            }
+        };
     }
 
     @Override
@@ -88,22 +96,24 @@ public class ConsumeRecipes extends Consume {
         return efficiency(crafter, crafter.currentRecipe);
     }
 
-    public float efficiency(RecipeCrafter.RecipeCrafterBuild crafter, Recipe current){
+    public float efficiency(RecipeCrafter.RecipeCrafterBuild crafter, Recipe current, float efficiency){
 
         float mult = multiplier.get(crafter);
-        float ed = crafter.edelta() * crafter.efficiencyScale();
+        float ed = efficiency * Time.delta * crafter.efficiencyScale();
 
 
-        float eff = (!crafter.consumeTriggerValid())?0f:1f;
+        float eff = 1f;
+
+        boolean trigger = crafter.consumeTriggerValid();
         if(current != null) {
 
             for(ItemStack stack: current.cost.items) {
-                eff = crafter.items.has(stack.item, Math.round(stack.amount * multiplier.get(crafter))) ? 1f : 0f;
+
+                eff = (trigger || crafter.items.has(stack.item, Math.round(stack.amount * multiplier.get(crafter)))) ? 1f : 0f;
+
             }
 
-            if(ed <= 0.00000001f){
-                eff = 0;
-            }
+            //if(ed <= 0.00000001f) return 0f;
 
             for(var stack : current.cost.liquids){
                 eff = Math.min(crafter.liquids.get(stack.liquid) / (stack.amount * ed * mult), eff);
@@ -119,6 +129,10 @@ public class ConsumeRecipes extends Consume {
         }
 
         return 0;
+    }
+
+    public float efficiency(RecipeCrafter.RecipeCrafterBuild crafter, Recipe current){
+        return efficiency(crafter, current, crafter.efficiency);
     }
 
     @Override

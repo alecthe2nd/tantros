@@ -28,6 +28,7 @@ public class TantrosUnitTypes {
 
     testBoat,
     aquas,
+    flak,
     roach,
     enact,
     delegate,
@@ -94,6 +95,34 @@ public class TantrosUnitTypes {
                     trailChance = 0.05f;
                 }};
             }});
+        }};
+
+        flak = new UnitType("flak"){{
+            constructor = MechUnit::create;
+            researchCostMultiplier = 0.5f;
+            speed = 2f;
+            hitSize = 8f;
+            health = 150;
+
+            weapons.add(new Weapon("tantros-flak-weapon"){{
+                reload = 13f;
+                x = 3f;
+                y = 1f;
+                top = false;
+                ejectEffect = Fx.casing1;
+                bullet = new BasicBulletType(5f, 9){{
+                    width = 7f;
+                    height = 9f;
+                    lifetime = 60f;
+
+                    trailEffect = Fx.airBubble;
+                    trailChance = 0.05f;
+                }};
+            }});
+
+            abilities = Seq.with(
+                    new MoveEffectAbility(0,0,Liquids.water.color, new MultiEffect(Fx.airBubble), 10)
+            );
         }};
 
         roach = EntityRegistry.content("roach", BurrowerUnit.class, name -> new BurrowerUnitType(name){{
@@ -299,7 +328,7 @@ public class TantrosUnitTypes {
                     rotate = false;
                     shootY = 0f;
                     beamWidth = 0.7f;
-                    repairSpeed = 3.1f;
+                    repairSpeed = 1f;
                     fractionRepairSpeed = 0.06f;
                     aimDst = 0f;
                     shootCone = 15f;

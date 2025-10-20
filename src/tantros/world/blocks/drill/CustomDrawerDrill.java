@@ -93,5 +93,10 @@ public class CustomDrawerDrill extends Drill implements NumberProviderc {
             }
             return providerMap.get(name);
         }
+
+        @Override
+        public void updateTile() {
+            super.updateTile();
+        }
     }
 }

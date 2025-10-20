@@ -43,17 +43,15 @@ public class TantrosProduction {
             electrolysisChamber,
             combustionHeater,
             hydrogenCatalysisHeater,
-            hydrogenCombustionHeater,
-            electricBoiler,
+            sealedElectricHeater,
             copperBoiler,
-            oxidizationReactor,
-            steamCombustor
+            oxidizationReactor
                     ;
 
     public static void load(){
 
         metaglassAnnealer = new RecipeCrafter("metaglass-annealer"){{
-            requirements(Category.crafting, with(Items.copper, 80, Items.lead, 40));
+            requirements(Category.crafting, with(Items.copper, 80, Items.oxide, 40));
             cons = new ConsumeRecipes(Seq.with(TantrosRecipes.metaglassAnnealing));
             craftEffect = Fx.airBubble;
             size = 3;
@@ -67,7 +65,7 @@ public class TantrosProduction {
         }};
 
         graphiticDecomposer = new RecipeCrafter("graphitic-decomposer"){{
-            requirements(Category.crafting, with(Items.copper, 40, Items.lead, 10, Items.metaglass, 30));
+            requirements(Category.crafting, with(Items.copper, 40, Items.oxide, 20, Items.metaglass, 30));
             cons = new ConsumeRecipes(Seq.with(TantrosRecipes.coalDecomposition));
             craftEffect = Fx.none;
             size = 2;
@@ -92,7 +90,7 @@ public class TantrosProduction {
         }};
 
         siliconPressureSmelter = new RecipeCrafter("silicon-pressure-smelter"){{
-            requirements(Category.crafting, with(Items.copper, 30, Items.lead, 20, Items.metaglass, 40, Items.graphite, 50));
+            requirements(Category.crafting, with(Items.copper, 30, Items.oxide, 20, Items.metaglass, 40, Items.graphite, 50));
             cons = new ConsumeRecipes(Seq.with(TantrosRecipes.siliconPressureSmelting));
             craftEffect = Fx.none;
             size = 3;
@@ -107,11 +105,15 @@ public class TantrosProduction {
             ambientSoundVolume = 0.12f;
         }};
 
-        combustionHeater = new HeatProducer("combustion-heater"){
+        combustionHeater = new RecipeCrafter("combustion-heater"){
             {
-                requirements(Category.crafting, with(Items.copper, 20, Items.lead, 10, Items.metaglass, 30));
+                requirements(Category.crafting, with(Items.copper, 20, Items.oxide, 10, Items.metaglass, 30));
                 craftEffect = new MultiEffect(Fx.airBubble,Fx.airBubble,Fx.airBubble,Fx.airBubble);
-
+                cons = new ConsumeRecipes(Seq.with(
+                        TantrosRecipes.coalCombustion,
+                        TantrosRecipes.graphiteCombustion,
+                        TantrosRecipes.hydrogenCombustion
+                ));
                 size = 2;
                 drawer = new DrawMulti(
                         new DrawRegion("-bottom"),
@@ -132,27 +134,18 @@ public class TantrosProduction {
                         }},
                         new DrawLight()
                 );
-
-                craftTime = 120f;
-
-                hasItems = true;
-                hasLiquids = true;
                 itemCapacity = 10;
                 liquidCapacity = 10;
                 envDisabled |= Env.oxygen;
-                consumeLiquids(LiquidStack.with(Liquids.ozone, 1f/60f));
-                consumeItems(with(Items.coal, 1));
 
                 ambientSound = Sounds.fire;
                 emitLight = true;
-
-                heatOutput = 5;
             }
         };
 
         hydrogenCatalysisHeater = new HeatProducer("hydrogen-catalysis-heater"){
             {
-                requirements(Category.crafting, with(Items.copper, 20, Items.lead, 10, Items.metaglass, 30));
+                requirements(Category.crafting, with(Items.copper, 20, Items.oxide, 10, Items.metaglass, 30));
                 craftEffect = new MultiEffect(Fx.airBubble,Fx.airBubble,Fx.airBubble,Fx.airBubble);
 
                 size = 2;
@@ -181,94 +174,26 @@ public class TantrosProduction {
             }
         };
 
-        hydrogenCombustionHeater = new HeatProducer("hydrogen-combustion-heater"){
-            {
-                requirements(Category.crafting, with(Items.copper, 20, Items.lead, 10, Items.metaglass, 30));
-                craftEffect = Fx.none;
-
-                size = 2;
-                drawer = new DrawMulti(
-                        new DrawRegion("-bottom"),
-                        new DrawWarmupRegion(){{
-                            color = Liquids.hydrogen.color;
-                        }},
-                        new DrawParticles(){{
-                            color = Liquids.hydrogen.gasColor;
-                            reverse = true;
-                            particleSize = 2f;
-                            particles = 20;
-                            particleRad = 8f;
-                            particleLife = 60f;
-                        }},
-                        new DrawDefault(),
-                        new DrawHeatOutput(){{
-                            glowMult = 1.8f;
-                        }},
-                        new DrawLight()
-                );
-
-                craftTime = 120f;
-
-                hasItems = true;
-                hasLiquids = true;
-                itemCapacity = 10;
-                liquidCapacity = 10;
-                envDisabled |= Env.oxygen;
-                consumeLiquids(LiquidStack.with(Liquids.ozone, 2f / 60f, Liquids.hydrogen, 3f / 60f));
-
-                ambientSound = Sounds.fire;
-                emitLight = true;
-
-                outputLiquids = LiquidStack.with(TantrosLiquids.steam, 10f / 60f);
-                ignoreLiquidFullness = true;
-                heatOutput = 5;
-            }
-        };
-
-        electricBoiler = new Boiler("electric-boiler"){
+        sealedElectricHeater = new RecipeCrafter("sealed-electric-heater"){
             {
                 requirements(Category.crafting, with(Items.copper, 20, Items.metaglass, 30, Items.graphite, 30));
                 craftEffect = Fx.none;
-
+                cons = new ConsumeRecipes(Seq.with(TantrosRecipes.electricHeating));
                 size = 1;
                 drawer = new DrawMulti(
                         new DrawRegion("-bottom"),
-                        new DrawLiquidTile(Liquids.water, 1f),
-                        //new DrawRegion("-heater"),
-                        new DrawBubbles(){{
-                            radius = 1;
-                            spread = 2;
-                            sides = 8;
-                        }},
-                        new DrawParticles(){{
-                            color = TantrosLiquids.steam.color;
-                            reverse = true;
-                            particleSize = 2f;
-                            particles = 10;
-                            particleRad = 4f;
-                            particleLife = 60f;
-                        }},
                         new DrawDefault()
                         //new DrawWarmupRegion(),
                         //new DrawRegion("-glass")
                 );
                 squareSprite = false;
-
-                craftTime = 10f;
-
-                hasLiquids = true;
-                liquidCapacity = 5;
                 envDisabled |= Env.oxygen;
-                consumePower(120f/60f);
-                consumeLiquids(LiquidStack.with(Liquids.water, 2.5f/60f));
-
-                outputLiquids = LiquidStack.with(TantrosLiquids.steam, 5f/60f);
             }
         };
 
         copperBoiler = new Boiler("copper-boiler"){
             {
-                requirements(Category.crafting, with(Items.copper, 30, Items.metaglass, 20));
+                requirements(Category.crafting, with(Items.copper, 30, Items.oxide, 20));
                 craftEffect = Fx.none;
 
                 size = 2;
@@ -304,43 +229,6 @@ public class TantrosProduction {
                 maxEfficiency = 6f;
 
                 outputLiquids = LiquidStack.with(TantrosLiquids.steam, 10f/60f);
-            }
-        };
-
-        steamCombustor = new Boiler("steam-combustor"){
-            {
-                requirements(Category.crafting, with(Items.copper, 30, Items.lead, 15, Items.metaglass, 36));
-                craftEffect = Fx.none;
-
-                size = 2;
-                drawer = new DrawMulti(
-                        new DrawRegion("-bottom"),
-                        new DrawParticles(){{
-                            color = TantrosLiquids.steam.color;
-                            reverse = true;
-                            particleSize = 2f;
-                            particles = 20;
-                            particleRad = 8f;
-                            particleLife = 60f;
-                        }},
-                        new DrawDefault(),
-                        new DrawWarmupRegion(),
-                        new DrawGlowRegion(){{
-                            color = Liquids.hydrogen.color;
-                        }}
-                );
-                squareSprite = false;
-
-                craftTime = 120f;
-
-                hasItems = true;
-                hasLiquids = true;
-                itemCapacity = 10;
-                liquidCapacity = 10;
-                envDisabled |= Env.oxygen;
-                consumeLiquids(LiquidStack.with(Liquids.ozone, 2f / 60, Liquids.hydrogen, 3f / 60));
-
-                outputLiquids = LiquidStack.with(TantrosLiquids.steam, 10f / 60f);
             }
         };
 

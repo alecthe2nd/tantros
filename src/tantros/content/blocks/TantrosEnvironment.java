@@ -1,6 +1,7 @@
 package tantros.content.blocks;
 
 import mindustry.content.Blocks;
+import mindustry.content.Items;
 import mindustry.game.SpawnGroup;
 import mindustry.game.Team;
 import mindustry.world.Block;
@@ -8,6 +9,7 @@ import mindustry.world.blocks.environment.StaticWall;
 import tantros.content.world.TantrosUnitTypes;
 import tantros.world.blocks.environment.AmbientSpawn;
 import tantros.world.blocks.environment.TallSeaBush;
+import tantros.world.blocks.environment.TallSeaBushMindusty;
 
 public class TantrosEnvironment {
 
@@ -18,7 +20,10 @@ public class TantrosEnvironment {
             testBoatSpawn,
             redmatWall,
             bluematWall,
-            kelp
+            kelp,
+            kelp_mindusty,
+            kelp_parrallax,
+            oxideWall
     ;
 
     public static void load(){
@@ -37,8 +42,24 @@ public class TantrosEnvironment {
 
         kelp = new TallSeaBush("kelp"){{
             //bluemat.asFloor().decoration = this;
-            lobesMin = 4;
+            lobesMin = 4; //4
             lobesMax = 6;
+            levelsMin = 3;
+            levelsMax = 7;
+        }};
+
+
+        kelp_mindusty = new TallSeaBushMindusty("kelp-mindusty"){{
+            //bluemat.asFloor().decoration = this;
+            lobesMin = 6;
+            lobesMax = 6;
+            levelsMin = 5;
+            levelsMax = 5;
+        }};
+
+        oxideWall = new StaticWall("oxide-wall"){{
+            itemDrop = Items.oxide;
+            variants = 3;
         }};
     }
 

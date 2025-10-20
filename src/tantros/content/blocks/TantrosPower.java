@@ -63,7 +63,7 @@ public class TantrosPower {
 
         steamDynamo = new ConsumeGenerator("steam-dynamo"){{
             requirements(Category.power, with(Items.metaglass, 50, Items.copper, 30, Items.titanium, 25));
-            powerProduction = 33.3334f;//2000/60
+            powerProduction = 53.3334f;//3200/60
             envEnabled |= Env.underwater;
 
             effectChance = 4/60f;

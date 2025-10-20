@@ -32,7 +32,7 @@ public abstract class PipelineBlock extends LiquidTransportBlock{
         @Override
         public boolean acceptLiquid(Building source, Liquid liquid){
             return (liquids.current() == liquid || liquids.currentAmount() < 0.2f) &&
-                    (Edges.getFacingEdge(source.tile, tile).relativeTo(tile) == rotation);
+                    (!rotate || Edges.getFacingEdge(source.tile, tile).relativeTo(tile) == rotation);
         }
 
         @Override

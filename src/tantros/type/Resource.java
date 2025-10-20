@@ -5,6 +5,8 @@ import mindustry.type.*;
 
 public class Resource {
 
+    public static final Resource none = new Resource();
+
     public Seq<ItemStack> items = new Seq<>();
 
     public Seq<LiquidStack> liquids = new Seq<>();
@@ -40,5 +42,13 @@ public class Resource {
     public Resource withHeat(float heat){
         this.heat = heat;
         return this;
+    }
+
+    public void clear(){
+        this.items.clear();
+        this.liquids.clear();
+        this.payloads.clear();
+        this.heat = 0;
+        this.power = 0;
     }
 }

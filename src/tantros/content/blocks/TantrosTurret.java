@@ -1,11 +1,13 @@
 package tantros.content.blocks;
 
+import arc.graphics.Color;
 import arc.struct.EnumSet;
 import mindustry.content.Fx;
 import mindustry.content.Items;
 import mindustry.content.Liquids;
 import mindustry.entities.bullet.BasicBulletType;
 import mindustry.entities.bullet.LiquidBulletType;
+import mindustry.entities.effect.MultiEffect;
 import mindustry.entities.part.RegionPart;
 import mindustry.entities.pattern.ShootAlternate;
 import mindustry.graphics.Layer;
@@ -41,6 +43,36 @@ public class TantrosTurret {
                         hitEffect = despawnEffect = Fx.hitBulletColor;
                         hitColor = backColor = trailColor = Pal.copperAmmoBack;
                         frontColor = Pal.copperAmmoFront;
+                    }},
+                    Items.oxide, new BasicBulletType(1.5f, 6){{
+                        width = 7f;
+                        height = 9f;
+                        lifetime = 60f;
+                        ammoMultiplier = 2;
+
+                        hitEffect = despawnEffect = Fx.hitBulletColor;
+                        hitColor = backColor = trailColor = Pal.copperAmmoBack;
+                        frontColor = Pal.copperAmmoFront;
+
+                        fragBullets = 3;
+                        fragRandomSpread = 0f;
+                        fragSpread = 25f;
+                        fragVelocityMin = 1f;
+
+                        fragBullet = new BasicBulletType(3f, 3f){{
+                            lifetime = 4f;
+                            width = 11f;
+                            height = 14f;
+                            hitSize = 7f;
+                            shootEffect = new MultiEffect(Fx.shootBigColor, Fx.colorSparkBig);
+                            ammoMultiplier = 1;
+                            reloadMultiplier = 1f;
+                            hitColor = backColor = trailColor = Color.valueOf("ab8ec5");
+                            frontColor = Color.white;
+                            trailWidth = 1.8f;
+                            trailLength = 11;
+                            hitEffect = despawnEffect = Fx.hitBulletColor;
+                        }};
                     }},
                     Items.metaglass, new BasicBulletType(3.5f, 18){{
                         width = 9f;
@@ -104,7 +136,7 @@ public class TantrosTurret {
 
 
         jetstream = new LiquidTurret("jetstream"){{
-            requirements(Category.turret, with(Items.metaglass, 45, Items.lead, 75, Items.copper, 25));
+            requirements(Category.turret, with(Items.metaglass, 45, Items.oxide, 75, Items.copper, 25));
             ammo(
                     Liquids.water,new LiquidBulletType(Liquids.water){{
                         knockback = 0.9f;

@@ -4,27 +4,40 @@ package tantros.content;
 import arc.struct.Seq;
 import mindustry.content.*;
 import mindustry.game.Objectives;
+import mindustry.type.SectorPreset;
 import tantros.content.blocks.*;
+import tantros.content.planets.TantrosSectorPresets;
 import tantros.content.world.TantrosLiquids;
 import tantros.content.world.TantrosUnitTypes;
+import tantros.type.production.Produce;
 
 public class TantrosTechTree {
 
+    public static Objectives.Objective
+            copper, lead,
+            embark,
+            never
+            ;
+
     public static void load(){
+        copper = new Objectives.Produce(Items.copper);
+        lead = new Objectives.Produce(Items.lead);
+        embark = new Objectives.OnSector(TantrosSectorPresets.embark);
+        never = new Objectives.Produce(Items.dormantCyst);
         Planets.tantros.techTree = TechTree.nodeRoot("tantros", TantrosBlocks.coreShell, true, () -> {
-            TechTree.node(TantrosDistribution.copperDuct, () -> {
+            TechTree.node(TantrosDistribution.copperDuct, Seq.with(copper, embark), () -> {
                 TechTree.node(TantrosDistribution.copperDuctRouter, () -> {
                     TechTree.node(TantrosDistribution.copperOverflowDuct);
                     TechTree.node(TantrosDistribution.copperUnderflowDuct);
                 });
-                TechTree.node(TantrosDistribution.copperDuctBridge, () -> {
+                TechTree.node(TantrosDistribution.copperDuctBridge, Seq.with(new Objectives.Produce(Items.lead)), () -> {
                     TechTree.node(TantrosDistribution.copperDuctUnloader);
                 });
             });
-            TechTree.node(TantrosPayload.smallUnitAssembler, ()->{
+            TechTree.node(TantrosPayload.smallUnitAssembler, Seq.with(never), ()->{
                 TechTree.node(TantrosUnitTypes.delegate, () -> {
                     TechTree.node(TantrosPayload.smallMechAssemblyModule, ()->{
-                        TechTree.node(TantrosUnitTypes.aquas, ()->{
+                        TechTree.node(TantrosUnitTypes.flak, ()->{
 
                         });
                     });
@@ -34,32 +47,35 @@ public class TantrosTechTree {
                     });
                 });
             });
-            TechTree.node(TantrosSource.mechanicalBore, () -> {
-                TechTree.node(TantrosSource.seawaterIntake, () -> {
-                    TechTree.node(Blocks.conduit, () -> {
-                        TechTree.node(Blocks.liquidJunction, () -> {
-                            TechTree.node(Blocks.liquidRouter, () -> {
-                                TechTree.node(Blocks.bridgeConduit, () -> {
+            TechTree.node(TantrosSource.mechanicalBore, Seq.with(copper, embark), () -> {
+                TechTree.node(TantrosSource.seawaterIntake, Seq.with(never), () -> {
 
+                    TechTree.node(TantrosDistribution.copperPipeline, () -> {
+                        TechTree.node(TantrosDistribution.copperPipelineRouter, () -> {
+                            TechTree.node(TantrosDistribution.copperLiquidContainer, () -> {
+                                TechTree.node(TantrosDistribution.copperLiquidTank, () -> {
+                                    TechTree.node(TantrosDistribution.copperLiquidSilo, () -> {
+
+                                    });
                                 });
-                            });
-                        });
-                        TechTree.node(TantrosSource.deepBoreDrill, () -> {
-                            TechTree.node(TantrosSource.deepLaserDrill, () -> {
+                                TechTree.node(TantrosSource.deepBoreDrill, () -> {
+                                    TechTree.node(TantrosSource.deepLaserDrill, () -> {
 
+                                    });
+                                });
                             });
                         });
                     });
                 });
 
-                TechTree.node(TantrosSource.siltSifter, () -> {
+                TechTree.node(TantrosSource.siltSifter, Seq.with(new Objectives.Produce(Items.lead)), () -> {
 
                 });
             });
-            TechTree.node(TantrosPower.tidalTurbine, () -> {
+            TechTree.node(TantrosPower.tidalTurbine, Seq.with(copper, embark), () -> {
                 TechTree.node(TantrosBlocks.sealed_node, () -> {
                 });
-                TechTree.node(TantrosProduction.combustionHeater, () -> {
+                TechTree.node(TantrosProduction.combustionHeater, Seq.with(never), () -> {
                     TechTree.node(TantrosProduction.copperBoiler,() -> {
                         TechTree.node(TantrosPower.steamTurbine, () -> {
                             TechTree.node(TantrosPower.steamDynamo, () -> {
@@ -70,13 +86,10 @@ public class TantrosTechTree {
                     TechTree.node(TantrosProduction.hydrogenCatalysisHeater, () -> {
 
                     });
-                    TechTree.node(TantrosProduction.hydrogenCombustionHeater, () -> {
-
-                    });
                 });
             });
-            TechTree.node(TantrosProduction.metaglassAnnealer, () -> {
-                TechTree.node(TantrosProduction.graphiticDecomposer, () -> {
+            TechTree.node(TantrosProduction.metaglassAnnealer, Seq.with(copper, embark), () -> {
+                TechTree.node(TantrosProduction.graphiticDecomposer, Seq.with(never), () -> {
                     TechTree.node(TantrosProduction.siliconPressureSmelter, () -> {
 
                     });
@@ -88,41 +101,45 @@ public class TantrosTechTree {
                     });
                 });
             });
-            TechTree.node(TantrosTurret.bident, () -> {
-                TechTree.node(TantrosTurret.jetstream, () -> {
+            TechTree.node(TantrosBlocks.copperBulkhead, Seq.with(copper, embark), () -> {
+                TechTree.node(TantrosTurret.bident, Seq.with(copper, embark), () -> {
+                    TechTree.node(TantrosTurret.jetstream, Seq.with(copper, never), () -> {
+
+                    });
+                });
+                TechTree.node(TantrosBlocks.largeCopperBulkhead, () -> {
 
                 });
             });
-            TechTree.node(Items.copper, () -> {
-                TechTree.node(Items.lead, () -> {
-                    TechTree.node(Items.sand, () -> {
-                        TechTree.node(Items.metaglass, () -> {
-                            TechTree.node(Liquids.water, () -> {
-                                TechTree.node(Liquids.hydrogen, () -> {
+            TechTree.nodeProduce(Items.copper, () -> {
+                TechTree.nodeProduce(Items.oxide, () -> {
+                    TechTree.nodeProduce(Items.beryllium, () -> {
+                    });
+                });
+                TechTree.nodeProduce(Items.lead, () -> {
+                    TechTree.nodeProduce(Items.sand, () -> {
+                        TechTree.nodeProduce(Items.metaglass, () -> {
+                            TechTree.nodeProduce(Liquids.water, () -> {
+                                TechTree.nodeProduce(Liquids.hydrogen, () -> {
 
                                 });
-                                TechTree.node(Liquids.ozone, () -> {
+                                TechTree.nodeProduce(Liquids.ozone, () -> {
 
                                 });
-                                TechTree.node(TantrosLiquids.steam, () -> {
+                                TechTree.nodeProduce(TantrosLiquids.steam, () -> {
 
                                 });
-                                TechTree.node(Liquids.nitrogen, () -> {
+                                TechTree.nodeProduce(Liquids.nitrogen, () -> {
 
                                 });
                             });
                         });
                     });
-                    TechTree.node(Items.coal, () -> {
-                        TechTree.node(Items.graphite, () -> {
-                            TechTree.node(Items.silicon, () -> {
-                                TechTree.node(Items.titanium, () -> {
+                    TechTree.nodeProduce(Items.coal, () -> {
+                        TechTree.nodeProduce(Items.graphite, () -> {
+                            TechTree.nodeProduce(Items.silicon, () -> {
+                                TechTree.nodeProduce(Items.titanium, () -> {
 
-                                });
-                                TechTree.node(Items.beryllium, () -> {
-                                    TechTree.node(Items.oxide, () -> {
-
-                                    });
                                 });
                             });
                         });

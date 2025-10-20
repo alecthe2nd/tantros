@@ -1,5 +1,6 @@
 package tantros.content.blocks;
 
+import arc.Core;
 import mindustry.content.Items;
 import mindustry.type.Category;
 import mindustry.world.Block;
@@ -15,6 +16,7 @@ import tantros.world.blocks.distribution.BoostDuctBridge;
 import tantros.world.blocks.distribution.BoostDuctRouter;
 import tantros.world.blocks.distribution.liquidTransport.Pipeline;
 import tantros.world.blocks.distribution.liquidTransport.PipelineRouter;
+import tantros.world.blocks.distribution.liquidTransport.PipelineTank;
 import tantros.world.blocks.distribution.liquidTransport.PipelineVent;
 
 import static mindustry.type.ItemStack.with;
@@ -36,6 +38,9 @@ public class TantrosDistribution {
 
             copperPipeline,
             copperPipelineRouter,
+            copperLiquidContainer,
+            copperLiquidTank,
+            copperLiquidSilo,
 
             pressureReleaseVent,
 
@@ -69,7 +74,7 @@ public class TantrosDistribution {
         }};
 
         copperOverflowDuct = new OverflowDuct("copper-overflow-duct"){{
-            requirements(Category.distribution, with(Items.copper, 5));
+            requirements(Category.distribution, with(Items.copper, 5, Items.oxide, 2));
             health = 90;
             speed = 15f;
             solid = false;
@@ -78,7 +83,7 @@ public class TantrosDistribution {
         }};
 
         copperUnderflowDuct = new OverflowDuct("copper-underflow-duct"){{
-            requirements(Category.distribution, with(Items.copper, 5));
+            requirements(Category.distribution, with(Items.copper, 5, Items.oxide, 2));
             health = 90;
             speed = 15f;
             solid = false;
@@ -88,7 +93,7 @@ public class TantrosDistribution {
         }};
 
         copperDuctUnloader = new DirectionalUnloader("copper-duct-unloader") {{
-            requirements(Category.distribution, with(Items.copper, 30, Items.graphite, 10));
+            requirements(Category.distribution, with(Items.copper, 30, Items.oxide, 20, Items.graphite, 10));
             health = 120;
             speed = 15f;
             solid = false;
@@ -135,8 +140,35 @@ public class TantrosDistribution {
             speed = 80f;
         }};
 
+        copperLiquidContainer = new PipelineTank("copper-liquid-container"){{
+            requirements(Category.liquid, with(Items.copper, 30, Items.metaglass, 20));
+            health = 180;
+            speed = 80f;
+            liquidCapacity = 600;
+            size = 2;
+            squareSprite = false;
+        }};
+
+        copperLiquidTank = new PipelineTank("copper-liquid-tank"){{
+            requirements(Category.liquid, with(Items.copper, 90, Items.metaglass, 70));
+            health = 180;
+            speed = 80f;
+            liquidCapacity = 1600;
+            size = 3;
+            squareSprite = false;
+        }};
+
+        copperLiquidSilo = new PipelineTank("copper-liquid-silo"){{
+            requirements(Category.liquid, with(Items.copper, 150, Items.metaglass, 90, Items.titanium, 60));
+            health = 180;
+            speed = 80f;
+            liquidCapacity = 4000;
+            size = 4;
+            squareSprite = false;
+        }};
+
         sealedHeatRedirector = new HeatConductor("sealed-heat-redirector"){{
-            requirements(Category.crafting, with(Items.copper, 8, Items.metaglass, 3));
+            requirements(Category.crafting, with(Items.copper, 8, Items.oxide, 3));
 
             researchCostMultiplier = 10f;
 
@@ -151,7 +183,7 @@ public class TantrosDistribution {
         }};
 
         pressureReleaseVent = new PipelineVent("copper-pipeline-vent"){{
-            requirements(Category.liquid, with(Items.copper, 8, Items.metaglass, 8));
+            requirements(Category.liquid, with(Items.copper, 8, Items.metaglass, 8, Items.lead, 3));
             speed = 80f;
             leaks = true;
         }};

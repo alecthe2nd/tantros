@@ -11,6 +11,7 @@ import mindustry.Vars;
 import mindustry.graphics.Layer;
 import mindustry.world.Tile;
 import mindustry.world.blocks.environment.SeaBush;
+import tantros.graphics.DrawPsuedoParrallax;
 
 public class TallSeaBush extends SeaBush {
 
@@ -30,6 +31,7 @@ public class TallSeaBush extends SeaBush {
 
     public TallSeaBush(String name) {
         super(name);
+        layer = Layer.blockProp + 1;
     }
 
     public void drawLobes(Tile tile, int level){
@@ -39,6 +41,8 @@ public class TallSeaBush extends SeaBush {
         float height = levels * this.spacing;
         float newDist = (Mathf.pow(Mathf.clamp(tempVec2.set(Core.camera.position).dst(tile)/(height * parallaxRange)) - 1,3) + 1) * spacing * level;
         tempVec2.set(Core.camera.position).sub(tile).nor().scl(-newDist);
+        float stemX = DrawPsuedoParrallax.xHeight(tile.getX(), level * Vars.tilesize);
+        float stemY = DrawPsuedoParrallax.yHeight(tile.getY(),level * Vars.tilesize);
 
 
 
@@ -49,8 +53,8 @@ public class TallSeaBush extends SeaBush {
             var region = Angles.angleDist(ba, 225f) <= botAngle ? botRegion : this.region;
 
             Draw.rect(region,
-                    tile.worldx() - Angles.trnsx(angle, origin) + w*0.5f + tempVec2.x,
-                    tile.worldy() - Angles.trnsy(angle, origin) + tempVec2.y,
+                    stemX,
+                    stemY,
                     w, h,
                     origin*4f, h/2f,
                     angle

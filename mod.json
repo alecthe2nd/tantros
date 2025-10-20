@@ -5,5 +5,8 @@
     "minGameVersion": "150",
     "author": "Alecthe2nd, bob26786",
     "java": true,
-    "main": "tantros.Tantros"
+    "main": "tantros.Tantros",
+    "dependencies": [
+      "font-icon-lib"
+    ]
 }

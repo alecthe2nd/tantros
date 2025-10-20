@@ -5,6 +5,7 @@ import mindustry.content.Liquids;
 import mindustry.type.Item;
 import mindustry.type.ItemStack;
 import mindustry.type.LiquidStack;
+import tantros.content.world.TantrosLiquids;
 import tantros.type.Recipe;
 import tantros.type.Resource;
 
@@ -13,7 +14,11 @@ public class TantrosRecipes {
     public static Recipe
         metaglassAnnealing,
         coalDecomposition,
-        siliconPressureSmelting
+        siliconPressureSmelting,
+        coalCombustion,
+        graphiteCombustion,
+        hydrogenCombustion,
+        electricHeating
         ;
 
     public static void load(){
@@ -51,6 +56,49 @@ public class TantrosRecipes {
                     .withItems(new ItemStack(Items.silicon, 3))
             ;
             craftTime = 60f;
+        }};
+
+        coalCombustion = new Recipe("coal-combustion"){{
+            cost = new Resource()
+                    .withItems(ItemStack.with(Items.coal, 1))
+                    .withLiquids(LiquidStack.with(Liquids.ozone, 1f/60f))
+            ;
+            output = new Resource()
+                    .withHeat(5)
+            ;
+            craftTime = 120f;
+        }};
+
+        graphiteCombustion = new Recipe("graphite-combustion"){{
+            cost = new Resource()
+                    .withItems(ItemStack.with(Items.graphite, 1))
+                    .withLiquids(LiquidStack.with(Liquids.ozone, 1.2f/60f))
+            ;
+            output = new Resource()
+                    .withHeat(5f)
+            ;
+            craftTime = 100f;
+        }};
+
+        hydrogenCombustion = new Recipe("hydrogen-combustion"){{
+            cost = new Resource()
+                    .withLiquids(LiquidStack.with(Liquids.ozone, 2f / 60f, Liquids.hydrogen, 3f / 60f))
+            ;
+            output = new Resource()
+                    .withLiquids(LiquidStack.with(TantrosLiquids.steam, 10f/60f))
+                    .withHeat(5)
+            ;
+            craftTime = 60f;
+        }};
+
+        electricHeating = new Recipe("electric-heating"){{
+            cost = new Resource()
+                    .withPower(250f/60f)
+            ;
+            output = new Resource()
+                    .withHeat(2.5f)
+            ;
+            craftTime = 10f;
         }};
     }
 }

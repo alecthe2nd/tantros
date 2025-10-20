@@ -2,6 +2,7 @@ package tantros.world.blocks.distribution.liquidTransport;
 
 import arc.graphics.g2d.Draw;
 import arc.math.Mathf;
+import arc.struct.FloatSeq;
 import mindustry.Vars;
 import mindustry.content.Fx;
 import mindustry.entities.Puddles;
@@ -19,6 +20,8 @@ public abstract class LiquidTransportBlock extends LiquidBlock {
 
     /** Whether this block produces puddles at open ends.*/
     public boolean leaks = false;
+
+    private FloatSeq tempFreq = new FloatSeq();
 
     public LiquidTransportBlock(String name) {
         super(name);
@@ -40,6 +43,7 @@ public abstract class LiquidTransportBlock extends LiquidBlock {
 
         @Override
         public void updateTile() {
+            /*TODO handle undercapacity restriction in consolidated function, allowing ideal flow to be the maximum flow rate this tick*/
             idealFlow = Math.min(liquids.currentAmount(), (speed/60f) * edelta());
             if(idealFlow > 0.0001f){
                 this.doFlow();
@@ -69,12 +73,14 @@ public abstract class LiquidTransportBlock extends LiquidBlock {
 
         public float moveLiquid(Building next, Liquid liquid, float idealFlow){
             if (next.team == team && next.block.hasLiquids && liquids.get(liquid) > 0.0F) {
-                float trueFlow = Math.min(idealFlow, next.block.liquidCapacity - next.liquids.get(liquid));
+                float ofract = next.liquids.get(liquid) / next.block.liquidCapacity;
+                float fract = this.liquids.get(liquid) / this.block.liquidCapacity;
+                float flow = Math.min(Mathf.clamp(fract - ofract) * next.block.liquidCapacity, Math.min( idealFlow, this.liquids.get(liquid)));
+                //float trueFlow = Math.min(idealFlow, next.block.liquidCapacity - next.liquids.get(liquid));
 
-                if (trueFlow > 0.0F && next.acceptLiquid(this, liquid)) {
-                    next.handleLiquid(this, liquid, trueFlow);
-                    liquids.remove(liquid, trueFlow);
-                    return trueFlow;
+                if (flow > 0.0F && ofract <= fract) {
+                    this.transferLiquid(next, flow, liquid);
+                    return flow;
                 } else if (!next.block.consumesLiquid(liquid) && next.liquids.currentAmount() / next.block.liquidCapacity > 0.1F && idealFlow > 0.1F) {
                     return applyLiquidReactions(next, liquid, idealFlow);
                 }
@@ -106,34 +112,91 @@ public abstract class LiquidTransportBlock extends LiquidBlock {
             return 0;
         }
 
-        @Override
-        public void dumpLiquid(Liquid liquid) {
-            this.dumpLiquid(liquid, (this.proximity.size > 0)? this.proximity.size: 1f);
-        }
-
-
+        //Sends liquid out of all sides such that it may total more than speed, but no one output may be faster than speed.
         @Override
         public void dumpLiquid(Liquid liquid, float scaling, int outputDir) {
-
             int dump = this.cdump;
             if (!(this.liquids.get(liquid) <= 1.0E-4F)) {
                 if (!Vars.net.client() && Vars.state.isCampaign() && this.team == Vars.state.rules.defaultTeam) {
                     liquid.unlock();
                 }
-
-                for(int i = 0; i < this.proximity.size; ++i) {
-                    this.incrementDump(this.proximity.size);
-                    float idealFlow = Math.min(liquids.currentAmount(), (speed/60f) * edelta());
-                    Building other = this.proximity.get((i + dump) % this.proximity.size);
+                tempFreq.clear();
+                float sum = 0;
+                for(int i = 0; i < this.proximity.size; ++i){
+                    Building other = this.proximity.get(i);
+                    float diff = 0;
                     if (outputDir == -1 || (outputDir + this.rotation) % 4 == this.relativeTo(other)) {
                         other = other.getLiquidDestination(this, liquid);
-                        if (other != null && other.block.hasLiquids && this.canDumpLiquid(other, liquid) && other.liquids != null) {
 
-                            this.transferLiquid(other, idealFlow / (this.proximity.size - i), liquid);
+                        if (other != null && other.block.hasLiquids
+                                && this.canDumpLiquid(other, liquid) && other.liquids != null
+                                && other.acceptLiquid(this, liquid)) {
+                            float ofract = other.liquids.get(liquid) / other.block.liquidCapacity;
+                            float fract = this.liquids.get(liquid) / this.block.liquidCapacity;
+                            if (ofract < fract) {
+                                diff = (fract - ofract);
+                            }
                         }
                     }
+                    tempFreq.add(diff);
+                    sum += diff;
                 }
 
+                this.flow = 0;
+                for(int i = 0; i < this.proximity.size; ++i) {
+                    Building other = this.proximity.get(i);
+                    if(tempFreq.get(i) <= 0) continue;
+                    other = other.getLiquidDestination(this, liquid);
+                    //this neighbor's share of the currently contained fluid
+                    float maximumFlow = tempFreq.get(i) / sum * this.liquids.get(liquid);
+                    //the amount of fluid needed to bring this neighbor to a balanced pressure
+                    float wantedFlow = tempFreq.get(i) * other.block.liquidCapacity;
+
+                    float finalFlow = Math.min(idealFlow, Math.min(maximumFlow, wantedFlow));
+                    this.transferLiquid(other, finalFlow, liquid);
+                    this.flow += finalFlow;
+                }
+            }
+        }
+
+        //sends liquids out of all sides in such a way that the total output is never more than speed.
+        public void routeLiquid(Liquid liquid, float scaling, int outputDir) {
+            int dump = this.cdump;
+            if (!(this.liquids.get(liquid) <= 1.0E-4F)) {
+                if (!Vars.net.client() && Vars.state.isCampaign() && this.team == Vars.state.rules.defaultTeam) {
+                    liquid.unlock();
+                }
+                tempFreq.clear();
+                float sum = 0;
+                for(int i = 0; i < this.proximity.size; ++i){
+                    Building other = this.proximity.get(i);
+                    float diff = 0;
+                    if (outputDir == -1 || (outputDir + this.rotation) % 4 == this.relativeTo(other)) {
+                        other = other.getLiquidDestination(this, liquid);
+
+                        if (other != null && other.block.hasLiquids
+                                && this.canDumpLiquid(other, liquid) && other.liquids != null
+                                && other.acceptLiquid(this, liquid)) {
+                            float ofract = other.liquids.get(liquid) / other.block.liquidCapacity;
+                            float fract = this.liquids.get(liquid) / this.block.liquidCapacity;
+                            if (ofract < fract) {
+                                diff = (fract - ofract);
+                            }
+                        }
+                    }
+                    tempFreq.add(diff);
+                    sum += diff;
+                }
+
+                this.flow = 0;
+                for(int i = 0; i < this.proximity.size; ++i) {
+                    Building other = this.proximity.get(i);
+                    if(tempFreq.get(i) <= 0) continue;
+                    float thisFlow = tempFreq.get(i) / sum * idealFlow;
+                    other = other.getLiquidDestination(this, liquid);
+                    this.transferLiquid(other, thisFlow, liquid);
+                    this.flow += thisFlow;
+                }
             }
         }
 

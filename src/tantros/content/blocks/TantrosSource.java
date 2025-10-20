@@ -12,6 +12,7 @@ import mindustry.gen.Building;
 import mindustry.gen.Sounds;
 import mindustry.graphics.Layer;
 import mindustry.type.Category;
+import mindustry.type.ItemStack;
 import mindustry.type.LiquidStack;
 import mindustry.world.Block;
 import mindustry.world.blocks.production.GenericCrafter;
@@ -19,8 +20,12 @@ import mindustry.world.blocks.production.Pump;
 import mindustry.world.draw.*;
 import mindustry.world.meta.BlockGroup;
 import mindustry.world.meta.Env;
+import tantros.type.Resource;
+import tantros.type.production.ProduceOre;
+import tantros.type.production.SimpleProduce;
 import tantros.world.blocks.drill.CustomDrawerBeamDrill;
 import tantros.world.blocks.drill.CustomDrawerDrill;
+import tantros.world.blocks.production.ProductionBlock;
 import tantros.world.blocks.production.Sifter;
 import tantros.content.world.draw.*;
 import tantros.content.world.draw.DrawFade;
@@ -34,16 +39,42 @@ import static mindustry.type.ItemStack.with;
 public class TantrosSource {
 
     public static Block
+            testBlock,
             mechanicalBore,
             siltSifter,
             deepBoreDrill,
             deepLaserDrill,
+            boreholeDrill,
             seawaterIntake,
             effervescenceCollector,
             atmosphereIntakeTower
     ;
 
     public static void load(){
+
+        testBlock = new ProductionBlock("test-block"){{
+            requirements(Category.production, with(Items.copper, 12));
+
+            size = 2;
+            researchCost = with(Items.copper, 10);
+            productionTime = 100;
+
+            producers.add(/*new SimpleProduce(
+                    new Resource()
+                            .withItems(ItemStack.with(Items.copper, 1))
+                            .withLiquids(LiquidStack.with(Liquids.water, 1f/60f))
+                            .withPower(1f)
+            )*/ new ProduceOre(){{
+                tier = 5;
+            }});
+
+            //drawer = new DrawMulti(
+            //        new DrawDrillBit(),
+            //        new DrawDefault()
+            //);
+            //consume(new ConsumeEnv(LocalEnv.with(Liquids.hydrogen))).boost();
+            //consumeLiquid(Liquids.hydrogen, 0.25f / 60f).boost();
+        }};
 
         mechanicalBore = new CustomDrawerBeamDrill("mechanical-bore"){{
             requirements(Category.production, with(Items.copper, 12));
@@ -178,6 +209,40 @@ public class TantrosSource {
 
             //needs nitrogen to maintain an inert atmosphere within the borehole
             consumeLiquid(Liquids.nitrogen, 4f/60f);
+        }};
+
+        boreholeDrill = new ProductionBlock("borehole-drill"){{
+            requirements(Category.production, with(Items.metaglass, 120, Items.graphite, 240, Items.silicon, 105, Items.tungsten, 360));
+
+            productionTime = 30;
+
+            //moderate power usage
+            //consumePower(240f/60f);
+
+            produce(new ProduceOre(){{
+                tier = 10;
+            }});
+
+            produce(new SimpleProduce(new Resource().withLiquids(LiquidStack.with(Liquids.slag, 10))));
+
+            size = 5;
+            squareSprite = false;
+
+            drawer = new DrawMulti(
+                    new DrawRegion("-bottom"),
+                    new DrawDefault(),
+                    new DrawRegion("-rotator", 6f, true)
+                    //new DrawRegion("-top")
+            );
+
+            //space ore sources cannot be deep enough to warrant this drill
+            envEnabled ^= Env.space;
+
+            //this device is designed for underwater usage
+            envEnabled |= Env.underwater;
+
+            itemCapacity = 50;
+            liquidCapacity = 20;
         }};
 
         seawaterIntake = new GenericCrafter("seawater-intake"){{

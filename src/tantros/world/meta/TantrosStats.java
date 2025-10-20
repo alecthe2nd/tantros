@@ -78,9 +78,12 @@ public class TantrosStats {
 
     public static StatValue recipes(Seq<Recipe> recipes){
         return table -> {
+            Table stack = new Table();
             for(Recipe recipe : recipes){
-                table.add(displayRecipe(recipe)).padRight(5);
+                stack.add(displayRecipe(recipe));
+                stack.row();
             }
+            table.add(stack);
         };
     }
 
@@ -88,31 +91,38 @@ public class TantrosStats {
         Table t = new Table(Styles.grayPanel);
         t.add(Core.bundle.get("recipe." + recipe.name + ".name"));
         t.row();
-        t.add(displayResource(recipe.cost, recipe.craftTime)).left();
-        t.row();
-        t.add(displayResource(recipe.output, recipe.craftTime)).left();
-        t.row();
-        t.table((t_extra)->{
-            t_extra.table(Styles.grayPanel, (t_overheat)->{
-                t_overheat.add(Core.bundle.get("recipe.generic.overheat.title")).left();
-                t_overheat.row();
-                StatValues.number(recipe.overheat, StatUnit.heatUnits, true).display(t_overheat);
-            }).left().padRight(15);
-            t_extra.table(Styles.grayPanel, (t_eboost)->{
-                t_eboost.add(Core.bundle.get("recipe.generic.efficiency-boost.title")).left();
-                t_eboost.row();
-                t_eboost.add(
-                        Core.bundle.get("recipe.generic.efficiency-boost.format").replace("{0}", StatValues.fixValue(recipe.overheatScale * 100))
-                        + Core.bundle.get("recipe.generic.max-efficiency.format").replace("{0}", StatValues.fixValue(recipe.maxEfficiency * 100))
-                    ).left();
-            }).left();
+        t.table((t_in)-> {
+            t_in.add(Core.bundle.get("recipe.generic.cost.title")).left();
+            displayResource(t_in, recipe.cost, recipe.craftTime);
         }).left();
+        t.row();
+        t.table((t_out)-> {
+            t_out.add(Core.bundle.get("recipe.generic.output.title")).left();
+            displayResource(t_out, recipe.output, recipe.craftTime);
+        }).left();
+        if(recipe.overheat > 0) {
+            t.row();
+            t.table((t_extra) -> {
+                t_extra.table(Styles.grayPanel, (t_overheat) -> {
+                    t_overheat.add(Core.bundle.get("recipe.generic.overheat.title")).left();
+                    t_overheat.row();
+                    StatValues.number(recipe.overheat, StatUnit.heatUnits, true).display(t_overheat);
+                }).left().padRight(15);
+                t_extra.table(Styles.grayPanel, (t_eboost) -> {
+                    t_eboost.add(Core.bundle.get("recipe.generic.efficiency-boost.title")).left();
+                    t_eboost.row();
+                    t_eboost.add(
+                            Core.bundle.get("recipe.generic.efficiency-boost.format").replace("{0}", StatValues.fixValue(recipe.overheatScale * 100))
+                                    + Core.bundle.get("recipe.generic.max-efficiency.format").replace("{0}", StatValues.fixValue(recipe.maxEfficiency * 100))
+                    ).left();
+                }).left();
+            }).left();
+        }
 
         return t;
     }
 
-    public static Table displayResource(Resource resource, float craftTime){
-        Table t = new Table();
+    public static void displayResource(Table t, Resource resource, float craftTime){
 
         t.table((matter)-> {
             int count = 0;
@@ -143,6 +153,5 @@ public class TantrosStats {
                 StatValues.number(resource.power * 60, StatUnit.powerSecond).display(energy);
             }
         });
-        return t;
     }
 }
