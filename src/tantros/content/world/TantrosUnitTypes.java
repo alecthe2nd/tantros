@@ -1,5 +1,6 @@
 package tantros.content.world;
 
+import arc.graphics.Color;
 import arc.struct.Seq;
 
 import static mindustry.Vars.indexer;
@@ -29,6 +30,7 @@ public class TantrosUnitTypes {
     testBoat,
     aquas,
     flak,
+    sherd,
     roach,
     enact,
     delegate,
@@ -123,6 +125,54 @@ public class TantrosUnitTypes {
             abilities = Seq.with(
                     new MoveEffectAbility(0,0,Liquids.water.color, new MultiEffect(Fx.airBubble), 10)
             );
+        }};
+
+        sherd = new UnitType("sherd"){{
+            constructor = MechUnit::create;
+            researchCostMultiplier = 0.5f;
+            speed = 0.5f;
+            hitSize = 10f;
+            health = 550;
+            armor = 4f;
+
+            weapons.add(new Weapon("tantros-artillery-blue"){{
+                reload = 13f;
+                x = 5.5f;
+                y = 1f;
+                top = false;
+                layerOffset = -0.01f;
+                ejectEffect = Fx.casing1;
+                bullet = new BasicBulletType(3f, 9){{
+                    width = 7f;
+                    height = 9f;
+                    lifetime = 60f;
+
+                    drag = 0.01f;
+
+                    trailEffect = Fx.airBubble;
+                    trailChance = 0.05f;
+
+                    fragBullets = 6;
+                    fragRandomSpread = 30f;
+                    fragSpread = 60f;
+                    fragVelocityMin = 1f;
+
+                    fragBullet = new BasicBulletType(3f, 3f){{
+                        lifetime = 4f;
+                        width = 11f;
+                        height = 14f;
+                        hitSize = 7f;
+                        shootEffect = new MultiEffect(Fx.shootBigColor, Fx.colorSparkBig);
+                        ammoMultiplier = 1;
+                        reloadMultiplier = 1f;
+                        hitColor = backColor = trailColor = Color.valueOf("ab8ec5");
+                        frontColor = Color.white;
+                        trailWidth = 1.8f;
+                        trailLength = 11;
+                        hitEffect = despawnEffect = Fx.hitBulletColor;
+                    }};
+                }};
+            }});
         }};
 
         roach = EntityRegistry.content("roach", BurrowerUnit.class, name -> new BurrowerUnitType(name){{
