@@ -1,6 +1,7 @@
 package tantros.content.world;
 
 import arc.graphics.Color;
+import arc.struct.ObjectSet;
 import arc.struct.Seq;
 
 import static mindustry.Vars.indexer;
@@ -17,6 +18,7 @@ import mindustry.entities.effect.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.type.*;
+import mindustry.type.ammo.ItemAmmoType;
 import mindustry.type.weapons.*;
 import mindustry.world.meta.*;
 import static tantros.ai.TantrosUnitCommands.*;
@@ -31,6 +33,7 @@ public class TantrosUnitTypes {
     aquas,
     flak,
     sherd,
+    fractoid,
     roach,
     enact,
     delegate,
@@ -102,7 +105,7 @@ public class TantrosUnitTypes {
         flak = new UnitType("flak"){{
             constructor = MechUnit::create;
             researchCostMultiplier = 0.5f;
-            speed = 2f;
+            speed = 1.9f;
             hitSize = 8f;
             health = 150;
 
@@ -111,6 +114,7 @@ public class TantrosUnitTypes {
                 x = 3f;
                 y = 1f;
                 top = false;
+                layerOffset = -0.01f;
                 ejectEffect = Fx.casing1;
                 bullet = new BasicBulletType(5f, 9){{
                     width = 7f;
@@ -171,6 +175,54 @@ public class TantrosUnitTypes {
                         trailLength = 11;
                         hitEffect = despawnEffect = Fx.hitBulletColor;
                     }};
+                }};
+            }});
+        }};
+
+        fractoid = new UnitType("fractoid"){{
+            constructor = LegsUnit::create;
+            speed = 0.6f;
+            drag = 0.4f;
+            hitSize = 13f;
+            rotateSpeed = 3f;
+            health = 600;
+
+            legCount = 4;
+            legLength = 9f;
+            legForwardScl = 0.6f;
+            legMoveSpace = 1.4f;
+            lockLegBase = true;
+            //hovering = true;
+            armor = 3f;
+
+            shadowElevation = 0.2f;
+            groundLayer = Layer.legUnit - 1f;
+
+            weapons.add(new Weapon("tantros-fractoid-weapon"){{
+                top = false;
+                layerOffset = -0.01f;
+                shootY = 3f;
+                reload = 18f;
+                ejectEffect = Fx.none;
+                recoil = 1f;
+                x = 9f;
+                y = 1f;
+                //shootSound = Sounds.flame;
+
+                bullet = new ArtilleryBulletType(2f, 20, "shell"){{
+                    hitEffect = new MultiEffect(Fx.blastExplosion, Fx.airBubble, Fx.airBubble, Fx.airBubble);
+
+                    trailEffect = new MultiEffect(trailEffect, Fx.airBubble);
+
+                    knockback = 0.8f;
+                    lifetime = 120f;
+                    width = height = 14f;
+                    collides = true;
+                    collidesTiles = true;
+                    splashDamageRadius = 35f;
+                    splashDamage = 80f;
+                    backColor = Pal.bulletYellowBack;
+                    frontColor = Pal.bulletYellow;
                 }};
             }});
         }};
@@ -330,22 +382,26 @@ public class TantrosUnitTypes {
             hitSize = 9f;
             rotateSpeed = 3f;
             health = 160;
-            legStraightness = 0.3f;
             stepShake = 0f;
 
             rotateToBuilding = true;
 
+            /*legCount = 4;
+            legLength = 8f;
+            //lockLegBase = true;
+            legContinuousMove = true;
+            legBaseOffset = 1f;
+            legLengthScl = 0.96f;
+            //legForwardScl = 1.5f;*/
+
             legCount = 4;
             legLength = 6f;
-            lockLegBase = true;
-            legContinuousMove = true;
             legExtension = -2f;
-            legBaseOffset = 3f;
             legMaxLength = 1.1f;
             legMinLength = 0.2f;
-            legLengthScl = 0.96f;
-            legForwardScl = 1.1f;
-            legGroupSize = 1;
+            legForwardScl = 0.6f;
+            legMoveSpace = 1.4f;
+            lockLegBase = true;
             rippleScale = 0.1f;
 
             legMoveSpace = 1f;

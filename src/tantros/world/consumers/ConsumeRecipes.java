@@ -109,7 +109,7 @@ public class ConsumeRecipes extends Consume {
 
             for(ItemStack stack: current.cost.items) {
 
-                eff = (trigger || crafter.items.has(stack.item, Math.round(stack.amount * multiplier.get(crafter)))) ? 1f : 0f;
+                eff = Math.min((trigger || crafter.items.has(stack.item, Math.round(stack.amount * multiplier.get(crafter)))) ? 1f : 0f, eff);
 
             }
 

@@ -19,6 +19,7 @@ import mindustry.world.blocks.production.HeatCrafter;
 import mindustry.world.draw.*;
 import mindustry.world.meta.BlockGroup;
 import mindustry.world.meta.Env;
+import tantros.content.TantrosFx;
 import tantros.content.world.TantrosLiquids;
 import tantros.type.Recipe;
 import tantros.world.blocks.production.Boiler;
@@ -53,7 +54,7 @@ public class TantrosProduction {
         metaglassAnnealer = new RecipeCrafter("metaglass-annealer"){{
             requirements(Category.crafting, with(Items.copper, 80, Items.oxide, 40));
             cons = new ConsumeRecipes(Seq.with(TantrosRecipes.metaglassAnnealing));
-            craftEffect = Fx.airBubble;
+            craftEffect = TantrosFx.parallaxBubble;//Fx.airBubble;
             size = 3;
             envEnabled |= Env.underwater;
             envDisabled = Env.none;
