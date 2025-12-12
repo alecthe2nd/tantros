@@ -275,7 +275,7 @@ public class TantrosSource {
             requirements(Category.production, with(Items.metaglass, 15, Items.graphite, 5, Items.copper, 10));
             size = 3;
             envEnabled |= Env.underwater;
-            customShadow = true;
+            //customShadow = true;
 
             drawer = new DrawMulti(
                         new DrawParticles(){{
@@ -283,16 +283,17 @@ public class TantrosSource {
                             alpha = 0.4f;
                             particleSize = 2f;
                             particles = 20;
-                            particleRad = 10f;
+                            particleRad = 16f;
                             particleLife = 280f;
                         }},
+                        new DrawRegion("-rotator", 0.6f, true),
                         new DrawDefault(),
                         new DrawParticles(){{
                             color = Liquids.water.color;
                             alpha = 0.4f;
                             particleSize = 2f;
                             particles = 10;
-                            particleRad = 6f;
+                            particleRad = 10f;
                             particleLife = 140f;
                             reverse = true;
                         }}
