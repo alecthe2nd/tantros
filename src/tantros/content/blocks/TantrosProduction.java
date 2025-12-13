@@ -15,13 +15,11 @@ import mindustry.type.LiquidStack;
 import mindustry.world.Block;
 import mindustry.world.blocks.heat.HeatProducer;
 import mindustry.world.blocks.production.GenericCrafter;
-import mindustry.world.blocks.production.HeatCrafter;
 import mindustry.world.draw.*;
 import mindustry.world.meta.BlockGroup;
 import mindustry.world.meta.Env;
 import tantros.content.TantrosFx;
 import tantros.content.world.TantrosLiquids;
-import tantros.type.Recipe;
 import tantros.world.blocks.production.Boiler;
 import tantros.content.world.draw.DrawIconOverride;
 import tantros.content.world.draw.DrawLight;
@@ -31,7 +29,7 @@ import tantros.content.world.draw.output.DrawOutputLiquid;
 import tantros.content.world.draw.output.DrawOutputRegion;
 import tantros.world.blocks.production.RecipeCrafter;
 import tantros.world.consumers.ConsumeRecipes;
-import tantros.world.meta.TantrosRecipes;
+import tantros.content.recipes.TantrosRecipes;
 
 import static mindustry.type.ItemStack.with;
 
@@ -45,8 +43,8 @@ public class TantrosProduction {
             combustionHeater,
             hydrogenCatalysisHeater,
             sealedElectricHeater,
-            copperBoiler,
-            oxidizationReactor
+            oxidizationHeater,
+            copperBoiler
                     ;
 
     public static void load(){
@@ -54,7 +52,7 @@ public class TantrosProduction {
         metaglassAnnealer = new RecipeCrafter("metaglass-annealer"){{
             requirements(Category.crafting, with(Items.copper, 80, Items.oxide, 40));
             cons = new ConsumeRecipes(Seq.with(TantrosRecipes.metaglassAnnealing));
-            craftEffect = TantrosFx.parallaxBubble;//Fx.airBubble;
+            craftEffect = TantrosFx.parallaxBubble;
             size = 3;
             envEnabled |= Env.underwater;
             envDisabled = Env.none;
@@ -109,7 +107,7 @@ public class TantrosProduction {
         combustionHeater = new RecipeCrafter("combustion-heater"){
             {
                 requirements(Category.crafting, with(Items.copper, 20, Items.oxide, 10, Items.metaglass, 30));
-                craftEffect = new MultiEffect(Fx.airBubble,Fx.airBubble,Fx.airBubble,Fx.airBubble);
+                craftEffect = new MultiEffect(TantrosFx.parallaxBubble,TantrosFx.parallaxBubble,TantrosFx.parallaxBubble,TantrosFx.parallaxBubble);
                 cons = new ConsumeRecipes(Seq.with(
                         TantrosRecipes.coalCombustion,
                         TantrosRecipes.graphiteCombustion,
@@ -147,7 +145,7 @@ public class TantrosProduction {
         hydrogenCatalysisHeater = new HeatProducer("hydrogen-catalysis-heater"){
             {
                 requirements(Category.crafting, with(Items.copper, 20, Items.oxide, 10, Items.metaglass, 30));
-                craftEffect = new MultiEffect(Fx.airBubble,Fx.airBubble,Fx.airBubble,Fx.airBubble);
+                craftEffect = new MultiEffect(TantrosFx.parallaxBubble,TantrosFx.parallaxBubble,TantrosFx.parallaxBubble,TantrosFx.parallaxBubble);
 
                 size = 2;
                 drawer = new DrawMulti(
@@ -192,6 +190,35 @@ public class TantrosProduction {
             }
         };
 
+        oxidizationHeater = new RecipeCrafter("oxidization-heater"){
+            {
+                requirements(Category.crafting, with(Items.copper, 20, Items.oxide, 10, Items.metaglass, 30));
+
+                cons = new ConsumeRecipes(Seq.with(
+                        TantrosRecipes.carbonOxydization,
+                        TantrosRecipes.berylliumOxidization
+                ));
+                size = 3;
+                drawer = new DrawMulti(
+                        new DrawRegion("-bottom"),
+                        new DrawLiquidRegion(),
+                        new DrawDefault(),
+                        new DrawGlowRegion(),
+                        new DrawHeatOutput(){{
+                            glowMult = 1.8f;
+                        }}
+                );
+                itemCapacity = 30;
+                liquidCapacity = 30;
+                hasLiquids = true;
+                envDisabled |= Env.oxygen;
+
+                ambientSound = Sounds.extractLoop;
+                ambientSoundVolume = 0.08f;
+                emitLight = true;
+            }
+        };
+
         copperBoiler = new Boiler("copper-boiler"){
             {
                 requirements(Category.crafting, with(Items.copper, 30, Items.oxide, 20));
@@ -230,36 +257,6 @@ public class TantrosProduction {
                 maxEfficiency = 6f;
 
                 outputLiquids = LiquidStack.with(TantrosLiquids.steam, 10f/60f);
-            }
-        };
-
-        oxidizationReactor = new Boiler("oxidization-reactor"){
-            {
-                requirements(Category.crafting, with(Items.metaglass, 20, Items.graphite, 10, Items.beryllium, 30));
-
-                drawer = new DrawMulti(
-                        new DrawRegion("-bottom"),
-                        new DrawLiquidRegion(),
-                        new DrawDefault(),
-                        new DrawGlowRegion()
-                );
-                squareSprite = false;
-
-                size = 3;
-                craftTime = 60f * 2f;
-
-                hasItems = true;
-                hasLiquids = true;
-                itemCapacity = 30;
-                liquidCapacity = 30;
-                envDisabled |= Env.oxygen;
-
-                consumeLiquids(LiquidStack.with(Liquids.ozone, 4f / 60f, Liquids.water, 15f/60f));
-                consumeItems(with(Items.beryllium, 2));
-                consumePower(30f/60f);
-
-                outputLiquids = LiquidStack.with(TantrosLiquids.steam, 30f/60f);
-                outputItems = ItemStack.with(Items.oxide, 2);
             }
         };
 

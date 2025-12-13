@@ -9,6 +9,7 @@ import mindustry.world.Block;
 import mindustry.world.blocks.power.ConsumeGenerator;
 import mindustry.world.draw.*;
 import mindustry.world.meta.Env;
+import tantros.content.TantrosFx;
 import tantros.content.world.TantrosLiquids;
 import tantros.world.consumers.ConsumeEnv;
 import tantros.world.environment.LocalEnv;
@@ -56,7 +57,7 @@ public class TantrosPower {
             consumeLiquids(LiquidStack.with(TantrosLiquids.steam, 10f/60f));
 
             effectChance = 1/100f;
-            generateEffect = Fx.airBubble;
+            generateEffect = TantrosFx.parallaxBubble;
 
             size = 1;
         }};
@@ -68,7 +69,7 @@ public class TantrosPower {
 
             effectChance = 4/60f;
 
-            generateEffect = Fx.airBubble;
+            generateEffect = TantrosFx.parallaxBubble;
 
             drawer = new DrawMulti(
                     new DrawRegion("-bottom"),

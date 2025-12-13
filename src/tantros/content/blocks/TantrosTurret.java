@@ -1,15 +1,17 @@
 package tantros.content.blocks;
 
 import arc.graphics.Color;
+import arc.math.Interp;
+import arc.math.Mathf;
 import arc.struct.EnumSet;
-import mindustry.content.Fx;
-import mindustry.content.Items;
-import mindustry.content.Liquids;
+import mindustry.content.*;
 import mindustry.entities.bullet.BasicBulletType;
 import mindustry.entities.bullet.LiquidBulletType;
+import mindustry.entities.bullet.MissileBulletType;
 import mindustry.entities.effect.MultiEffect;
 import mindustry.entities.part.RegionPart;
 import mindustry.entities.pattern.ShootAlternate;
+import mindustry.gen.Sounds;
 import mindustry.graphics.Layer;
 import mindustry.graphics.Pal;
 import mindustry.type.Category;
@@ -17,6 +19,7 @@ import mindustry.world.Block;
 import mindustry.world.blocks.defense.turrets.ItemTurret;
 import mindustry.world.blocks.defense.turrets.LiquidTurret;
 import mindustry.world.consumers.ConsumeCoolant;
+import mindustry.world.consumers.ConsumeLiquid;
 import mindustry.world.draw.DrawTurret;
 import mindustry.world.meta.BlockFlag;
 import tantros.content.world.TantrosLiquids;
@@ -27,7 +30,8 @@ public class TantrosTurret {
 
     public static Block
             bident,
-            jetstream
+            jetstream,
+            thrust
             ;
 
     public static void load(){
@@ -165,5 +169,94 @@ public class TantrosTurret {
 
             flags = EnumSet.of(BlockFlag.turret, BlockFlag.extinguisher);
         }};
+        thrust = new ItemTurret("thrust"){
+            {
+                requirements(Category.turret, with(Items.copper, 25, Items.graphite, 20, Items.metaglass, 15));
+
+                ammo(
+                        Items.copper,  new MissileBulletType(3.7f, 10){{
+                            width = 8f;
+                            height = 8f;
+                            shrinkY = 0f;
+                            splashDamageRadius = 30f;
+                            splashDamage = 30f * 1.5f;
+                            ammoMultiplier = 1f;
+                            hitEffect = Fx.blastExplosion;
+                            despawnEffect = Fx.blastExplosion;
+
+                            status = StatusEffects.blasted;
+
+                            hitColor = backColor = trailColor = TantrosLiquids.steam.color;
+                            frontColor = Pal.copperAmmoFront;
+                        }},
+                        Items.graphite,  new MissileBulletType(3.7f, 10){{
+                            width = 8f;
+                            height = 8f;
+                            shrinkY = 0f;
+                            splashDamageRadius = 30f;
+                            splashDamage = 30f * 1.5f;
+                            ammoMultiplier = 2f;
+                            hitEffect = Fx.blastExplosion;
+                            despawnEffect = Fx.blastExplosion;
+
+                            status = StatusEffects.blasted;
+
+                            hitColor = backColor = trailColor = Pal.blastAmmoBack;
+                            frontColor = Pal.blastAmmoFront;
+                        }},
+                        Items.silicon,  new MissileBulletType(3.7f, 10){{
+                            width = 8f;
+                            height = 8f;
+                            shrinkY = 0f;
+                            splashDamageRadius = 30f;
+                            splashDamage = 30f * 1.5f;
+                            ammoMultiplier = 1f;
+                            hitEffect = Fx.blastExplosion;
+                            despawnEffect = Fx.blastExplosion;
+                            homingPower = 0.1f;
+
+                            status = StatusEffects.blasted;
+
+                            hitColor = backColor = trailColor = Pal.blastAmmoBack;
+                            frontColor = Pal.blastAmmoFront;
+                        }}
+                );
+
+                drawer = new DrawTurret(){{
+                    parts.add(new RegionPart("-missile"){{
+                                progress = PartProgress.reload.curve(Interp.pow2In);
+
+                                colorTo = new Color(1f, 1f, 1f, 0f);
+                                color = Color.white;
+                                mixColorTo = Pal.accent;
+                                mixColor = new Color(1f, 1f, 1f, 0f);
+                                outline = false;
+                                under = true;
+                                layerOffset = -0.01f;
+
+                                moves.add(new PartMove(PartProgress.warmup, 0f, 2f, 0f));
+                            }});
+                }};
+
+                recoil = 0.5f;
+                shootSound = Sounds.missile;
+
+                minWarmup = 0.94f;
+                newTargetInterval = 40f;
+                targetAir = true;
+
+                ammoPerShot = 1;
+                maxAmmo = 5;
+                size = 1;
+                reload = 50;
+                range = 200;
+                shootCone = 1f;
+                scaledHealth = 220;
+                rotateSpeed = 5f;
+
+                consume(new ConsumeLiquid(TantrosLiquids.steam, 5f / 60f));
+                limitRange();
+            }
+        };
     }
 }

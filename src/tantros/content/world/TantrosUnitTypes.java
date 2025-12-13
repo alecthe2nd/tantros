@@ -22,6 +22,8 @@ import mindustry.type.ammo.ItemAmmoType;
 import mindustry.type.weapons.*;
 import mindustry.world.meta.*;
 import static tantros.ai.TantrosUnitCommands.*;
+
+import tantros.content.TantrosFx;
 import tantros.gen.*;
 import tantros.type.units.*;
 
@@ -96,7 +98,7 @@ public class TantrosUnitTypes {
                     height = 9f;
                     lifetime = 60f;
 
-                    trailEffect = Fx.airBubble;
+                    trailEffect = TantrosFx.parallaxBubble;
                     trailChance = 0.05f;
                 }};
             }});
@@ -121,13 +123,13 @@ public class TantrosUnitTypes {
                     height = 9f;
                     lifetime = 60f;
 
-                    trailEffect = Fx.airBubble;
+                    trailEffect = TantrosFx.parallaxBubble;
                     trailChance = 0.05f;
                 }};
             }});
 
             abilities = Seq.with(
-                    new MoveEffectAbility(0,0,Liquids.water.color, new MultiEffect(Fx.airBubble), 10)
+                    new MoveEffectAbility(0,0,Liquids.water.color, new MultiEffect(TantrosFx.parallaxBubble), 10)
             );
         }};
 
@@ -153,7 +155,7 @@ public class TantrosUnitTypes {
 
                     drag = 0.01f;
 
-                    trailEffect = Fx.airBubble;
+                    trailEffect = TantrosFx.parallaxBubble;
                     trailChance = 0.05f;
 
                     fragBullets = 6;
@@ -210,9 +212,9 @@ public class TantrosUnitTypes {
                 //shootSound = Sounds.flame;
 
                 bullet = new ArtilleryBulletType(2f, 20, "shell"){{
-                    hitEffect = new MultiEffect(Fx.blastExplosion, Fx.airBubble, Fx.airBubble, Fx.airBubble);
+                    hitEffect = new MultiEffect(Fx.blastExplosion, TantrosFx.parallaxBubble, TantrosFx.parallaxBubble, TantrosFx.parallaxBubble);
 
-                    trailEffect = new MultiEffect(trailEffect, Fx.airBubble);
+                    trailEffect = new MultiEffect(trailEffect, TantrosFx.parallaxBubble);
 
                     knockback = 0.8f;
                     lifetime = 120f;
@@ -279,12 +281,12 @@ public class TantrosUnitTypes {
 
                     rangeOverride = 25f;
                     hitEffect = new MultiEffect(
-                            Fx.airBubble,
-                            Fx.airBubble,
-                            Fx.airBubble,
-                            Fx.airBubble,
-                            Fx.airBubble,
-                            Fx.airBubble
+                            TantrosFx.parallaxBubble,
+                            TantrosFx.parallaxBubble,
+                            TantrosFx.parallaxBubble,
+                            TantrosFx.parallaxBubble,
+                            TantrosFx.parallaxBubble,
+                            TantrosFx.parallaxBubble
                     );
                     speed = 0f;
                     splashDamageRadius = 44f;
@@ -331,7 +333,7 @@ public class TantrosUnitTypes {
             hittable = true;
 
             abilities = Seq.with(
-                    new MoveEffectAbility(0,0,Liquids.water.color, new MultiEffect(Fx.airBubble,Fx.airBubble,Fx.airBubble), 10)
+                    new MoveEffectAbility(0,0,Liquids.water.color, new MultiEffect(TantrosFx.parallaxBubble,TantrosFx.parallaxBubble,TantrosFx.parallaxBubble), 10)
             );
 
             weapons.add(new RepairBeamWeapon(){{

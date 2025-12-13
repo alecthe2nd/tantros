@@ -1,8 +1,7 @@
-package tantros.world.meta;
+package tantros.content.recipes;
 
 import mindustry.content.Items;
 import mindustry.content.Liquids;
-import mindustry.type.Item;
 import mindustry.type.ItemStack;
 import mindustry.type.LiquidStack;
 import tantros.content.world.TantrosLiquids;
@@ -18,7 +17,11 @@ public class TantrosRecipes {
         coalCombustion,
         graphiteCombustion,
         hydrogenCombustion,
-        electricHeating
+        electricHeating,
+        berylliumOxidization,
+        leadOxidization,
+        carbonOxydization,
+        siliconOxydization
         ;
 
     public static void load(){
@@ -58,6 +61,17 @@ public class TantrosRecipes {
             craftTime = 60f;
         }};
 
+        siliconOxydization = new Recipe("silicon-oxidization"){{
+            cost = new Resource()
+                    .withItems(ItemStack.with(Items.silicon, 3))
+                    .withLiquids(LiquidStack.with(Liquids.ozone, 3.6f/60f))
+            ;
+            output = new Resource()
+                    .withHeat(12f).withItems(ItemStack.with(Items.sand, 3))
+            ;
+            craftTime = 100f;
+        }};
+
         coalCombustion = new Recipe("coal-combustion"){{
             cost = new Resource()
                     .withItems(ItemStack.with(Items.coal, 1))
@@ -76,6 +90,17 @@ public class TantrosRecipes {
             ;
             output = new Resource()
                     .withHeat(5f)
+            ;
+            craftTime = 100f;
+        }};
+
+        carbonOxydization = new Recipe("carbon-oxidization"){{
+            cost = new Resource()
+                    .withItems(ItemStack.with(Items.graphite, 3))
+                    .withLiquids(LiquidStack.with(Liquids.ozone, 3.6f/60f))
+            ;
+            output = new Resource()
+                    .withHeat(15f)
             ;
             craftTime = 100f;
         }};
@@ -99,6 +124,28 @@ public class TantrosRecipes {
                     .withHeat(2.5f)
             ;
             craftTime = 10f;
+        }};
+
+        berylliumOxidization = new Recipe("beryllium-oxidization"){{
+            cost = new Resource()
+                    .withItems(ItemStack.with(Items.beryllium, 2))
+                    .withLiquids(LiquidStack.with(Liquids.ozone, 4f/60f))
+            ;
+            output = new Resource()
+                    .withHeat(15f).withItems(ItemStack.with(Items.oxide, 2))
+            ;
+            craftTime = 120f;
+        }};
+
+        leadOxidization = new Recipe("lead-oxidization"){{
+            cost = new Resource()
+                    .withItems(ItemStack.with(Items.lead, 3))
+                    .withLiquids(LiquidStack.with(Liquids.ozone, 6f/60f))
+            ;
+            output = new Resource()
+                    .withHeat(10f)//.withItems(ItemStack.with(Items.sand, 3))
+            ;
+            craftTime = 100f;
         }};
     }
 }

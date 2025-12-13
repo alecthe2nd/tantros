@@ -6,7 +6,7 @@ import tantros.content.blocks.*;
 import tantros.content.planets.*;
 import tantros.content.world.*;
 import tantros.gen.*;
-import tantros.world.meta.TantrosRecipes;
+import tantros.content.recipes.TantrosRecipes;
 
 public class Tantros extends Mod{
 
