@@ -77,7 +77,7 @@ public class TantrosUnitTypes {
                     smokeEffect = Fx.shootSmallSmoke;
                     ammoMultiplier = 2;
                 }};
-                shootSound = Sounds.pew;
+                shootSound = Sounds.shoot;
             }});
         }};
 

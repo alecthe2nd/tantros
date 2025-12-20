@@ -59,7 +59,7 @@ public class TantrosProduction {
             itemCapacity = 30;
             drawer = new DrawMulti(new DrawDefault(), new DrawWarmupRegion());
             fogRadius = 3;
-            ambientSound = Sounds.smelter;
+            ambientSound = Sounds.loopSmelter;
             ambientSoundVolume = 0.12f;
         }};
 
@@ -100,7 +100,7 @@ public class TantrosProduction {
             drawer = new DrawMulti(new DrawRegion("-bottom"), new DrawArcSmelt(), new DrawDefault());
             squareSprite = false;
             fogRadius = 3;
-            ambientSound = Sounds.smelter;
+            ambientSound = Sounds.loopSmelter;
             ambientSoundVolume = 0.12f;
         }};
 
@@ -137,7 +137,7 @@ public class TantrosProduction {
                 liquidCapacity = 10;
                 envDisabled |= Env.oxygen;
 
-                ambientSound = Sounds.fire;
+                ambientSound = Sounds.loopFire;
                 emitLight = true;
             }
         };
@@ -166,7 +166,7 @@ public class TantrosProduction {
                 consumeLiquids(LiquidStack.with(Liquids.hydrogen, 1f/60f));
                 consumeItems(with(Items.coal, 1));
 
-                ambientSound = Sounds.bioLoop;
+                ambientSound = Sounds.loopBio;
                 emitLight = true;
 
                 heatOutput = 5;
@@ -213,7 +213,7 @@ public class TantrosProduction {
                 hasLiquids = true;
                 envDisabled |= Env.oxygen;
 
-                ambientSound = Sounds.extractLoop;
+                ambientSound = Sounds.loopExtract;
                 ambientSoundVolume = 0.08f;
                 emitLight = true;
             }
@@ -297,7 +297,7 @@ public class TantrosProduction {
             );
             squareSprite = false;
 
-            ambientSound = Sounds.electricHum;
+            ambientSound = Sounds.loopElectricHum;
             ambientSoundVolume = 0.08f;
 
             regionRotated1 = 3;

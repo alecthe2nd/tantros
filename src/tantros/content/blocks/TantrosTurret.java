@@ -239,7 +239,7 @@ public class TantrosTurret {
                 }};
 
                 recoil = 0.5f;
-                shootSound = Sounds.missile;
+                shootSound = Sounds.shootMissile;
 
                 minWarmup = 0.94f;
                 newTargetInterval = 40f;

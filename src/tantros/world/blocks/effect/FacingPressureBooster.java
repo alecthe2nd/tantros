@@ -34,7 +34,6 @@ public class FacingPressureBooster extends Block {
         super(name);
         update = true;
         solid = true;
-        ambientSound = Sounds.machine;
         sync = true;
         ambientSoundVolume = 0.03f;
         drawArrow = true;

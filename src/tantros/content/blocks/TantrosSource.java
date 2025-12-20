@@ -263,7 +263,7 @@ public class TantrosSource {
                     }});
 
             liquidCapacity = 10f;
-            ambientSound = Sounds.extractLoop;
+            ambientSound = Sounds.loopExtract;
             ambientSoundVolume = 0.06f;
 
             outputLiquid = new LiquidStack(Liquids.water, 5f / 60f);
@@ -301,7 +301,7 @@ public class TantrosSource {
 
             pumpAmount = 3f/(60f*size*size);
             liquidCapacity = 10f;
-            ambientSound = Sounds.extractLoop;
+            ambientSound = Sounds.loopExtract;
             ambientSoundVolume = 0.06f;
 
             //consumePower(20f/60f);
