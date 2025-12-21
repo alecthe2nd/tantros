@@ -274,7 +274,7 @@ public class TantrosProduction {
             liquidCapacity = 15f;
 
             consumeLiquid(TantrosLiquids.steam, 10f / 60f);
-            consumePower(30f/60f);
+            consumePower(45f/60f);
 
             drawer = new DrawIconOverride(
                     new DrawMulti(

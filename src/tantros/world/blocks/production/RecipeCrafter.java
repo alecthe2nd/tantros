@@ -4,7 +4,6 @@ import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.TextureRegion;
 import arc.math.Mathf;
 import arc.math.geom.Geometry;
-import arc.scene.ui.layout.Table;
 import arc.struct.EnumSet;
 import arc.struct.IntSet;
 import arc.struct.Seq;
@@ -32,9 +31,6 @@ import mindustry.world.blocks.liquid.Conduit;
 import mindustry.world.draw.DrawBlock;
 import mindustry.world.draw.DrawDefault;
 import mindustry.world.meta.BlockFlag;
-import mindustry.world.meta.Stat;
-import mindustry.world.meta.StatUnit;
-import mindustry.world.meta.StatValues;
 import tantros.type.Recipe;
 import tantros.world.consumers.ConsumeRecipes;
 
@@ -42,7 +38,6 @@ import java.util.Arrays;
 
 import static mindustry.Vars.tilesize;
 import static mindustry.Vars.world;
-import static tantros.world.meta.TantrosStats.displayRecipe;
 
 public class RecipeCrafter extends Block {
 
@@ -87,7 +82,6 @@ public class RecipeCrafter extends Block {
     @Override
     public void init(){
         consume(cons);
-        consume(cons.powerCons);
 
         for(Recipe recipe: cons.recipes){
             initRecipe(recipe);
@@ -107,6 +101,9 @@ public class RecipeCrafter extends Block {
         }
 
         if(recipe.cost.power > 0){
+            if (!this.hasPower) {
+                consume(cons.powerCons);
+            }
             this.hasPower = true;
         }
 

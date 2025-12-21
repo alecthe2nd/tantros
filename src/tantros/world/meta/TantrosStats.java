@@ -2,10 +2,10 @@ package tantros.world.meta;
 
 import arc.Core;
 import arc.scene.ui.Image;
+import arc.scene.ui.Label;
 import arc.scene.ui.layout.Stack;
 import arc.scene.ui.layout.Table;
 import arc.struct.Seq;
-import arc.util.Log;
 import arc.util.Scaling;
 import mindustry.type.ItemStack;
 import mindustry.type.Liquid;
@@ -35,6 +35,8 @@ public class TantrosStats {
             maxPressure = new Stat("maxpressure", StatCat.function),
 
             recipes = new Stat("recipes", StatCat.crafting),
+
+            recipe = new Stat("recipe", StatCat.crafting),
 
             requiredEnvironments = new Stat("requiredenvironments", TantrosStats.environment);
 
@@ -80,17 +82,20 @@ public class TantrosStats {
         return table -> {
             Table stack = new Table();
             for(Recipe recipe : recipes){
-                stack.add(displayRecipe(recipe));
+                stack.add(displayNamedRecipe(recipe));
                 stack.row();
             }
             table.add(stack);
         };
     }
 
-    public static Table displayRecipe(Recipe recipe){
-        Table t = new Table(Styles.grayPanel);
-        t.add(Core.bundle.get("recipe." + recipe.name + ".name"));
-        t.row();
+    public static StatValue recipe(Recipe recipe){
+        return table -> {
+            table.add(displayRecipe(recipe));
+        };
+    }
+
+    public static void addRecipeTable(Table t, Recipe recipe){
         t.table((t_in)-> {
             t_in.add(Core.bundle.get("recipe.generic.cost.title")).left();
             displayResource(t_in, recipe.cost, recipe.craftTime);
@@ -102,7 +107,8 @@ public class TantrosStats {
         }).left();
         if(recipe.overheat > 0) {
             t.row();
-            t.table((t_extra) -> {
+            recipe.displayOverheat(t);
+            /*t.table((t_extra) -> {
                 t_extra.table(Styles.grayPanel, (t_overheat) -> {
                     t_overheat.add(Core.bundle.get("recipe.generic.overheat.title")).left();
                     t_overheat.row();
@@ -116,9 +122,23 @@ public class TantrosStats {
                                     + Core.bundle.get("recipe.generic.max-efficiency.format").replace("{0}", StatValues.fixValue(recipe.maxEfficiency * 100))
                     ).left();
                 }).left();
-            }).left();
+            }).left();*/
         }
+    }
 
+    public static Table displayRecipe(Recipe recipe){
+        Table t = new Table(Styles.grayPanel);
+        addRecipeTable(t, recipe);
+        return t;
+    }
+
+    public static Table displayNamedRecipe(Recipe recipe){
+        Table t = new Table(Styles.grayPanel);
+        Label name = new Label(recipe.localizedName);
+        t.add(name);
+        withTooltip(name, recipe, true);
+        t.row();
+        addRecipeTable(t, recipe);
         return t;
     }
 

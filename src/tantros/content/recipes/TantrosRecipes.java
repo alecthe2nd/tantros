@@ -12,6 +12,8 @@ public class TantrosRecipes {
 
     public static Recipe
         metaglassAnnealing,
+        surgeAnnealing,
+        slagSurgeAnnealing,
         coalDecomposition,
         siliconPressureSmelting,
         coalCombustion,
@@ -32,6 +34,32 @@ public class TantrosRecipes {
             ;
             output = new Resource()
                    .withItems(new ItemStack(Items.metaglass, 4))
+            ;
+            overheat = 5;
+            craftTime = 120f;
+        }};
+
+        surgeAnnealing = new Recipe("surge-annealing"){{
+            cost = new Resource()
+                    .withItems(ItemStack.with(Items.copper, 3, Items.lead, 4, Items.titanium, 2, Items.silicon, 3))
+                    .withPower(4f);
+            ;
+            output = new Resource()
+                    .withItems(new ItemStack(Items.surgeAlloy, 1))
+            ;
+            overheat = 5;
+            craftTime = 120f;
+        }};
+
+
+        slagSurgeAnnealing = new Recipe("slag-surge-annealing"){{
+            cost = new Resource()
+                    .withItems(ItemStack.with(Items.silicon, 3))
+                    .withLiquids(LiquidStack.with(Liquids.slag, 2f/3f))
+                    .withPower(4f);
+            ;
+            output = new Resource()
+                    .withItems(new ItemStack(Items.surgeAlloy, 1))
             ;
             overheat = 5;
             craftTime = 120f;
@@ -110,18 +138,18 @@ public class TantrosRecipes {
                     .withLiquids(LiquidStack.with(Liquids.ozone, 2f / 60f, Liquids.hydrogen, 3f / 60f))
             ;
             output = new Resource()
-                    .withLiquids(LiquidStack.with(TantrosLiquids.steam, 10f/60f))
-                    .withHeat(5)
+                    .withLiquids(LiquidStack.with(Liquids.water, 5f/60f))
+                    .withHeat(5f)
             ;
             craftTime = 60f;
         }};
 
         electricHeating = new Recipe("electric-heating"){{
             cost = new Resource()
-                    .withPower(250f/60f)
+                    .withPower(100f/60f)
             ;
             output = new Resource()
-                    .withHeat(2.5f)
+                    .withHeat(3f)
             ;
             craftTime = 10f;
         }};

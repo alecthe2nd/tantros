@@ -42,7 +42,7 @@ public class TantrosPower {
 
         steamTurbine = new ConsumeGenerator("steam-turbine"){{
             requirements(Category.power, with(Items.metaglass, 15, Items.copper, 10, Items.lead, 8));
-            powerProduction = 360f/60f;
+            powerProduction = 80f/60f;
             envEnabled |= Env.underwater;
 
             drawer = new DrawMulti(
@@ -64,7 +64,7 @@ public class TantrosPower {
 
         steamDynamo = new ConsumeGenerator("steam-dynamo"){{
             requirements(Category.power, with(Items.metaglass, 50, Items.copper, 30, Items.titanium, 25));
-            powerProduction = 53.3334f;//3200/60
+            powerProduction = 960/60f;
             envEnabled |= Env.underwater;
 
             effectChance = 4/60f;
