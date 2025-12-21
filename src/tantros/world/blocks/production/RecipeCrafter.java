@@ -22,6 +22,7 @@ import mindustry.ai.UnitCommand;
 import mindustry.content.Fx;
 import mindustry.content.Items;
 import mindustry.content.Liquids;
+import mindustry.ctype.ContentType;
 import mindustry.entities.Effect;
 import mindustry.entities.units.BuildPlan;
 import mindustry.gen.Building;
@@ -85,7 +86,13 @@ public class RecipeCrafter extends Block {
         drawArrow = false;
         configurable = true;
         config(Recipe.class, (RecipeCrafter.RecipeCrafterBuild build, Recipe recipe) -> build.currentRecipe = recipe);
-        configClear((RecipeCrafter.RecipeCrafterBuild build) -> build.currentRecipe = null);
+        configClear((RecipeCrafter.RecipeCrafterBuild build) -> {
+            Recipe next = cons.recipes.find(build::isValid);
+            if(next != null){
+                build.currentRecipe = next;
+                build.progress = 0;
+            }
+        });
     }
 
     @Override
@@ -405,6 +412,7 @@ public class RecipeCrafter extends Block {
             write.f(progress);
             write.f(warmup);
             write.f(outputHeat);
+            write.s(currentRecipe == null ? -1 : currentRecipe.id);
         }
 
         @Override
@@ -413,6 +421,7 @@ public class RecipeCrafter extends Block {
             progress = read.f();
             warmup = read.f();
             outputHeat = read.f();
+            currentRecipe = Vars.content.getByID(ContentType.error, read.s());
         }
 
         public float warmupTarget(){
@@ -542,10 +551,10 @@ public class RecipeCrafter extends Block {
         @Override
         public void buildConfiguration(Table table){
 
-            if(currentRecipe == null){
-                deselect();
-                return;
-            }
+            //if(currentRecipe == null){
+            //    deselect();
+            //    return;
+            //}
 
             var group = new ButtonGroup<ImageButton>();
             group.setMinCheckCount(0);
