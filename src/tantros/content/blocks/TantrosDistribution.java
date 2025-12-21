@@ -52,7 +52,7 @@ public class TantrosDistribution {
         copperDuctRouter = new DuctRouter("copper-duct-router"){{
             requirements(Category.distribution, with(Items.copper, 3));
             health = 90;
-            speed = 15f;
+            speed = 10f;
             regionRotated1 = 1;
             solid = false;
             researchCost = with(Items.copper, 5);
@@ -61,14 +61,14 @@ public class TantrosDistribution {
         copperDuctBridge = new DuctBridge("copper-duct-bridge"){{
             requirements(Category.distribution, with(Items.copper, 3));
             health = 90;
-            speed = 15f;
+            speed = 10f;
             researchCost = with(Items.copper, 5, Items.lead, 5);
         }};
 
         copperDuct = new Duct("copper-duct"){{
             requirements(Category.distribution, with(Items.copper, 1));
             health = 90;
-            speed = 15f;
+            speed = 10f;
             researchCost = with(Items.copper, 5);
             bridgeReplacement = copperDuctBridge;
         }};
@@ -76,7 +76,7 @@ public class TantrosDistribution {
         copperOverflowDuct = new OverflowDuct("copper-overflow-duct"){{
             requirements(Category.distribution, with(Items.copper, 5, Items.oxide, 2));
             health = 90;
-            speed = 15f;
+            speed = 10f;
             solid = false;
             squareSprite = false;
             //researchCostMultiplier = 1.5f;
@@ -85,7 +85,7 @@ public class TantrosDistribution {
         copperUnderflowDuct = new OverflowDuct("copper-underflow-duct"){{
             requirements(Category.distribution, with(Items.copper, 5, Items.oxide, 2));
             health = 90;
-            speed = 15f;
+            speed = 10f;
             solid = false;
             squareSprite = false;
             //researchCostMultiplier = 1.5f;
@@ -95,7 +95,7 @@ public class TantrosDistribution {
         copperDuctUnloader = new DirectionalUnloader("copper-duct-unloader") {{
             requirements(Category.distribution, with(Items.copper, 30, Items.oxide, 20, Items.graphite, 10));
             health = 120;
-            speed = 15f;
+            speed = 10f;
             solid = false;
             underBullets = true;
             regionRotated1 = 1;
@@ -114,7 +114,7 @@ public class TantrosDistribution {
         pneumaticDuctBridge = new BoostDuctBridge("pneumatic-duct-bridge"){{
             requirements(Category.distribution, with(Items.metaglass, 5, Items.graphite, 4));
             health = 90;
-            speed = 10f;
+            speed = 7.5f;
             researchCost = with(Items.copper, 5, Items.lead, 5);
             max_pressure = 20;
         }};
@@ -122,7 +122,7 @@ public class TantrosDistribution {
         pneumaticDuct = new BoostDuct("pneumatic-duct"){{
             requirements(Category.distribution, with(Items.metaglass, 2, Items.graphite, 1));
             health = 180;
-            speed = 10f;
+            speed = 7.5f;
             bridgeReplacement = copperDuctBridge;
             max_pressure = 20;
         }};

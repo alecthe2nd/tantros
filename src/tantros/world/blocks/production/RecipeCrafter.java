@@ -1,9 +1,15 @@
 package tantros.world.blocks.production;
 
+import arc.Graphics;
 import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.TextureRegion;
 import arc.math.Mathf;
 import arc.math.geom.Geometry;
+import arc.scene.style.Drawable;
+import arc.scene.style.TextureRegionDrawable;
+import arc.scene.ui.ButtonGroup;
+import arc.scene.ui.ImageButton;
+import arc.scene.ui.layout.Table;
 import arc.struct.EnumSet;
 import arc.struct.IntSet;
 import arc.struct.Seq;
@@ -12,26 +18,33 @@ import arc.util.Time;
 import arc.util.io.Reads;
 import arc.util.io.Writes;
 import mindustry.Vars;
+import mindustry.ai.UnitCommand;
 import mindustry.content.Fx;
+import mindustry.content.Items;
+import mindustry.content.Liquids;
 import mindustry.entities.Effect;
 import mindustry.entities.units.BuildPlan;
 import mindustry.gen.Building;
 import mindustry.gen.Icon;
+import mindustry.gen.Player;
 import mindustry.gen.Sounds;
 import mindustry.logic.LAccess;
 import mindustry.type.Item;
 import mindustry.type.ItemStack;
 import mindustry.type.LiquidStack;
+import mindustry.ui.Styles;
 import mindustry.world.Block;
 import mindustry.world.Tile;
 import mindustry.world.blocks.heat.HeatBlock;
 import mindustry.world.blocks.heat.HeatConductor;
 import mindustry.world.blocks.heat.HeatConsumer;
 import mindustry.world.blocks.liquid.Conduit;
+import mindustry.world.blocks.units.Reconstructor;
 import mindustry.world.draw.DrawBlock;
 import mindustry.world.draw.DrawDefault;
 import mindustry.world.meta.BlockFlag;
 import tantros.type.Recipe;
+import tantros.world.blocks.units.unitAssembly.BranchableUnitAssembler;
 import tantros.world.consumers.ConsumeRecipes;
 
 import java.util.Arrays;
@@ -70,6 +83,9 @@ public class RecipeCrafter extends Block {
         ambientSoundVolume = 0.03f;
         flags = EnumSet.of(BlockFlag.factory);
         drawArrow = false;
+        configurable = true;
+        config(Recipe.class, (RecipeCrafter.RecipeCrafterBuild build, Recipe recipe) -> build.currentRecipe = recipe);
+        configClear((RecipeCrafter.RecipeCrafterBuild build) -> build.currentRecipe = null);
     }
 
     @Override
@@ -273,11 +289,11 @@ public class RecipeCrafter extends Block {
                 }
             }else{
                 warmup = Mathf.approachDelta(warmup, 0f, warmupSpeed);
-                Recipe next = cons.recipes.find(this::isValid);
-                if(next != null){
-                    currentRecipe = next;
-                    progress = 0;
-                }
+                //Recipe next = cons.recipes.find(this::isValid);
+                //if(next != null){
+                //    currentRecipe = next;
+                //    progress = 0;
+                //}
             }
 
             //TODO may look bad, revert to edelta() if so
@@ -500,6 +516,56 @@ public class RecipeCrafter extends Block {
             }
 
             return heat;
+        }
+
+        @Override
+        public boolean shouldShowConfigure(Player player){
+            return cons.recipes.size > 1;
+        }
+
+        public Drawable recipeIcon(Recipe recipe){
+            if(!recipe.output.items.isEmpty()){
+                return new TextureRegionDrawable(recipe.output.items.first().item.uiIcon);
+            }
+            if(!recipe.output.liquids.isEmpty()){
+                return new TextureRegionDrawable(recipe.output.liquids.first().liquid.uiIcon);
+            }
+            if(recipe.output.power > 0){
+                return new TextureRegionDrawable(Icon.power);
+            }
+            if(recipe.output.heat > 0){
+                return new TextureRegionDrawable(Icon.waves);
+            }
+            return new TextureRegionDrawable(Icon.cancel);
+        }
+
+        @Override
+        public void buildConfiguration(Table table){
+
+            if(currentRecipe == null){
+                deselect();
+                return;
+            }
+
+            var group = new ButtonGroup<ImageButton>();
+            group.setMinCheckCount(0);
+            int i = 0, columns = 4;
+
+            table.background(Styles.black6);
+
+            var list = cons.recipes;
+            for(var item : list){
+                ImageButton button = table.button(this.recipeIcon(item), Styles.clearNoneTogglei, 40f, () -> {
+                    configure(item);
+                    deselect();
+                }).tooltip(item.localizedName).group(group).get();
+
+                button.update(() -> button.setChecked(currentRecipe == item));
+
+                if(++i % columns == 0){
+                    table.row();
+                }
+            }
         }
     }
 }

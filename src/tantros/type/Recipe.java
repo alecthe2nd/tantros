@@ -7,6 +7,7 @@ import arc.graphics.Pixmap;
 import arc.graphics.Pixmaps;
 import arc.graphics.g2d.PixmapRegion;
 import arc.graphics.g2d.TextureRegion;
+import arc.scene.style.TextureRegionDrawable;
 import arc.scene.ui.layout.Table;
 import arc.struct.Seq;
 import arc.util.Time;
@@ -123,10 +124,10 @@ public class Recipe extends UnlockableContent {
 
     @Override
     public String toString(){
-        return localizedName;
+        return this.localizedName;
     }
-
-
+*/
+    /*
     @Override
     public void createIcons(MultiPacker packer){
         super.createIcons(packer);
