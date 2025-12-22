@@ -7,6 +7,8 @@ import arc.scene.ui.layout.Stack;
 import arc.scene.ui.layout.Table;
 import arc.struct.Seq;
 import arc.util.Scaling;
+import mindustry.gen.Icon;
+import mindustry.graphics.Pal;
 import mindustry.type.ItemStack;
 import mindustry.type.Liquid;
 import mindustry.type.LiquidStack;
@@ -82,8 +84,12 @@ public class TantrosStats {
         return table -> {
             Table stack = new Table();
             for(Recipe recipe : recipes){
-                stack.add(displayNamedRecipe(recipe));
-                stack.row();
+                if(recipe.unlockedNow()) {
+                    stack.add(displayNamedRecipe(recipe));
+                    stack.row();
+                } else{
+                    stack.image(Icon.lock).color(Pal.darkerGray).size(40);
+                }
             }
             table.add(stack);
         };

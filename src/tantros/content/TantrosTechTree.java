@@ -7,6 +7,7 @@ import mindustry.game.Objectives;
 import mindustry.type.SectorPreset;
 import tantros.content.blocks.*;
 import tantros.content.planets.TantrosSectorPresets;
+import tantros.content.recipes.TantrosRecipes;
 import tantros.content.world.TantrosLiquids;
 import tantros.content.world.TantrosUnitTypes;
 import tantros.type.production.Produce;
@@ -27,11 +28,15 @@ public class TantrosTechTree {
         Planets.tantros.techTree = TechTree.nodeRoot("tantros", TantrosBlocks.coreShell, true, () -> {
             TechTree.node(TantrosDistribution.copperDuct, Seq.with(copper, embark), () -> {
                 TechTree.node(TantrosDistribution.copperDuctRouter, () -> {
-                    TechTree.node(TantrosDistribution.copperOverflowDuct);
-                    TechTree.node(TantrosDistribution.copperUnderflowDuct);
+                    TechTree.node(TantrosDistribution.copperOverflowDuct, Seq.with(
+                            new Objectives.SectorComplete(TantrosSectorPresets.embark)
+                    ),()->{});
+                    TechTree.node(TantrosDistribution.copperUnderflowDuct, Seq.with(
+                            new Objectives.SectorComplete(TantrosSectorPresets.embark)
+                    ),()->{});
                 });
                 TechTree.node(TantrosDistribution.copperDuctBridge, Seq.with(new Objectives.Produce(Items.lead)), () -> {
-                    TechTree.node(TantrosDistribution.copperDuctUnloader);
+                    //TechTree.node(TantrosDistribution.copperDuctUnloader);
                 });
             });
             TechTree.node(TantrosPayload.smallUnitAssembler, Seq.with(never), ()->{
@@ -118,19 +123,23 @@ public class TantrosTechTree {
                 });
                 TechTree.nodeProduce(Items.lead, () -> {
                     TechTree.nodeProduce(Items.sand, () -> {
-                        TechTree.nodeProduce(Items.metaglass, () -> {
-                            TechTree.nodeProduce(Liquids.water, () -> {
-                                TechTree.nodeProduce(Liquids.hydrogen, () -> {
+                        TechTree.node(TantrosRecipes.metaglassAnnealing, Seq.with(
+                                new Objectives.Research(TantrosProduction.metaglassAnnealer)
+                        ), () -> {
+                            TechTree.nodeProduce(Items.metaglass, () -> {
+                                TechTree.nodeProduce(Liquids.water, () -> {
+                                    TechTree.nodeProduce(Liquids.hydrogen, () -> {
 
-                                });
-                                TechTree.nodeProduce(Liquids.ozone, () -> {
+                                    });
+                                    TechTree.nodeProduce(Liquids.ozone, () -> {
 
-                                });
-                                TechTree.nodeProduce(TantrosLiquids.steam, () -> {
+                                    });
+                                    TechTree.nodeProduce(TantrosLiquids.steam, () -> {
 
-                                });
-                                TechTree.nodeProduce(Liquids.nitrogen, () -> {
+                                    });
+                                    TechTree.nodeProduce(Liquids.nitrogen, () -> {
 
+                                    });
                                 });
                             });
                         });

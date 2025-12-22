@@ -51,7 +51,11 @@ public class TantrosProduction {
 
         metaglassAnnealer = new RecipeCrafter("metaglass-annealer"){{
             requirements(Category.crafting, with(Items.copper, 80, Items.oxide, 40));
-            cons = new ConsumeRecipes(Seq.with(TantrosRecipes.metaglassAnnealing));
+            cons = new ConsumeRecipes(Seq.with(
+                    TantrosRecipes.metaglassAnnealing,
+                    TantrosRecipes.surgeAnnealing,
+                    TantrosRecipes.slagSurgeAnnealing
+            ));
             craftEffect = TantrosFx.parallaxBubble;
             size = 3;
             envEnabled |= Env.underwater;

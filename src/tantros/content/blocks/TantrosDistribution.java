@@ -62,7 +62,7 @@ public class TantrosDistribution {
             requirements(Category.distribution, with(Items.copper, 3));
             health = 90;
             speed = 10f;
-            researchCost = with(Items.copper, 5, Items.lead, 5);
+            researchCost = with(Items.copper, 5);
         }};
 
         copperDuct = new Duct("copper-duct"){{

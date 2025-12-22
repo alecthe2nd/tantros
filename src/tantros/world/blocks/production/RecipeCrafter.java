@@ -533,6 +533,9 @@ public class RecipeCrafter extends Block {
         }
 
         public Drawable recipeIcon(Recipe recipe){
+            if(recipe.uiIcon.found()){
+                return new TextureRegionDrawable(recipe.uiIcon);
+            }
             if(!recipe.output.items.isEmpty()){
                 return new TextureRegionDrawable(recipe.output.items.first().item.uiIcon);
             }
