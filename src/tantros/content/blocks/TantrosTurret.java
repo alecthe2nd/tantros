@@ -5,6 +5,7 @@ import arc.math.Interp;
 import arc.math.Mathf;
 import arc.struct.EnumSet;
 import mindustry.content.*;
+import mindustry.entities.Effect;
 import mindustry.entities.bullet.BasicBulletType;
 import mindustry.entities.bullet.LiquidBulletType;
 import mindustry.entities.bullet.MissileBulletType;
@@ -22,6 +23,7 @@ import mindustry.world.consumers.ConsumeCoolant;
 import mindustry.world.consumers.ConsumeLiquid;
 import mindustry.world.draw.DrawTurret;
 import mindustry.world.meta.BlockFlag;
+import mindustry.world.meta.Env;
 import tantros.content.world.TantrosLiquids;
 
 import static mindustry.type.ItemStack.with;
@@ -31,7 +33,8 @@ public class TantrosTurret {
     public static Block
             bident,
             jetstream,
-            thrust
+            thrust,
+            puncture
             ;
 
     public static void load(){
@@ -258,5 +261,68 @@ public class TantrosTurret {
                 limitRange();
             }
         };
+
+        puncture = new ItemTurret("puncture"){{
+            requirements(Category.turret, with(Items.oxide, 35, Items.metaglass,50, Items.graphite, 75));
+
+            Effect sfe = new MultiEffect(Fx.shootBigColor, Fx.colorSparkBig);
+            drawer = new DrawTurret("sealed-");
+            ammo(
+                    Items.metaglass, new BasicBulletType(7.5f, 14){{
+                        width = 12f;
+                        hitSize = 7f;
+                        height = 20f;
+                        shootEffect = sfe;
+                        smokeEffect = Fx.shootBigSmoke;
+                        ammoMultiplier = 1;
+                        pierceCap = 2;
+                        pierce = true;
+                        pierceBuilding = true;
+                        hitColor = backColor = trailColor = Pal.glassAmmoFront;
+                        frontColor = Color.white;
+                        trailWidth = 2.1f;
+                        trailLength = 10;
+                        hitEffect = despawnEffect = Fx.hitBulletColor;
+                        //buildingDamageMultiplier = 0.3f;
+                    }},
+                    Items.graphite, new BasicBulletType(8f, 12){{
+                        width = 13f;
+                        height = 19f;
+                        hitSize = 7f;
+                        shootEffect = sfe;
+                        smokeEffect = Fx.shootBigSmoke;
+                        ammoMultiplier = 2;
+                        reloadMultiplier = 1f;
+                        pierceCap = 4;
+                        pierce = true;
+                        pierceBuilding = true;
+                        hitColor = backColor = trailColor = Pal.graphiteAmmoFront;
+                        frontColor = Color.white;
+                        trailWidth = 2.2f;
+                        trailLength = 11;
+                        hitEffect = despawnEffect = Fx.hitBulletColor;
+                        rangeChange = 40f;
+                        //buildingDamageMultiplier = 0.3f;
+                    }}
+            );
+
+            shootSound = Sounds.shootBreach;
+
+            targetUnderBlocks = false;
+            shake = 1f;
+            ammoPerShot = 1;
+            shootY = -2;
+            size = 2;
+            envEnabled |= Env.space;
+            reload = 40f;
+            recoil = 2f;
+            range = 90;
+            shootCone = 3f;
+            scaledHealth = 180;
+            rotateSpeed = 1.5f;
+            researchCostMultiplier = 0.05f;
+            buildTime = 60f * 9f;
+            limitRange(12f);
+        }};
     }
 }

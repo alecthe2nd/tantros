@@ -15,7 +15,7 @@ import tantros.type.production.Produce;
 public class TantrosTechTree {
 
     public static Objectives.Objective
-            copper, lead,
+            copper, lead, graphite, steam,
             embark,
             never
             ;
@@ -23,6 +23,8 @@ public class TantrosTechTree {
     public static void load(){
         copper = new Objectives.Produce(Items.copper);
         lead = new Objectives.Produce(Items.lead);
+        graphite = new Objectives.Produce(Items.graphite);
+        steam = new Objectives.Produce(TantrosLiquids.steam);
         embark = new Objectives.OnSector(TantrosSectorPresets.embark);
         never = new Objectives.Produce(Items.dormantCyst);
         Planets.tantros.techTree = TechTree.nodeRoot("tantros", TantrosBlocks.coreShell, true, () -> {
@@ -108,6 +110,16 @@ public class TantrosTechTree {
             });
             TechTree.node(TantrosBlocks.copperBulkhead, Seq.with(copper, embark), () -> {
                 TechTree.node(TantrosTurret.bident, Seq.with(copper, embark), () -> {
+                    TechTree.node(TantrosTurret.puncture, Seq.with(
+                            copper, graphite
+                    ), () -> {
+
+                    });
+                    TechTree.node(TantrosTurret.thrust, Seq.with(
+                            copper, graphite, steam
+                    ), () -> {
+
+                    });
                     TechTree.node(TantrosTurret.jetstream, Seq.with(copper, never), () -> {
 
                     });

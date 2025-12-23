@@ -1,5 +1,6 @@
 package tantros;
 
+import mindustry.Vars;
 import mindustry.mod.*;
 import tantros.ai.TantrosUnitCommands;
 import tantros.content.blocks.*;
@@ -25,5 +26,9 @@ public class Tantros extends Mod{
         TantrosOverride.override();
     }
 
-
+    @Override
+    public void init() {
+        super.init();
+        Vars.ui.settings.graphics.checkPref("fast-parallax", Vars.mobile);
+    }
 }

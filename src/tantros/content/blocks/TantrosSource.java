@@ -79,7 +79,7 @@ public class TantrosSource {
         mechanicalBore = new CustomDrawerBeamDrill("mechanical-bore"){{
             requirements(Category.production, with(Items.copper, 12));
 
-            drillTime = 180f;
+            drillTime = 240f;
             tier = 2;
             size = 2;
             range = 2;
@@ -94,7 +94,7 @@ public class TantrosSource {
         }};
 
         siltSifter = new Sifter("silt-sifter"){{
-            requirements(Category.production, with(Items.copper, 16));
+            requirements(Category.production, with(Items.copper, 16, Items.oxide, 8));
             tier = 1;
             drillTime = 600;
             size = 2;

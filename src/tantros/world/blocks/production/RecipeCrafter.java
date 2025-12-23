@@ -567,15 +567,17 @@ public class RecipeCrafter extends Block {
 
             var list = cons.recipes;
             for(var item : list){
-                ImageButton button = table.button(this.recipeIcon(item), Styles.clearNoneTogglei, 40f, () -> {
-                    configure(item);
-                    deselect();
-                }).tooltip(item.localizedName).group(group).get();
+                if(item.unlockedNow()) {
+                    ImageButton button = table.button(this.recipeIcon(item), Styles.clearNoneTogglei, 40f, () -> {
+                        configure(item);
+                        deselect();
+                    }).tooltip(item.localizedName).group(group).get();
 
-                button.update(() -> button.setChecked(currentRecipe == item));
+                    button.update(() -> button.setChecked(currentRecipe == item));
 
-                if(++i % columns == 0){
-                    table.row();
+                    if (++i % columns == 0) {
+                        table.row();
+                    }
                 }
             }
         }

@@ -110,6 +110,7 @@ public class TantrosUnitTypes {
             speed = 1.9f;
             hitSize = 8f;
             health = 150;
+            maxRange = 35;
 
             weapons.add(new Weapon("tantros-flak-weapon"){{
                 reload = 13f;
