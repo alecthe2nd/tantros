@@ -10,7 +10,6 @@ import mindustry.entities.effect.MultiEffect;
 import mindustry.gen.Sounds;
 import mindustry.graphics.Pal;
 import mindustry.type.Category;
-import mindustry.type.ItemStack;
 import mindustry.type.LiquidStack;
 import mindustry.world.Block;
 import mindustry.world.blocks.heat.HeatProducer;
@@ -199,7 +198,7 @@ public class TantrosProduction {
                 requirements(Category.crafting, with(Items.copper, 20, Items.oxide, 10, Items.metaglass, 30));
 
                 cons = new ConsumeRecipes(Seq.with(
-                        TantrosRecipes.carbonOxydization,
+                        TantrosRecipes.carbonOxidization,
                         TantrosRecipes.berylliumOxidization
                 ));
                 size = 3;

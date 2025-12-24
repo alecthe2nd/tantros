@@ -112,7 +112,7 @@ public class TantrosTurret {
             shoot = new ShootAlternate(3.5f);
 
             recoils = 2;
-            drawer = new DrawTurret(){{
+            drawer = new DrawTurret("sealed-"){{
                 for(int i = 0; i < 2; i ++){
                     int f = i;
                     parts.add(new RegionPart("-barrel-" + (i == 0 ? "l" : "r")){{
@@ -144,6 +144,8 @@ public class TantrosTurret {
 
         jetstream = new LiquidTurret("jetstream"){{
             requirements(Category.turret, with(Items.metaglass, 45, Items.oxide, 75, Items.copper, 25));
+            drawer = new DrawTurret("sealed-");
+
             ammo(
                     Liquids.water,new LiquidBulletType(Liquids.water){{
                         knockback = 0.9f;
@@ -225,7 +227,7 @@ public class TantrosTurret {
                         }}
                 );
 
-                drawer = new DrawTurret(){{
+                drawer = new DrawTurret("sealed-"){{
                     parts.add(new RegionPart("-missile"){{
                                 progress = PartProgress.reload.curve(Interp.pow2In);
 

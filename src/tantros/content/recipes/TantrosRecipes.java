@@ -4,7 +4,6 @@ import mindustry.content.Items;
 import mindustry.content.Liquids;
 import mindustry.type.ItemStack;
 import mindustry.type.LiquidStack;
-import tantros.content.world.TantrosLiquids;
 import tantros.type.Recipe;
 import tantros.type.Resource;
 
@@ -22,8 +21,8 @@ public class TantrosRecipes {
         electricHeating,
         berylliumOxidization,
         leadOxidization,
-        carbonOxydization,
-        siliconOxydization
+        carbonOxidization,
+        siliconOxidization
         ;
 
     public static void load(){
@@ -89,7 +88,7 @@ public class TantrosRecipes {
             craftTime = 60f;
         }};
 
-        siliconOxydization = new Recipe("silicon-oxidization"){{
+        siliconOxidization = new Recipe("silicon-oxidization"){{
             cost = new Resource()
                     .withItems(ItemStack.with(Items.silicon, 3))
                     .withLiquids(LiquidStack.with(Liquids.ozone, 3.6f/60f))
@@ -122,7 +121,7 @@ public class TantrosRecipes {
             craftTime = 100f;
         }};
 
-        carbonOxydization = new Recipe("carbon-oxidization"){{
+        carbonOxidization = new Recipe("carbon-oxidization"){{
             cost = new Resource()
                     .withItems(ItemStack.with(Items.graphite, 3))
                     .withLiquids(LiquidStack.with(Liquids.ozone, 3.6f/60f))
