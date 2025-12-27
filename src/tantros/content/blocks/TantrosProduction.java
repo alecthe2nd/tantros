@@ -183,8 +183,11 @@ public class TantrosProduction {
                 cons = new ConsumeRecipes(Seq.with(TantrosRecipes.electricHeating));
                 size = 1;
                 drawer = new DrawMulti(
-                        new DrawRegion("-bottom"),
-                        new DrawDefault()
+                        //new DrawRegion("-bottom"),
+                        new DrawDefault(),
+                        new DrawHeatOutput(){{
+                            drawGlow = false;
+                        }}
                         //new DrawWarmupRegion(),
                         //new DrawRegion("-glass")
                 );

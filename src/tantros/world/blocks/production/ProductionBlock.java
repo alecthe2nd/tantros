@@ -145,13 +145,13 @@ public class ProductionBlock extends Block {
 
         @Override
         public boolean shouldConsume(){
-            boolean should = true;
-            if(!producers.isEmpty()){
+            boolean should = enabled;
+            if(!producers.isEmpty() && should){
                 for(Produce producer: producers){
                     should &= producer.canCraft(this);
                 }
             }
-            return enabled && should;
+            return should;
         }
 
         public void updateProductionTime(){

@@ -1,33 +1,13 @@
 package tantros.type;
 
 import arc.Core;
-import arc.Events;
-import arc.graphics.Color;
-import arc.graphics.Pixmap;
-import arc.graphics.Pixmaps;
-import arc.graphics.g2d.PixmapRegion;
-import arc.graphics.g2d.TextureRegion;
-import arc.scene.style.TextureRegionDrawable;
 import arc.scene.ui.layout.Table;
-import arc.struct.Seq;
-import arc.util.Time;
 import mindustry.ctype.ContentType;
 import mindustry.ctype.UnlockableContent;
-import mindustry.game.EventType;
-import mindustry.graphics.MultiPacker;
-import mindustry.logic.LAccess;
-import mindustry.logic.Senseable;
-import mindustry.type.Planet;
-import mindustry.ui.Styles;
-import mindustry.world.blocks.environment.OreBlock;
 import mindustry.world.meta.Stat;
 import mindustry.world.meta.StatUnit;
 import mindustry.world.meta.StatValues;
-import tantros.TantrosVars;
-import tantros.world.blocks.production.RecipeCrafter;
 import tantros.world.meta.TantrosStats;
-
-import static mindustry.Vars.content;
 
 public class Recipe extends UnlockableContent {
 

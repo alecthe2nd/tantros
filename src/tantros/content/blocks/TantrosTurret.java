@@ -143,26 +143,27 @@ public class TantrosTurret {
 
 
         jetstream = new LiquidTurret("jetstream"){{
-            requirements(Category.turret, with(Items.metaglass, 45, Items.oxide, 75, Items.copper, 25));
+            requirements(Category.turret, with(Items.metaglass, 55, Items.oxide, 125, Items.graphite, 55));
             drawer = new DrawTurret("sealed-");
 
             ammo(
                     Liquids.water,new LiquidBulletType(Liquids.water){{
+                        damage = 6;
                         knockback = 0.9f;
                         drag = 0.01f;
                         layer = Layer.bullet - 2f;
                         inaccuracy = 7.5f;
                         reload = 6;
-                        limitRange(this, 5f);
+                        limitRange(this, 7f);
                     }},
                     TantrosLiquids.steam, new LiquidBulletType(TantrosLiquids.steam){{
                         knockback = 0.7f;
-                        damage = 6;
+                        damage = 36;
                         drag = 0.01f;
                         boilTime = 80;
                     }}
             );
-            size = 2;
+            size = 3;
             recoil = 1f;
             reload = 3f;
             inaccuracy = 2.5f;
@@ -179,12 +180,12 @@ public class TantrosTurret {
                 requirements(Category.turret, with(Items.copper, 25, Items.graphite, 20, Items.metaglass, 15));
 
                 ammo(
-                        Items.copper,  new MissileBulletType(3.7f, 10){{
+                        Items.copper,  new MissileBulletType(3.7f, 15){{
                             width = 8f;
                             height = 8f;
                             shrinkY = 0f;
                             splashDamageRadius = 30f;
-                            splashDamage = 30f * 1.5f;
+                            splashDamage = 10f;
                             ammoMultiplier = 1f;
                             hitEffect = Fx.blastExplosion;
                             despawnEffect = Fx.blastExplosion;
@@ -194,12 +195,12 @@ public class TantrosTurret {
                             hitColor = backColor = trailColor = TantrosLiquids.steam.color;
                             frontColor = Pal.copperAmmoFront;
                         }},
-                        Items.graphite,  new MissileBulletType(3.7f, 10){{
+                        Items.graphite,  new MissileBulletType(3.7f, 20){{
                             width = 8f;
                             height = 8f;
                             shrinkY = 0f;
                             splashDamageRadius = 30f;
-                            splashDamage = 30f * 1.5f;
+                            splashDamage = 8f;
                             ammoMultiplier = 2f;
                             hitEffect = Fx.blastExplosion;
                             despawnEffect = Fx.blastExplosion;
@@ -209,12 +210,12 @@ public class TantrosTurret {
                             hitColor = backColor = trailColor = Pal.blastAmmoBack;
                             frontColor = Pal.blastAmmoFront;
                         }},
-                        Items.silicon,  new MissileBulletType(3.7f, 10){{
+                        Items.silicon,  new MissileBulletType(3.7f, 20){{
                             width = 8f;
                             height = 8f;
                             shrinkY = 0f;
                             splashDamageRadius = 30f;
-                            splashDamage = 30f * 1.5f;
+                            splashDamage = 10;
                             ammoMultiplier = 1f;
                             hitEffect = Fx.blastExplosion;
                             despawnEffect = Fx.blastExplosion;

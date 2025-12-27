@@ -1,44 +1,43 @@
 package tantros.type.production;
 
+import arc.func.Prov;
 import arc.scene.ui.layout.Table;
+import arc.struct.Seq;
+import mindustry.type.ItemStack;
+import mindustry.type.LiquidStack;
 import mindustry.world.meta.Stats;
+import tantros.type.Recipe;
 import tantros.type.Resource;
 import tantros.world.blocks.production.ProductionBlock;
 
-public class SimpleProduce extends Produce {
+public class ProduceRecipeDynamic extends Produce{
 
-    public Resource output;
-
-    public SimpleProduce(Resource output){
-        this.output = output;
-    }
-
-    @Override
-    public boolean outputsItems() {
-        return !output.items.isEmpty();
-    }
+    public Prov<Recipe> recipe;
+    public Seq<Recipe> recipes;
 
     @Override
     public Resource output(ProductionBlock.ProductionBuild build) {
-        return output;
+        return recipe.get().output;
     }
 
     @Override
     public void apply(ProductionBlock block) {
 
-        if(!output.items.isEmpty()) {
-            block.hasItems = true;
-        }
+        for(Recipe recipe : recipes){
+            for(ItemStack stack: recipe.output.items){
+                block.hasItems = true;
+                block.acceptsItems = true;
+                block.itemFilter[stack.item.id] = true;
+            }
 
-        if(!output.liquids.isEmpty()) {
-            block.hasLiquids = true;
-            block.outputsLiquid = true;
-        }
+            for(LiquidStack stack: recipe.output.liquids){
+                block.hasLiquids = true;
+                block.liquidFilter[stack.liquid.id] = true;
+            }
 
-        if(output.power > 0){
-            block.hasPower = true;
-            block.outputsPower = true;
-            block.powerProduction = this;
+            if(recipe.output.power > 0){
+                block.hasPower = true;
+            }
         }
     }
 
@@ -50,9 +49,12 @@ public class SimpleProduce extends Produce {
     @Override
     public void trigger(ProductionBlock.ProductionBuild build) {
         if(!isActive.get()) return;
-        for(var output : output.items){
-            for(int i = 0; i < output.amount; i++){
-                build.offload(output.item);
+        Recipe current = recipe.get();
+        if(current != null){
+            for(var output : current.output.items){
+                for(int i = 0; i < output.amount; i++){
+                    build.offload(output.item);
+                }
             }
         }
     }
@@ -60,9 +62,10 @@ public class SimpleProduce extends Produce {
     @Override
     public void update(ProductionBlock.ProductionBuild build) {
         if(!isActive.get()) return;
+        Recipe current = recipe.get();
         //continuously output based on efficiency
         float inc = build.getProgressIncrease(1f);
-        for(var output : output.liquids){
+        for(var output : current.output.liquids){
             build.handleLiquid(build, output.liquid, Math.min(output.amount * inc, build.block.liquidCapacity - build.liquids.get(output.liquid)));
         }
         build.powerProductionEfficiency = build.efficiency;
@@ -70,7 +73,8 @@ public class SimpleProduce extends Produce {
 
     @Override
     public boolean canCraft(ProductionBlock.ProductionBuild build) {
-        for(var output : output.items){
+        Recipe current = recipe.get();
+        for(var output : current.output.items){
             if(!dumpExcessItems && build.items.get(output.item) + output.amount > build.block.itemCapacity){
                 return false;
             }
@@ -78,7 +82,7 @@ public class SimpleProduce extends Produce {
 
         if(!ignoreLiquidFullness){
             boolean allFull = true;
-            for(var output : output.liquids){
+            for(var output : current.output.liquids){
                 if(build.liquids.get(output.liquid) >= build.block.liquidCapacity - 0.001f){
                     if(dumpExcessLiquids){
                         return false;
@@ -91,7 +95,7 @@ public class SimpleProduce extends Produce {
 
             //if there is no space left for any liquid, it can't reproduce
             //only relevant if liquids are being outputted
-            if(allFull && !output.liquids.isEmpty()){
+            if(allFull && !current.output.liquids.isEmpty()){
                 return false;
             }
         }
@@ -101,15 +105,16 @@ public class SimpleProduce extends Produce {
 
     @Override
     public float progressLimit(ProductionBlock.ProductionBuild build) {
+        Recipe current = recipe.get();
         if(ignoreLiquidFullness){
             return 1f;
         }
 
         //limit progress increase by maximum amount of liquid it can produce
         float scaling = 1f, max = 1f;
-        if(!output.liquids.isEmpty()){
+        if(!current.output.liquids.isEmpty()){
             max = 0f;
-            for(var s : output.liquids){
+            for(var s : current.output.liquids){
                 float value = (build.block.liquidCapacity - build.liquids.get(s.liquid)) / (s.amount * build.edelta());
                 scaling = Math.min(scaling, value);
                 max = Math.max(max, value);
@@ -119,7 +124,6 @@ public class SimpleProduce extends Produce {
         //when dumping excess take the maximum value instead of the minimum.
         return (dumpExcessLiquids ? Math.min(max, 1f) : scaling);
     }
-
 
     @Override
     public void display(Stats stats, ProductionBlock block) {

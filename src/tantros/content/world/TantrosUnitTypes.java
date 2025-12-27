@@ -422,7 +422,7 @@ public class TantrosUnitTypes {
             mineTier = 2;
             mineSpeed = 0.5f;
 
-            buildSpeed = 0.1f;
+            buildSpeed = 0.01f;
             buildRange = Vars.buildingRange * 0.25f;
 
             abilities.add(new RepairFieldAbility(5f, 60f * 8, 50f));
@@ -433,11 +433,11 @@ public class TantrosUnitTypes {
                     widthSinMag = 0.11f;
                     reload = 20f;
                     x = 0f;
-                    y = 6.5f;
+                    y = 6f;
                     rotate = false;
                     shootY = 0f;
-                    beamWidth = 0.7f;
-                    repairSpeed = 1f;
+                    beamWidth = 0.3f;
+                    repairSpeed = 0.1f;
                     fractionRepairSpeed = 0.06f;
                     aimDst = 0f;
                     shootCone = 15f;

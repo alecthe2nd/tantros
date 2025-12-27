@@ -22,6 +22,7 @@ import mindustry.world.meta.BlockGroup;
 import mindustry.world.meta.Env;
 import tantros.type.Resource;
 import tantros.type.production.ProduceOre;
+import tantros.type.production.ProduceRecipeDynamic;
 import tantros.type.production.SimpleProduce;
 import tantros.world.blocks.drill.CustomDrawerBeamDrill;
 import tantros.world.blocks.drill.CustomDrawerDrill;
@@ -59,14 +60,7 @@ public class TantrosSource {
             researchCost = with(Items.copper, 10);
             productionTime = 100;
 
-            producers.add(/*new SimpleProduce(
-                    new Resource()
-                            .withItems(ItemStack.with(Items.copper, 1))
-                            .withLiquids(LiquidStack.with(Liquids.water, 1f/60f))
-                            .withPower(1f)
-            )*/ new ProduceOre(){{
-                tier = 5;
-            }});
+            producers.add(new ProduceRecipeDynamic());
 
             //drawer = new DrawMulti(
             //        new DrawDrillBit(),
