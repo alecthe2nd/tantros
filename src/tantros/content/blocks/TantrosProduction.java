@@ -50,11 +50,9 @@ public class TantrosProduction {
 
         metaglassAnnealer = new RecipeCrafter("metaglass-annealer"){{
             requirements(Category.crafting, with(Items.copper, 80, Items.oxide, 40));
-            cons = new ConsumeRecipes(Seq.with(
-                    TantrosRecipes.metaglassAnnealing,
-                    TantrosRecipes.surgeAnnealing,
-                    TantrosRecipes.slagSurgeAnnealing
-            ));
+            addRecipe(TantrosRecipes.metaglassAnnealing);
+            addRecipe(TantrosRecipes.surgeAnnealing);
+            addRecipe(TantrosRecipes.slagSurgeAnnealing);
             craftEffect = TantrosFx.parallaxBubble;
             size = 3;
             envEnabled |= Env.underwater;
@@ -68,7 +66,7 @@ public class TantrosProduction {
 
         graphiticDecomposer = new RecipeCrafter("graphitic-decomposer"){{
             requirements(Category.crafting, with(Items.copper, 40, Items.oxide, 20, Items.metaglass, 30));
-            cons = new ConsumeRecipes(Seq.with(TantrosRecipes.coalDecomposition));
+            addRecipe(TantrosRecipes.coalDecomposition);
             craftEffect = Fx.none;
             size = 2;
             itemCapacity = 30;
@@ -93,7 +91,8 @@ public class TantrosProduction {
 
         siliconPressureSmelter = new RecipeCrafter("silicon-pressure-smelter"){{
             requirements(Category.crafting, with(Items.copper, 30, Items.oxide, 20, Items.metaglass, 40, Items.graphite, 50));
-            cons = new ConsumeRecipes(Seq.with(TantrosRecipes.siliconPressureSmelting));
+
+            addRecipe(TantrosRecipes.siliconPressureSmelting);
             craftEffect = Fx.none;
             size = 3;
             envEnabled |= Env.space | Env.underwater;
@@ -111,11 +110,10 @@ public class TantrosProduction {
             {
                 requirements(Category.crafting, with(Items.copper, 20, Items.oxide, 10, Items.metaglass, 30));
                 craftEffect = new MultiEffect(TantrosFx.parallaxBubble,TantrosFx.parallaxBubble,TantrosFx.parallaxBubble,TantrosFx.parallaxBubble);
-                cons = new ConsumeRecipes(Seq.with(
-                        TantrosRecipes.coalCombustion,
-                        TantrosRecipes.graphiteCombustion,
-                        TantrosRecipes.hydrogenCombustion
-                ));
+
+                addRecipe(TantrosRecipes.coalCombustion);
+                addRecipe(TantrosRecipes.graphiteCombustion);
+                addRecipe(TantrosRecipes.hydrogenCombustion);
                 size = 2;
                 drawer = new DrawMulti(
                         new DrawRegion("-bottom"),
@@ -180,7 +178,8 @@ public class TantrosProduction {
             {
                 requirements(Category.crafting, with(Items.copper, 20, Items.metaglass, 30, Items.graphite, 30));
                 craftEffect = Fx.none;
-                cons = new ConsumeRecipes(Seq.with(TantrosRecipes.electricHeating));
+
+                addRecipe(TantrosRecipes.electricHeating);
                 size = 1;
                 drawer = new DrawMulti(
                         //new DrawRegion("-bottom"),
@@ -200,10 +199,8 @@ public class TantrosProduction {
             {
                 requirements(Category.crafting, with(Items.copper, 20, Items.oxide, 10, Items.metaglass, 30));
 
-                cons = new ConsumeRecipes(Seq.with(
-                        TantrosRecipes.carbonOxidization,
-                        TantrosRecipes.berylliumOxidization
-                ));
+                addRecipe(TantrosRecipes.carbonOxidization);
+                addRecipe(TantrosRecipes.berylliumOxidization);
                 size = 3;
                 drawer = new DrawMulti(
                         new DrawRegion("-bottom"),

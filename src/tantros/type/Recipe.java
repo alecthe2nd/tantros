@@ -11,9 +11,9 @@ import tantros.world.meta.TantrosStats;
 
 public class Recipe extends UnlockableContent {
 
-    public Resource cost;
+    public Resource cost = new Resource();
 
-    public Resource output;
+    public Resource output = new Resource();
 
     public float craftTime = 1;
 
@@ -27,6 +27,14 @@ public class Recipe extends UnlockableContent {
 
     /** Maximum possible efficiency after overheat. */
     public float maxEfficiency = 4f;
+
+    public boolean ignoreLiquidFullness = false;
+
+    public boolean dumpExcessItems = false;
+
+    public boolean dumpExcessLiquids = false;
+
+    public boolean dumpExcessPayload = false;
 
     public Recipe(String name){
         super(name);

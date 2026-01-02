@@ -1,7 +1,9 @@
 package tantros.world.consumers;
 
+import arc.func.Func;
 import arc.func.Prov;
 import arc.struct.Seq;
+import arc.util.Log;
 import arc.util.Time;
 import mindustry.gen.Building;
 import mindustry.type.ItemStack;
@@ -13,6 +15,7 @@ import mindustry.world.consumers.ConsumePowerDynamic;
 import mindustry.world.meta.Stat;
 import mindustry.world.meta.Stats;
 import tantros.type.Recipe;
+import tantros.world.blocks.production.ProductionBlock;
 import tantros.world.blocks.production.RecipeCrafter;
 import tantros.world.meta.TantrosStats;
 
@@ -20,27 +23,27 @@ import static tantros.world.meta.TantrosStats.recipes;
 
 public class ConsumeRecipesDynamic extends Consume {
 
-    public Seq<Recipe> recipes;
+    public Prov<Seq<Recipe>> recipes;
 
-    public Prov<Recipe> recipe;
+    public Func<Building, Recipe> recipe;
 
     public ConsumePowerDynamic powerCons;
 
-    public ConsumeRecipesDynamic(Prov<Recipe> recipe, Seq<Recipe> recipes){
+    public ConsumeRecipesDynamic(Func<Building, Recipe> recipe, Prov<Seq<Recipe>> recipes, Block block){
         this.recipe = recipe;
+        this.recipes = recipes;
         powerCons = getPowerConsumer();
+        block.consume(powerCons);
     }
 
     public ConsumePowerDynamic getPowerConsumer(){
         return new ConsumePowerDynamic((build)->{
-            if(! (build instanceof RecipeCrafter.RecipeCrafterBuild crafter)) throw new ClassCastException("ConsumeRecipes consumers only function for RecipeCrafter blocks.");
-            Recipe current = recipe.get();
+            Recipe current = recipe.get(build);
             return (current != null)? current.cost.power: 0f;
         }){
             @Override
             public float efficiency(Building build) {
-                if(! (build instanceof RecipeCrafter.RecipeCrafterBuild crafter)) throw new ClassCastException("ConsumeRecipes consumers only function for RecipeCrafter blocks.");
-                Recipe current = recipe.get();
+                Recipe current = recipe.get(build);
                 if(current == null) return 0;
                 return (current.cost.power > 0)? super.efficiency(build): 1f;
             }
@@ -50,7 +53,7 @@ public class ConsumeRecipesDynamic extends Consume {
     @Override
     public void apply(Block block) {
 
-        for(Recipe recipe : recipes){
+        for(Recipe recipe : recipes.get()){
             for(ItemStack stack: recipe.cost.items){
                 block.hasItems = true;
                 block.acceptsItems = true;
@@ -64,7 +67,7 @@ public class ConsumeRecipesDynamic extends Consume {
 
             if(recipe.cost.power > 0){
                 block.hasPower = true;
-                block.consPower = powerCons;
+                Log.info("Assigned power to " + block.localizedName);
             }
         }
     }
@@ -72,7 +75,7 @@ public class ConsumeRecipesDynamic extends Consume {
     @Override
     public void trigger(Building build){
 
-        Recipe current = this.recipe.get();
+        Recipe current = this.recipe.get(build);
         float mult = multiplier.get(build);
 
         if(current != null){
@@ -89,7 +92,7 @@ public class ConsumeRecipesDynamic extends Consume {
 
     @Override
     public float efficiency(Building build){
-        return efficiency(build, this.recipe.get());
+        return efficiency(build, this.recipe.get(build));
     }
 
     public float efficiency(Building building, Recipe current, float efficiency){
@@ -135,7 +138,7 @@ public class ConsumeRecipesDynamic extends Consume {
     public void update(Building build){
         float mult = multiplier.get(build);
 
-        Recipe current = recipe.get();
+        Recipe current = recipe.get(build);
         if(current != null) {
             for (var stack : current.cost.liquids) {
                 build.liquids.remove(stack.liquid, stack.amount * build.edelta() * mult);
@@ -145,6 +148,6 @@ public class ConsumeRecipesDynamic extends Consume {
 
     @Override
     public void display(Stats stats){
-        stats.add(booster ? Stat.booster : TantrosStats.recipes, recipes(recipes));
+        stats.add(booster ? Stat.booster : TantrosStats.recipes, recipes(recipes.get()));
     }
 }

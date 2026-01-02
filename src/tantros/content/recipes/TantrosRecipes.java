@@ -10,6 +10,7 @@ import tantros.type.Resource;
 public class TantrosRecipes {
 
     public static Recipe
+        nothing,
         metaglassAnnealing,
         surgeAnnealing,
         slagSurgeAnnealing,
@@ -26,6 +27,7 @@ public class TantrosRecipes {
         ;
 
     public static void load(){
+        nothing = new Recipe("nothing");
         metaglassAnnealing = new Recipe("metaglass-annealing"){{
             cost = new Resource()
                    .withItems(ItemStack.with(Items.lead, 2, Items.sand, 3))
@@ -74,6 +76,7 @@ public class TantrosRecipes {
             ;
             overheat = 5;
             craftTime = 120f;
+            ignoreLiquidFullness = true;
         }};
 
         siliconPressureSmelting = new Recipe("silicon-pressure-smelting"){{

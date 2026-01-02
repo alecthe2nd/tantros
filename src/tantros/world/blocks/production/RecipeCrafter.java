@@ -29,6 +29,7 @@ import mindustry.logic.LAccess;
 import mindustry.type.Item;
 import mindustry.type.ItemStack;
 import mindustry.type.LiquidStack;
+import mindustry.type.PayloadStack;
 import mindustry.ui.Styles;
 import mindustry.world.Block;
 import mindustry.world.Tile;
@@ -39,17 +40,19 @@ import mindustry.world.blocks.liquid.Conduit;
 import mindustry.world.draw.DrawBlock;
 import mindustry.world.draw.DrawDefault;
 import mindustry.world.meta.BlockFlag;
+import tantros.content.recipes.TantrosRecipes;
 import tantros.type.Recipe;
-import tantros.world.consumers.ConsumeRecipes;
+import tantros.type.production.ProduceRecipeDynamic;
+import tantros.world.consumers.ConsumeRecipesDynamic;
 
 import java.util.Arrays;
 
 import static mindustry.Vars.tilesize;
 import static mindustry.Vars.world;
 
-public class RecipeCrafter extends Block {
+public class RecipeCrafter extends ProductionBlock {
 
-    public ConsumeRecipes cons = null;
+    public Seq<Recipe> recipes = new Seq<>();
 
     /** Liquid output directions, specified in the same order as outputLiquids. Use -1 to dump in every direction. Rotations are relative to block. */
     public int[] liquidOutputDirections = {-1};
@@ -59,7 +62,6 @@ public class RecipeCrafter extends Block {
     public boolean ignoreLiquidFullness = false;
 
     //public float craftTime = 80;
-    public Effect craftEffect = Fx.none;
     public Effect updateEffect = Fx.none;
     public float updateEffectChance = 0.04f;
     public float updateEffectSpread = 4f;
@@ -81,7 +83,7 @@ public class RecipeCrafter extends Block {
         configurable = true;
         config(Recipe.class, (RecipeCrafter.RecipeCrafterBuild build, Recipe recipe) -> build.currentRecipe = recipe);
         configClear((RecipeCrafter.RecipeCrafterBuild build) -> {
-            Recipe next = cons.recipes.find(build::isValid);
+            Recipe next = recipes.find(build::isValid);
             if(next != null){
                 build.currentRecipe = next;
                 build.progress = 0;
@@ -98,11 +100,18 @@ public class RecipeCrafter extends Block {
 
     @Override
     public void init(){
-        consume(cons);
 
-        for(Recipe recipe: cons.recipes){
-            initRecipe(recipe);
-        }
+        this.produce(new ProduceRecipeDynamic((ProductionBuild b) -> {
+            if (b instanceof RecipeCrafterBuild r) return r.currentRecipe();
+            return TantrosRecipes.nothing;
+        }, this::recipes));
+        var cons = this.consume(new ConsumeRecipesDynamic((Building b) -> {
+                    if (b instanceof RecipeCrafterBuild r) return r.currentRecipe();
+                    return TantrosRecipes.nothing;
+        }, this::recipes, this));
+        //for(Recipe recipe: cons.recipes){
+        //    initRecipe(recipe);
+        //}
 
         super.init();
     }
@@ -119,7 +128,7 @@ public class RecipeCrafter extends Block {
 
         if(recipe.cost.power > 0){
             if (!this.hasPower) {
-                consume(cons.powerCons);
+                //consume(cons.powerCons);
             }
             this.hasPower = true;
         }
@@ -135,12 +144,6 @@ public class RecipeCrafter extends Block {
 
         if(recipe.output.power > 0){
             this.hasPower = true;
-        }
-
-        if(recipe.output.heat > 0){
-            this.rotate = true;
-            this.rotateDraw = false;
-            this.drawArrow = true;
         }
     }
 
@@ -170,7 +173,7 @@ public class RecipeCrafter extends Block {
 
     @Override
     public boolean outputsItems(){
-        return cons != null && cons.recipes.contains((recipe)->!recipe.output.items.isEmpty());
+        return recipes.contains((recipe)->!recipe.output.items.isEmpty());
     }
 
     @Override
@@ -205,7 +208,15 @@ public class RecipeCrafter extends Block {
         }
     }
 
-    public class RecipeCrafterBuild extends Building implements HeatBlock, HeatConsumer {
+    public Seq<Recipe> recipes(){
+        return this.recipes;
+    }
+
+    public void addRecipe(Recipe recipe){
+        this.recipes.add(recipe);
+    }
+
+    public class RecipeCrafterBuild extends ProductionBuild implements HeatBlock, HeatConsumer {
 
         public Recipe currentRecipe = null;
 
@@ -217,6 +228,10 @@ public class RecipeCrafter extends Block {
         public float[] sideHeat = new float[4];
         public float inputHeat = 0f;
         public float outputHeat = 0f;
+
+        public Recipe currentRecipe(){
+            return currentRecipe != null ? currentRecipe : TantrosRecipes.nothing;
+        }
 
         @Override
         public void draw(){
@@ -230,86 +245,59 @@ public class RecipeCrafter extends Block {
         }
 
         @Override
-        public boolean shouldConsume(){
-            if(currentRecipe == null) return false;
-            for(var output : currentRecipe.output.items){
-                if(items.get(output.item) + output.amount > itemCapacity){
-                    return false;
-                }
-            }
-
-            if(!ignoreLiquidFullness){
-                boolean allFull = true;
-                for(var output : currentRecipe.output.liquids){
-                    if(liquids.get(output.liquid) >= liquidCapacity - 0.001f){
-                        if(!dumpExtraLiquid){
-                            return false;
-                        }
-                    }else{
-                        //if there's still space left, it's not full for all liquids
-                        allFull = false;
-                    }
-                }
-
-                //if there is no space left for any liquid, it can't reproduce
-                //only relevant if liquids are being outputted
-                if(allFull && !currentRecipe.output.liquids.isEmpty()){
-                    return false;
-                }
-            }
-
-            return enabled;
-        }
-
-        @Override
         public void updateTile(){
             inputHeat = calculateHeat(sideHeat);
 
             //heat approaches target at the same speed regardless of efficiency
             outputHeat = Mathf.approachDelta(outputHeat, ((currentRecipe != null)? currentRecipe.output.heat: 0f) * efficiency, heatWarmupRate * delta());
 
-            if(currentRecipe == null && !cons.recipes.isEmpty()){
-                currentRecipe = cons.recipes.first();
+            if(currentRecipe == null && !recipes.isEmpty()){
+                currentRecipe = recipes.first();
             }
 
             if(efficiency > 0){
-
-                if(currentRecipe != null){
-                    progress += getProgressIncrease(currentRecipe.craftTime);
-                    warmup = Mathf.approachDelta(warmup, warmupTarget(), warmupSpeed);
-
-                //continuously output based on efficiency
-                    float inc = getProgressIncrease(1f);
-                    for(var output : currentRecipe.output.liquids){
-                        handleLiquid(this, output.liquid, Math.min(output.amount * inc, liquidCapacity - liquids.get(output.liquid)));
-                    }
-                }
 
                 if(wasVisible && Mathf.chanceDelta(updateEffectChance)){
                     updateEffect.at(x + Mathf.range(size * updateEffectSpread), y + Mathf.range(size * updateEffectSpread));
                 }
             }else{
-                warmup = Mathf.approachDelta(warmup, 0f, warmupSpeed);
                 //Recipe next = cons.recipes.find(this::isValid);
                 //if(next != null){
                 //    currentRecipe = next;
                 //    progress = 0;
                 //}
             }
-
-            //TODO may look bad, revert to edelta() if so
-            totalProgress += warmup * Time.delta;
-
-            if(progress >= 1f){
-                craft();
-            }
-
-            dumpOutputs();
+            super.updateTile();
         }
 
         public boolean isValid(Recipe recipe){
-            if(recipe == null) return false;
-            return cons.efficiency(this, recipe, 1.0f) > 0;
+            if(recipe == null || recipe == TantrosRecipes.nothing) return false;
+
+            float ed = efficiency * Time.delta * this.efficiencyScale();
+
+
+            boolean valid = true;
+
+            boolean trigger = this.consumeTriggerValid();
+
+            for (ItemStack stack : recipe.cost.items) {
+
+                valid &= trigger || this.items.has(stack.item, stack.amount);
+
+            }
+
+            for(var stack : recipe.cost.liquids){
+                valid &= this.liquids.get(stack.liquid) > (stack.amount * ed);
+            }
+
+            for(PayloadStack stack : recipe.cost.payloads){
+                if(!this.getPayloads().contains(stack.item, stack.amount)){
+                    valid = false;
+                }
+            }
+
+            return valid;
+
         }
 
         @Override
@@ -339,45 +327,6 @@ public class RecipeCrafter extends Block {
         }
 
         @Override
-        public float totalProgress(){
-            return totalProgress;
-        }
-
-        public void craft(){
-            consume();
-
-            if(currentRecipe != null){
-                for(var output : currentRecipe.output.items){
-                    for(int i = 0; i < output.amount; i++){
-                        offload(output.item);
-                    }
-                }
-            }
-
-            if(wasVisible){
-                craftEffect.at(x, y);
-            }
-            progress %= 1f;
-        }
-
-        public void dumpOutputs(){
-            if(currentRecipe != null && timer(timerDump, dumpTime / timeScale)){
-                for(ItemStack output : currentRecipe.output.items){
-                    dump(output.item);
-                }
-            }
-
-            if(currentRecipe != null){
-                Seq<LiquidStack> outputLiquids = currentRecipe.output.liquids;
-                for(int i = 0; i < outputLiquids.size; i++){
-                    int dir = liquidOutputDirections.length > i ? liquidOutputDirections[i] : -1;
-
-                    dumpLiquid(outputLiquids.get(i).liquid, 2f, dir);
-                }
-            }
-        }
-
-        @Override
         public double sense(LAccess sensor){
             if(sensor == LAccess.progress) return progress();
             //attempt to prevent wild total liquid fluctuation, at least for crafters
@@ -388,16 +337,6 @@ public class RecipeCrafter extends Block {
         @Override
         public float progress(){
             return Mathf.clamp(progress);
-        }
-
-        @Override
-        public int getMaximumAccepted(Item item){
-            return itemCapacity;
-        }
-
-        @Override
-        public boolean shouldAmbientSound(){
-            return efficiency > 0;
         }
 
         @Override
@@ -523,7 +462,7 @@ public class RecipeCrafter extends Block {
 
         @Override
         public boolean shouldShowConfigure(Player player){
-            return cons.recipes.size > 1;
+            return recipes.size > 1;
         }
 
         public Drawable recipeIcon(Recipe recipe){
@@ -559,7 +498,7 @@ public class RecipeCrafter extends Block {
 
             table.background(Styles.black6);
 
-            var list = cons.recipes;
+            var list = recipes;
             for(var item : list){
                 if(item.unlockedNow()) {
                     ImageButton button = table.button(this.recipeIcon(item), Styles.clearNoneTogglei, 40f, () -> {

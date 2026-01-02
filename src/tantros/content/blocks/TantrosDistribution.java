@@ -55,6 +55,7 @@ public class TantrosDistribution {
             speed = 10f;
             regionRotated1 = 1;
             solid = false;
+            squareSprite = false;
             researchCost = with(Items.copper, 5);
         }};
 
@@ -104,7 +105,7 @@ public class TantrosDistribution {
         pneumaticDuctRouter = new BoostDuctRouter("pneumatic-duct-router"){{
             requirements(Category.distribution, with(Items.metaglass, 3, Items.graphite, 2));
             health = 90;
-            speed = 10f;
+            speed = 7.5f;
             regionRotated1 = 1;
             solid = false;
             researchCost = with(Items.copper, 5);

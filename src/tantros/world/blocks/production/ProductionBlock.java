@@ -9,6 +9,8 @@ import arc.util.Eachable;
 import arc.util.Time;
 import arc.util.io.Reads;
 import arc.util.io.Writes;
+import mindustry.content.Fx;
+import mindustry.entities.Effect;
 import mindustry.entities.units.BuildPlan;
 import mindustry.gen.Building;
 import mindustry.gen.Sounds;
@@ -34,7 +36,7 @@ import static mindustry.Vars.state;
 
 public class ProductionBlock extends Block {
 
-    public float productionTime;
+    public float productionTime = 1;
 
     public boolean outputsHeat = false;
 
@@ -47,6 +49,8 @@ public class ProductionBlock extends Block {
     public Produce powerProduction;
 
     public DrawBlock drawer = new DrawDefault();
+
+    public Effect craftEffect = Fx.none;
 
     public ProductionBlock(String name) {
         super(name);
@@ -63,15 +67,15 @@ public class ProductionBlock extends Block {
     @Override
     public void init() {
 
+        super.init();
+
         for(Produce producer: producers){
             producer.apply(this);
         }
-
         if(consPower == null){
             this.consumesPower = false;
         }
 
-        super.init();
     }
 
     @Override
@@ -221,9 +225,9 @@ public class ProductionBlock extends Block {
 
             produce();
 
-            //if(wasVisible){
-            //    craftEffect.at(x, y);
-            //}
+            if(wasVisible){
+                craftEffect.at(x, y);
+            }
             progress %= 1f;
         }
 

@@ -1,5 +1,6 @@
 package tantros.type.production;
 
+import arc.func.Func;
 import arc.func.Prov;
 import arc.scene.ui.layout.Table;
 import arc.struct.Seq;
@@ -12,18 +13,23 @@ import tantros.world.blocks.production.ProductionBlock;
 
 public class ProduceRecipeDynamic extends Produce{
 
-    public Prov<Recipe> recipe;
-    public Seq<Recipe> recipes;
+    public Func<ProductionBlock.ProductionBuild, Recipe> recipe;
+    public Prov<Seq<Recipe>> recipes;
+
+    public ProduceRecipeDynamic(Func<ProductionBlock.ProductionBuild, Recipe> recipe, Prov<Seq<Recipe>> recipes){
+        this.recipe = recipe;
+        this.recipes = recipes;
+    }
 
     @Override
     public Resource output(ProductionBlock.ProductionBuild build) {
-        return recipe.get().output;
+        return recipe.get(build).output;
     }
 
     @Override
     public void apply(ProductionBlock block) {
 
-        for(Recipe recipe : recipes){
+        for(Recipe recipe : recipes.get()){
             for(ItemStack stack: recipe.output.items){
                 block.hasItems = true;
                 block.acceptsItems = true;
@@ -38,6 +44,12 @@ public class ProduceRecipeDynamic extends Produce{
             if(recipe.output.power > 0){
                 block.hasPower = true;
             }
+
+            if(recipe.output.heat > 0){
+                block.rotate = true;
+                block.rotateDraw = false;
+                block.drawArrow = true;
+            }
         }
     }
 
@@ -49,7 +61,7 @@ public class ProduceRecipeDynamic extends Produce{
     @Override
     public void trigger(ProductionBlock.ProductionBuild build) {
         if(!isActive.get()) return;
-        Recipe current = recipe.get();
+        Recipe current = recipe.get(build);
         if(current != null){
             for(var output : current.output.items){
                 for(int i = 0; i < output.amount; i++){
@@ -62,7 +74,7 @@ public class ProduceRecipeDynamic extends Produce{
     @Override
     public void update(ProductionBlock.ProductionBuild build) {
         if(!isActive.get()) return;
-        Recipe current = recipe.get();
+        Recipe current = recipe.get(build);
         //continuously output based on efficiency
         float inc = build.getProgressIncrease(1f);
         for(var output : current.output.liquids){
@@ -73,18 +85,18 @@ public class ProduceRecipeDynamic extends Produce{
 
     @Override
     public boolean canCraft(ProductionBlock.ProductionBuild build) {
-        Recipe current = recipe.get();
+        Recipe current = recipe.get(build);
         for(var output : current.output.items){
             if(!dumpExcessItems && build.items.get(output.item) + output.amount > build.block.itemCapacity){
                 return false;
             }
         }
 
-        if(!ignoreLiquidFullness){
+        if(!current.ignoreLiquidFullness){
             boolean allFull = true;
             for(var output : current.output.liquids){
                 if(build.liquids.get(output.liquid) >= build.block.liquidCapacity - 0.001f){
-                    if(dumpExcessLiquids){
+                    if(current.dumpExcessLiquids){
                         return false;
                     }
                 }else{
@@ -105,8 +117,8 @@ public class ProduceRecipeDynamic extends Produce{
 
     @Override
     public float progressLimit(ProductionBlock.ProductionBuild build) {
-        Recipe current = recipe.get();
-        if(ignoreLiquidFullness){
+        Recipe current = recipe.get(build);
+        if(current.ignoreLiquidFullness){
             return 1f;
         }
 
@@ -122,11 +134,16 @@ public class ProduceRecipeDynamic extends Produce{
         }
 
         //when dumping excess take the maximum value instead of the minimum.
-        return (dumpExcessLiquids ? Math.min(max, 1f) : scaling);
+        return (current.dumpExcessLiquids ? Math.min(max, 1f) : scaling);
     }
 
     @Override
     public void display(Stats stats, ProductionBlock block) {
 
+    }
+
+    @Override
+    public float productionTimeMultiplier(ProductionBlock.ProductionBuild build){
+        return this.recipe.get(build).craftTime;
     }
 }

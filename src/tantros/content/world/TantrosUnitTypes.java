@@ -113,18 +113,17 @@ public class TantrosUnitTypes {
             maxRange = 35;
 
             weapons.add(new Weapon("tantros-flak-weapon"){{
-                reload = 13f;
+                reload = 15f;
                 x = 3f;
                 y = 1f;
                 top = false;
                 layerOffset = -0.01f;
                 ejectEffect = Fx.casing1;
-                bullet = new BasicBulletType(5f, 9){{
+                bullet = new BasicBulletType(3f, 9){{
                     width = 7f;
                     height = 9f;
                     lifetime = 60f;
 
-                    trailEffect = TantrosFx.parallaxBubble;
                     trailChance = 0.05f;
                 }};
             }});
@@ -148,7 +147,7 @@ public class TantrosUnitTypes {
                 y = 1f;
                 top = false;
                 layerOffset = -0.01f;
-                ejectEffect = Fx.casing1;
+                ejectEffect = new MultiEffect(Fx.casing1, TantrosFx.parallaxBubble);
                 bullet = new BasicBulletType(3f, 9){{
                     width = 7f;
                     height = 9f;
@@ -156,7 +155,6 @@ public class TantrosUnitTypes {
 
                     drag = 0.01f;
 
-                    trailEffect = TantrosFx.parallaxBubble;
                     trailChance = 0.05f;
 
                     fragBullets = 6;
@@ -206,7 +204,7 @@ public class TantrosUnitTypes {
                 layerOffset = -0.01f;
                 shootY = 3f;
                 reload = 18f;
-                ejectEffect = Fx.none;
+                ejectEffect = new MultiEffect(Fx.casing1, TantrosFx.parallaxBubble);
                 recoil = 1f;
                 x = 9f;
                 y = 1f;

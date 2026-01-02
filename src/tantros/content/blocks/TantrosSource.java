@@ -12,7 +12,6 @@ import mindustry.gen.Building;
 import mindustry.gen.Sounds;
 import mindustry.graphics.Layer;
 import mindustry.type.Category;
-import mindustry.type.ItemStack;
 import mindustry.type.LiquidStack;
 import mindustry.world.Block;
 import mindustry.world.blocks.production.GenericCrafter;
@@ -20,6 +19,7 @@ import mindustry.world.blocks.production.Pump;
 import mindustry.world.draw.*;
 import mindustry.world.meta.BlockGroup;
 import mindustry.world.meta.Env;
+import tantros.content.recipes.TantrosRecipes;
 import tantros.type.Resource;
 import tantros.type.production.ProduceOre;
 import tantros.type.production.ProduceRecipeDynamic;
@@ -27,6 +27,7 @@ import tantros.type.production.SimpleProduce;
 import tantros.world.blocks.drill.CustomDrawerBeamDrill;
 import tantros.world.blocks.drill.CustomDrawerDrill;
 import tantros.world.blocks.production.ProductionBlock;
+import tantros.world.blocks.production.RecipeCrafter;
 import tantros.world.blocks.production.Sifter;
 import tantros.content.world.draw.*;
 import tantros.content.world.draw.DrawFade;
@@ -53,21 +54,14 @@ public class TantrosSource {
 
     public static void load(){
 
-        testBlock = new ProductionBlock("test-block"){{
+        testBlock = new RecipeCrafter("test-block"){{
             requirements(Category.production, with(Items.copper, 12));
 
             size = 2;
             researchCost = with(Items.copper, 10);
             productionTime = 100;
 
-            producers.add(new ProduceRecipeDynamic());
-
-            //drawer = new DrawMulti(
-            //        new DrawDrillBit(),
-            //        new DrawDefault()
-            //);
-            //consume(new ConsumeEnv(LocalEnv.with(Liquids.hydrogen))).boost();
-            //consumeLiquid(Liquids.hydrogen, 0.25f / 60f).boost();
+            addRecipe(TantrosRecipes.metaglassAnnealing);
         }};
 
         mechanicalBore = new CustomDrawerBeamDrill("mechanical-bore"){{
