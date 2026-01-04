@@ -1,18 +1,13 @@
 package tantros.world.blocks.environment;
 
 import arc.graphics.g2d.Draw;
-import arc.util.Time;
 import mindustry.Vars;
-import mindustry.editor.EditorTile;
 import mindustry.graphics.Layer;
-import mindustry.graphics.Shaders;
 import mindustry.type.Item;
 import mindustry.type.Liquid;
 import mindustry.world.Tile;
-import mindustry.world.blocks.environment.OreBlock;
 import mindustry.world.blocks.environment.OverlayFloor;
 import tantros.TantrosVars;
-import tantros.graphics.TantrosShaders;
 import tantros.world.blocks.effect.GroundPenetratingRadar;
 
 public class DeepOreBlock extends OverlayFloor {
