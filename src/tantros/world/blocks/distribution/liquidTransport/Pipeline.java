@@ -1,21 +1,33 @@
 package tantros.world.blocks.distribution.liquidTransport;
 
 import arc.Core;
+import arc.func.Boolf;
 import arc.graphics.Color;
 import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.TextureRegion;
+import arc.math.Mathf;
 import arc.math.geom.Geometry;
+import arc.math.geom.Point2;
+import arc.struct.Seq;
 import arc.util.Nullable;
 import arc.util.Tmp;
+import mindustry.content.Blocks;
 import mindustry.entities.TargetPriority;
+import mindustry.entities.units.BuildPlan;
 import mindustry.gen.Building;
 import mindustry.graphics.Drawf;
 import mindustry.graphics.Layer;
+import mindustry.input.Placement;
 import mindustry.type.Liquid;
 import mindustry.world.Block;
 import mindustry.world.Tile;
 import mindustry.world.blocks.Autotiler;
 import mindustry.world.blocks.distribution.ChainedBuilding;
+import mindustry.world.blocks.distribution.ItemBridge;
+import mindustry.world.blocks.liquid.Conduit;
+import mindustry.world.blocks.liquid.LiquidJunction;
+import tantros.content.blocks.TantrosDistribution;
+import tantros.input.TantrosPlacement;
 
 import static mindustry.Vars.renderer;
 import static mindustry.Vars.tilesize;
@@ -38,6 +50,8 @@ public class Pipeline extends PipelineBlock implements Autotiler {
     /** If true, the liquid region is padded at corners, so it doesn't stick out. */
     public boolean padCorners = true;
 
+    public @Nullable Block junctionReplacement, bridgeReplacement, rotBridgeReplacement;
+
     public Pipeline(String name) {
         super(name);
         rotate = true;
@@ -47,6 +61,36 @@ public class Pipeline extends PipelineBlock implements Autotiler {
         conveyorPlacement = true;
         noUpdateDisabled = true;
         priority = TargetPriority.transport;
+    }
+
+    @Override
+    public void init() {
+        super.init();
+        if (junctionReplacement == null) junctionReplacement = Blocks.liquidJunction;
+        if (bridgeReplacement == null) bridgeReplacement = TantrosDistribution.copperPipelineBridge;
+    }
+
+    @Override
+    public Block getReplacement(BuildPlan req, Seq<BuildPlan> plans){
+        if(junctionReplacement == null) return this;
+
+        Boolf<Point2> cont = p -> plans.contains(o -> o.x == req.x + p.x && o.y == req.y + p.y && (req.block instanceof Conduit || req.block instanceof LiquidJunction));
+        return cont.get(Geometry.d4(req.rotation)) &&
+                cont.get(Geometry.d4(req.rotation - 2)) &&
+                req.tile() != null &&
+                req.tile().block() instanceof Conduit &&
+                Mathf.mod(req.build().rotation - req.rotation, 2) == 1 ? junctionReplacement : this;
+    }
+
+    @Override
+    public void handlePlacementLine(Seq<BuildPlan> plans){
+        if(bridgeReplacement == null) return;
+
+        if(rotBridgeReplacement instanceof PipelineBridge duct){
+            TantrosPlacement.calculateBridges(plans, duct, false, b -> b instanceof Pipeline);
+        }else{
+            Placement.calculateBridges(plans, (ItemBridge)bridgeReplacement, false, b -> b instanceof Pipeline);
+        }
     }
 
     @Override

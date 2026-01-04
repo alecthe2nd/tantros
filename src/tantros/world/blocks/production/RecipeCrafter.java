@@ -462,7 +462,16 @@ public class RecipeCrafter extends ProductionBlock {
 
         @Override
         public boolean shouldShowConfigure(Player player){
-            return recipes.size > 1;
+            int count = 0;
+            for(Recipe item : recipes){
+                if (item.unlockedNow()){
+                    count++;
+                }
+                if (count > 1){
+                    return true;
+                }
+            }
+            return false;
         }
 
         public Drawable recipeIcon(Recipe recipe){

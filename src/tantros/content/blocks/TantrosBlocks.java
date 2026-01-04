@@ -47,19 +47,19 @@ public class TantrosBlocks {
         //endregion
 
         //region ore
-        deepOreCopper = new DeepOreBlock("ore-deep-copper", Items.copper);
+        deepOreCopper = new DeepOreBlock(Items.copper);
 
-        deepOreLead = new DeepOreBlock("ore-deep-lead", Items.lead);
+        deepOreLead = new DeepOreBlock(Items.lead);
 
-        deepOreCoal = new DeepOreBlock("ore-deep-coal", Items.coal);
+        deepOreCoal = new DeepOreBlock(Items.coal);
 
-        deepOreTitanium = new DeepOreBlock("ore-deep-titanium", Items.titanium);
+        deepOreTitanium = new DeepOreBlock(Items.titanium);
 
-        deepOreBeryllium = new DeepOreBlock("ore-deep-beryllium", Items.beryllium);
+        deepOreBeryllium = new DeepOreBlock(Items.beryllium);
 
-        deepOreTungsten = new DeepOreBlock("ore-deep-tungsten", Items.tungsten);
+        deepOreTungsten = new DeepOreBlock(Items.tungsten);
 
-        deepOreThorium = new DeepOreBlock("ore-deep-thorium", Items.thorium);
+        deepOreThorium = new DeepOreBlock(Items.thorium);
 
         wallOreCopper = new OreBlock("ore-wall-copper", Items.copper){{
             wallOre = true;

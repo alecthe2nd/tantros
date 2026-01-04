@@ -12,8 +12,12 @@ import arc.struct.Seq;
 import arc.util.Nullable;
 import arc.util.Scaling;
 import arc.util.Strings;
+import arc.util.io.Reads;
+import arc.util.io.Writes;
+import mindustry.Vars;
 import mindustry.ai.UnitCommand;
 import mindustry.content.Fx;
+import mindustry.ctype.ContentType;
 import mindustry.entities.Units;
 import mindustry.gen.Icon;
 import mindustry.gen.Player;
@@ -293,6 +297,22 @@ public class BranchableUnitAssembler extends UnitAssembler {
             progress = 0f;
             Fx.unitAssemble.at(spawn.x, spawn.y, 0f, plan.unit);
             blocks.clear();
+        }
+
+        @Override
+        public void write(Writes write){
+            super.write(write);
+            write.f(progress);
+            write.f(warmup);
+            write.s(command == null ? -1 : command.id);
+        }
+
+        @Override
+        public void read(Reads read, byte revision){
+            super.read(read, revision);
+            progress = read.f();
+            warmup = read.f();
+            command = Vars.content.getByID(ContentType.unitCommand, read.s());
         }
     }
 }

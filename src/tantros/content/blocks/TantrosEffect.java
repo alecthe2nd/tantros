@@ -30,6 +30,7 @@ public class TantrosEffect {
     deepSonar,
     pneumaticPump,
     hydrogenProjector,
+    waterProjector,
     atmosphereProjector
     ;
 
@@ -77,6 +78,23 @@ public class TantrosEffect {
                             drawers.add(new DrawFieldArea<>());
                         }};
                         env = LocalEnv.with(Liquids.hydrogen);
+                        sides = 6;
+                    }}
+            );
+        }};
+
+        waterProjector = new GenericProjector("water-projector"){{
+            requirements(Category.effect, with(Items.copper, 2, Items.lead, 6));
+            size = 2;
+            emitters = Seq.with(
+                    new EnvEmitter(){{
+                        range = 10 * Vars.tilesize;
+                        drawer = new DrawMultiEmitter<>(){{
+                            drawers.add(new DrawCircleEmitterRange<>());
+                            drawers.add(new DrawEnvIconEmitter());
+                            drawers.add(new DrawFieldArea<>());
+                        }};
+                        env = LocalEnv.with(Liquids.water);
                         sides = 6;
                     }}
             );

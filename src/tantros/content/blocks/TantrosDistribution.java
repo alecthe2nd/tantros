@@ -6,6 +6,7 @@ import mindustry.type.Category;
 import mindustry.world.Block;
 import mindustry.world.blocks.distribution.*;
 import mindustry.world.blocks.heat.HeatConductor;
+import mindustry.world.blocks.liquid.Conduit;
 import mindustry.world.draw.DrawDefault;
 import mindustry.world.draw.DrawHeatInput;
 import mindustry.world.draw.DrawHeatOutput;
@@ -14,10 +15,7 @@ import mindustry.world.meta.BlockGroup;
 import tantros.world.blocks.distribution.BoostDuct;
 import tantros.world.blocks.distribution.BoostDuctBridge;
 import tantros.world.blocks.distribution.BoostDuctRouter;
-import tantros.world.blocks.distribution.liquidTransport.Pipeline;
-import tantros.world.blocks.distribution.liquidTransport.PipelineRouter;
-import tantros.world.blocks.distribution.liquidTransport.PipelineTank;
-import tantros.world.blocks.distribution.liquidTransport.PipelineVent;
+import tantros.world.blocks.distribution.liquidTransport.*;
 
 import static mindustry.type.ItemStack.with;
 
@@ -38,6 +36,7 @@ public class TantrosDistribution {
 
             copperPipeline,
             copperPipelineRouter,
+            copperPipelineBridge,
             copperLiquidContainer,
             copperLiquidTank,
             copperLiquidSilo,
@@ -133,6 +132,19 @@ public class TantrosDistribution {
             health = 180;
             speed = 80f;
             leaks = true;
+        }};
+
+        copperPipelineBridge = new PipelineBridge("copper-pipeline-bridge"){{
+            requirements(Category.liquid, with(Items.copper, 3, Items.metaglass, 2, Items.oxide, 3));
+            range = 4;
+            hasPower = false;
+            liquidCapacity = 120f;
+            researchCostMultiplier = 1;
+            underBullets = true;
+            health = 180;
+            speed = 80f;
+
+            ((Pipeline)copperPipeline).rotBridgeReplacement = this;
         }};
 
         copperPipelineRouter = new PipelineRouter("copper-pipeline-router"){{

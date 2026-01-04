@@ -62,6 +62,7 @@ public class TantrosProduction {
             fogRadius = 3;
             ambientSound = Sounds.loopSmelter;
             ambientSoundVolume = 0.12f;
+            researchCostMultiplier = 0.5f;
         }};
 
         graphiticDecomposer = new RecipeCrafter("graphitic-decomposer"){{
@@ -104,6 +105,8 @@ public class TantrosProduction {
             fogRadius = 3;
             ambientSound = Sounds.loopSmelter;
             ambientSoundVolume = 0.12f;
+            researchCostMultiplier = 0.5f;
+            researchCostMultipliers.put(Items.graphite,0.07f);
         }};
 
         combustionHeater = new RecipeCrafter("combustion-heater"){

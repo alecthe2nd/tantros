@@ -8,6 +8,7 @@ import tantros.content.planets.*;
 import tantros.content.world.*;
 import tantros.gen.*;
 import tantros.content.recipes.TantrosRecipes;
+import tantros.graphics.TantrosShaders;
 
 public class Tantros extends Mod{
 
@@ -18,6 +19,7 @@ public class Tantros extends Mod{
         EntityRegistry.register();
 
         TantrosVars.load();
+        TantrosShaders.load();
         TantrosLiquids.load();
         TantrosUnitCommands.load();
         TantrosUnitTypes.load();

@@ -21,6 +21,7 @@ import mindustry.world.meta.BlockGroup;
 import mindustry.world.meta.Env;
 import tantros.content.recipes.TantrosRecipes;
 import tantros.type.Resource;
+import tantros.type.production.ProduceDeepOre;
 import tantros.type.production.ProduceOre;
 import tantros.type.production.ProduceRecipeDynamic;
 import tantros.type.production.SimpleProduce;
@@ -77,8 +78,6 @@ public class TantrosSource {
                     new DrawDrillBit(),
                     new DrawDefault()
             );
-            consume(new ConsumeEnv(LocalEnv.with(Liquids.hydrogen))).boost();
-            //consumeLiquid(Liquids.hydrogen, 0.25f / 60f).boost();
         }};
 
         siltSifter = new Sifter("silt-sifter"){{
@@ -86,6 +85,7 @@ public class TantrosSource {
             tier = 1;
             drillTime = 600;
             size = 2;
+            liquidBoostIntensity = 1.0f;
 
             blockedItems = Seq.with(
                     Items.copper,
@@ -93,8 +93,6 @@ public class TantrosSource {
                     Items.lead,
                     Items.scrap
             );
-            //silt sifter only works underwater
-            envEnabled = Env.underwater;
             researchCost = with(Items.copper, 10);
 
             consume(new ConsumeEnv(LocalEnv.with(Liquids.water)));
@@ -207,7 +205,7 @@ public class TantrosSource {
             //moderate power usage
             //consumePower(240f/60f);
 
-            produce(new ProduceOre(){{
+            produce(new ProduceDeepOre(){{
                 tier = 10;
             }});
 
