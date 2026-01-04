@@ -78,6 +78,7 @@ public class TantrosSource {
                     new DrawDrillBit(),
                     new DrawDefault()
             );
+            optionalBoostIntensity = 1;
         }};
 
         siltSifter = new Sifter("silt-sifter"){{
