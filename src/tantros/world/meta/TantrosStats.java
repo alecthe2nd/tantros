@@ -40,7 +40,9 @@ public class TantrosStats {
 
             recipe = new Stat("recipe", StatCat.crafting),
 
-            requiredEnvironments = new Stat("requiredenvironments", TantrosStats.environment);
+            requiredEnvironments = new Stat("requiredenvironments", TantrosStats.environment),
+
+            boreRange = new Stat("borerange", StatCat.crafting);
 
 
 

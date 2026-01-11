@@ -2,6 +2,8 @@ package tantros.type.production;
 
 import arc.func.Boolp;
 import arc.scene.ui.layout.Table;
+import mindustry.game.Team;
+import mindustry.world.Tile;
 import mindustry.world.meta.Stats;
 import tantros.type.Resource;
 import tantros.world.blocks.production.ProductionBlock;
@@ -30,6 +32,8 @@ public abstract class Produce {
         return this;
     }
 
+    public void applyToBuild(ProductionBlock block, ProductionBlock.ProductionBuild build){}
+
     public boolean outputsItems(){
         return false;
     }
@@ -57,6 +61,10 @@ public abstract class Produce {
 
     public void setBars(ProductionBlock block){
 
+    }
+
+    public boolean placementAllowed(ProductionBlock block, Tile tile, Team team, int rotation){
+        return true;
     }
 
 }

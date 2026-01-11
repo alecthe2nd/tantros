@@ -9,8 +9,8 @@ import mindustry.gen.Building;
 import mindustry.world.blocks.production.Drill;
 import mindustry.world.draw.DrawBlock;
 import mindustry.world.draw.DrawDefault;
-import tantros.content.world.draw.util.ConstantProvider;
-import tantros.content.world.draw.util.NumberProviderc;
+import tantros.world.draw.util.ConstantProvider;
+import tantros.world.draw.util.NumberProviderc;
 
 import java.util.HashMap;
 import java.util.Map;

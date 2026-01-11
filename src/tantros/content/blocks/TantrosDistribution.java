@@ -59,7 +59,7 @@ public class TantrosDistribution {
         }};
 
         copperDuctBridge = new DuctBridge("copper-duct-bridge"){{
-            requirements(Category.distribution, with(Items.copper, 3));
+            requirements(Category.distribution, with(Items.copper, 3, Items.oxide, 3));
             health = 90;
             speed = 10f;
             researchCost = with(Items.copper, 5);
@@ -129,7 +129,7 @@ public class TantrosDistribution {
 
         copperPipeline = new Pipeline("copper-pipeline"){{
             requirements(Category.liquid, with(Items.copper, 1, Items.metaglass, 1));
-            health = 180;
+            health = 35;
             speed = 80f;
             leaks = true;
         }};
@@ -141,7 +141,7 @@ public class TantrosDistribution {
             liquidCapacity = 120f;
             researchCostMultiplier = 1;
             underBullets = true;
-            health = 180;
+            health = 50;
             speed = 80f;
 
             ((Pipeline)copperPipeline).rotBridgeReplacement = this;
@@ -149,7 +149,7 @@ public class TantrosDistribution {
 
         copperPipelineRouter = new PipelineRouter("copper-pipeline-router"){{
             requirements(Category.liquid, with(Items.copper, 3, Items.metaglass, 2));
-            health = 180;
+            health = 50;
             speed = 80f;
         }};
 

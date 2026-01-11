@@ -6,7 +6,7 @@ import arc.util.Eachable;
 import mindustry.entities.units.BuildPlan;
 import mindustry.world.blocks.storage.CoreBlock;
 import mindustry.world.draw.DrawBlock;
-import tantros.content.world.draw.DrawCore;
+import tantros.world.draw.DrawCore;
 
 public class CustomCoreBlock extends CoreBlock {
 

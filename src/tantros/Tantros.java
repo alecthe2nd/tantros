@@ -30,5 +30,6 @@ public class Tantros extends Mod{
     public void init() {
         super.init();
         Vars.ui.settings.graphics.checkPref("fast-parallax", Vars.mobile);
+        Vars.ui.settings.graphics.checkPref("drill-assist-indicators", false);
     }
 }

@@ -32,6 +32,11 @@ public class TantrosTechTree {
         oldReef = new Objectives.OnSector(TantrosSectorPresets.oldReef);
         never = new Objectives.Produce(Items.dormantCyst);
         Planets.tantros.techTree = TechTree.nodeRoot("tantros", TantrosBlocks.coreShell, true, () -> {
+            TechTree.node(TantrosSectorPresets.embark, () -> {
+                TechTree.node(TantrosSectorPresets.oldReef, Seq.with(new Objectives.SectorComplete(TantrosSectorPresets.embark)), () -> {
+
+                });
+            });
             TechTree.node(TantrosDistribution.copperDuct, Seq.with(copper, embark), () -> {
                 TechTree.node(TantrosDistribution.copperDuctRouter, () -> {
                     TechTree.node(TantrosDistribution.copperOverflowDuct, Seq.with(
@@ -41,11 +46,11 @@ public class TantrosTechTree {
                             new Objectives.SectorComplete(TantrosSectorPresets.embark)
                     ),()->{});
                 });
-                TechTree.node(TantrosDistribution.copperDuctBridge, Seq.with(new Objectives.Produce(Items.lead)), () -> {
+                TechTree.node(TantrosDistribution.copperDuctBridge, () -> {
                     //TechTree.node(TantrosDistribution.copperDuctUnloader);
                 });
             });
-            TechTree.node(TantrosSource.mechanicalBore, Seq.with(copper, embark), () -> {
+            TechTree.node(TantrosSource.copperBore, Seq.with(copper, embark), () -> {
                 TechTree.node(TantrosSource.effervescenceCollector, Seq.with(graphite, oldReef), () -> {
                     TechTree.node(TantrosDistribution.copperPipeline, Seq.with(metaglass, oldReef), () -> {
                         TechTree.node(TantrosDistribution.copperPipelineRouter, Seq.with(metaglass, oldReef), () -> {

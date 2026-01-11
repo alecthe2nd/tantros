@@ -54,10 +54,10 @@ public class PipelineVent extends PipelineBlock{
         public void updateTile() {
             super.updateTile();
 
-            if(liquids.currentAmount() > block.liquidCapacity * 0.9f){
+            if(next != null && next.liquids.currentAmount() > block.liquidCapacity * 0.9f){
                 open = true;
             }
-            if(liquids.currentAmount() < block.liquidCapacity * 0.1f){
+            if(next == null || (next.liquids.currentAmount() < block.liquidCapacity * 0.1f)){
                 open = false;
             }
         }

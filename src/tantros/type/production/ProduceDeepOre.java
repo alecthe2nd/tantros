@@ -7,21 +7,24 @@ import arc.scene.ui.layout.Table;
 import arc.struct.ObjectFloatMap;
 import arc.struct.ObjectIntMap;
 import arc.struct.Seq;
-import arc.util.Nullable;
 import arc.util.Strings;
 import arc.util.Time;
+import mindustry.Vars;
+import mindustry.game.Team;
 import mindustry.graphics.Pal;
 import mindustry.type.Item;
 import mindustry.type.ItemStack;
 import mindustry.ui.Bar;
 import mindustry.world.Tile;
 import mindustry.world.blocks.environment.Floor;
-import mindustry.world.blocks.environment.OverlayFloor;
 import mindustry.world.meta.Stat;
 import mindustry.world.meta.StatUnit;
 import mindustry.world.meta.StatValues;
 import mindustry.world.meta.Stats;
+import tantros.TantrosVars;
 import tantros.type.Resource;
+import tantros.type.blockState.DeepDrillConfig;
+import tantros.world.blocks.effect.GroundPenetratingRadar;
 import tantros.world.blocks.environment.DeepOreBlock;
 import tantros.world.blocks.production.ProductionBlock;
 
@@ -30,10 +33,7 @@ import static mindustry.Vars.state;
 
 public class ProduceDeepOre extends Produce{
 
-    /** Special exemption items that this drill can't mine. */
-    public @Nullable Seq<Item> blockedItems;
-
-    public int tier = 0;
+    DeepDrillConfig config;
 
     public float hardnessMultiplier = 50f;
 
@@ -47,15 +47,9 @@ public class ProduceDeepOre extends Produce{
     /** Multipliers of drill speed for each item. Defaults to 1. */
     public ObjectFloatMap<Item> drillMultipliers = new ObjectFloatMap<>();
 
-    public boolean canMine(Tile tile){
-        if(tile == null || tile.block().isStatic()) return false;
-        Item drops = getDrop(tile);
-        return drops != null && drops.hardness <= tier && (blockedItems == null || !blockedItems.contains(drops));
-    }
-
-    public Item getDrop(Tile tile){
-        Floor overlay = tile.overlay();
-        return (overlay instanceof DeepOreBlock deep)? deep.deepDrop : tile.drop();
+    public ProduceDeepOre(int tier){
+        super();
+        config = new DeepDrillConfig(tier);
     }
 
     @Override
@@ -71,8 +65,8 @@ public class ProduceDeepOre extends Produce{
         tempResource.clear();
 
         for(Tile other : tile.getLinkedTilesAs(build.block, tempTiles)){
-            if(canMine(other)){
-                tempOreCount.increment(getDrop(other), 0, 1);
+            if(config.canMine(other)){
+                tempOreCount.increment(config.getDrop(other), 0, 1);
             }
         }
 
@@ -92,7 +86,7 @@ public class ProduceDeepOre extends Produce{
             itemSum += stack.amount;
             timeSum += hardnessMultiplier * stack.item.hardness * stack.amount / drillMultipliers.get(stack.item, 1f);
         }
-
+        if(itemSum == 0 || build.getBlock().productionTime == 0) return 1;
         return (1 + (timeSum / itemSum / build.getBlock().productionTime))/itemSum;
     }
 
@@ -150,7 +144,7 @@ public class ProduceDeepOre extends Produce{
     @Override
     public void display(Stats stats, ProductionBlock block) {
         stats.add(Stat.drillTier, StatValues.drillables(block.productionTime, hardnessMultiplier, block.size * block.size, drillMultipliers, b -> b instanceof Floor f && !f.wallOre && f.itemDrop != null &&
-                f.itemDrop.hardness <= tier && (blockedItems == null || !blockedItems.contains(f.itemDrop)) && (indexer.isBlockPresent(f) || state.isMenu())));
+                f.itemDrop.hardness <= config.tier && (config.blockedItems == null || !config.blockedItems.contains(f.itemDrop)) && (indexer.isBlockPresent(f) || state.isMenu())));
 
         stats.add(Stat.drillSpeed, 60f / block.productionTime * block.size * block.size, StatUnit.itemsSecond);
     }
@@ -159,5 +153,23 @@ public class ProduceDeepOre extends Produce{
     public void setBars(ProductionBlock block) {
         block.addBar("drillspeed", (ProductionBlock.ProductionBuild e) ->
                 new Bar(() -> Core.bundle.format("bar.drillspeed", Strings.fixed(60 / e.currentProductionTime * e.timeScale(), 2)), () -> Pal.ammo, () -> e.warmup));
+    }
+
+    @Override
+    public boolean placementAllowed(ProductionBlock block, Tile tile, Team team, int rotation) {
+        if(block.isMultiblock()){
+            for(Tile other : tile.getLinkedTilesAs(block, tempTiles)){
+                if(config.canMine(other)) {
+                    if(!(other.overlay() instanceof DeepOreBlock)) return true;
+                    GroundPenetratingRadar.GroundPenetratingRadarBuild build = TantrosVars.sonarIndexer.get((b) -> other.dst(b) < b.fogRadius() * Vars.tilesize);
+                    if (build != null) return true;
+                }
+            }
+            return false;
+        }else{
+            if(!(tile.overlay() instanceof DeepOreBlock)) return config.canMine(tile);
+            GroundPenetratingRadar.GroundPenetratingRadarBuild build = TantrosVars.sonarIndexer.get((b) -> tile.dst(b) < b.fogRadius() * Vars.tilesize);
+            return config.canMine(tile) && build != null;
+        }
     }
 }

@@ -3,6 +3,7 @@ package tantros.content.blocks;
 import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.TextureRegion;
 import arc.math.Mathf;
+import arc.struct.EnumSet;
 import arc.struct.Seq;
 import mindustry.Vars;
 import mindustry.content.Fx;
@@ -17,24 +18,25 @@ import mindustry.world.Block;
 import mindustry.world.blocks.production.GenericCrafter;
 import mindustry.world.blocks.production.Pump;
 import mindustry.world.draw.*;
+import mindustry.world.meta.BlockFlag;
 import mindustry.world.meta.BlockGroup;
+import mindustry.world.meta.BuildVisibility;
 import mindustry.world.meta.Env;
 import tantros.content.recipes.TantrosRecipes;
 import tantros.type.Resource;
-import tantros.type.production.ProduceDeepOre;
-import tantros.type.production.ProduceOre;
-import tantros.type.production.ProduceRecipeDynamic;
-import tantros.type.production.SimpleProduce;
+import tantros.type.production.*;
 import tantros.world.blocks.drill.CustomDrawerBeamDrill;
 import tantros.world.blocks.drill.CustomDrawerDrill;
 import tantros.world.blocks.production.ProductionBlock;
 import tantros.world.blocks.production.RecipeCrafter;
 import tantros.world.blocks.production.Sifter;
-import tantros.content.world.draw.*;
-import tantros.content.world.draw.DrawFade;
-import tantros.content.world.draw.util.WarmupCooldownProvider;
-import tantros.content.world.draw.wallDrill.DrawDrillBit;
+import tantros.world.draw.*;
+import tantros.world.draw.DrawFade;
+import tantros.world.draw.extended.DrawMultiExtended;
+import tantros.world.draw.wallDrill.DrawBoreBit;
+import tantros.world.draw.wallDrill.DrawDrillBit;
 import tantros.world.consumers.ConsumeEnv;
+import tantros.world.draw.wallDrill.DrawPlacementLines;
 import tantros.world.environment.LocalEnv;
 
 import static mindustry.type.ItemStack.with;
@@ -42,8 +44,10 @@ import static mindustry.type.ItemStack.with;
 public class TantrosSource {
 
     public static Block
+            testProdBlock,
             testBlock,
             mechanicalBore,
+            copperBore,
             siltSifter,
             deepBoreDrill,
             deepLaserDrill,
@@ -54,6 +58,28 @@ public class TantrosSource {
     ;
 
     public static void load(){
+
+        testProdBlock = new ProductionBlock("test-prod-block"){{
+            requirements(Category.production, with(Items.copper, 12));
+
+            size = 2;
+            researchCost = with(Items.copper, 10);
+            productionTime = 100;
+            drawArrow = true;
+            warmupEffectsProduction = true;
+
+            drawer = new DrawMultiExtended(
+                    new DrawDefault(),
+                    new DrawBoreBit(),
+                    new DrawPlacementLines()
+            );
+            consumePower(1f);
+            produce(new ProduceIfCooldown(
+                    new ProduceWallOre(5,10),
+                    240
+                    )
+            );
+        }};
 
         testBlock = new RecipeCrafter("test-block"){{
             requirements(Category.production, with(Items.copper, 12));
@@ -73,12 +99,37 @@ public class TantrosSource {
             size = 2;
             range = 2;
             researchCost = with(Items.copper, 10);
+            hideDatabase = true;
+            buildVisibility = BuildVisibility.hidden;
 
             drawer = new DrawMulti(
                     new DrawDrillBit(),
                     new DrawDefault()
             );
             optionalBoostIntensity = 1;
+        }};
+
+        copperBore = new ProductionBlock("copper-bore"){{
+            requirements(Category.production, with(Items.copper, 12));
+
+            productionTime = 240f;
+            size = 2;
+            researchCost = with(Items.copper, 10);
+            warmupEffectsProduction = true;
+            regionRotated1 = -2;
+            ignoreLineRotation = true;
+
+            drawer = new DrawMultiExtended(
+                    new DrawDefault(),
+                    new DrawBoreBit(),
+                    new DrawPlacementLines()
+            );
+            produce(new ProduceIfCooldown(
+                            new ProduceWallOre(2,2),
+                            120
+                    )
+            );
+            flags = EnumSet.of(BlockFlag.drill);
         }};
 
         siltSifter = new Sifter("silt-sifter"){{
@@ -97,42 +148,28 @@ public class TantrosSource {
             researchCost = with(Items.copper, 10);
 
             consume(new ConsumeEnv(LocalEnv.with(Liquids.water)));
+            flags = EnumSet.of(BlockFlag.drill);
         }};
 
-        deepBoreDrill = new CustomDrawerDrill("deep-bore-drill"){{
+        deepBoreDrill = new ProductionBlock("deep-bore-drill"){{
             requirements(Category.production, with(Items.copper, 12, Items.metaglass, 30, Items.graphite, 25, Items.silicon, 10));
-            tier = 3;
-            drillTime = 60;
+            productionTime = 60;
             size = 3;
             squareSprite = false;
 
-            setNumberSource("warmup", () ->{
-                WarmupCooldownProvider result = new WarmupCooldownProvider();
-                result.warmupSpeed = 0.01f;
-                return result;
-            });
-
-            drawer = new DrawMulti(
+            drawer = new DrawMultiExtended(
                     new DrawDefault(),
-                    new DrawLowered(
-                            new DrawMulti(
-                                    //new DrawSpin("-rotator", 6f, Building::totalProgress),
-                                    new DrawRegion("-rotator", 6f),
-                                    new DrawRegion("-rotator-rig")
-                            ),
-                            "warmup"
+                    new DrawLoweredCooldown(
+                            //new DrawSpin("-rotator", 6f, Building::totalProgress),
+                            new DrawRegion("-rotator", 100f, true),
+                            new DrawRegion("-rotator-rig")
                     ){{
                         lowerScale = 0.65f;
                         lowerBrightness = 0.75f;
-                    }},
+                    }}
+                    ,
                     new DrawRegion("-top")
             );
-
-            //space ore sources cannot be deep enough to warrant this drill
-            envEnabled ^= Env.space;
-
-            //this device is designed for underwater usage
-            envEnabled |= Env.underwater;
 
             //moderate power usage
             consumePower(40f/60f);
@@ -144,6 +181,8 @@ public class TantrosSource {
 
             //optional ozone input burns away unwanted dust or impurities
             consumeLiquid(Liquids.ozone, 1f/60f).boost();
+
+            produce(new ProduceIfCooldown(new ProduceDeepOre(3), 120));
         }};
 
         deepLaserDrill = new CustomDrawerDrill("deep-laser-drill"){{
@@ -206,16 +245,14 @@ public class TantrosSource {
             //moderate power usage
             //consumePower(240f/60f);
 
-            produce(new ProduceDeepOre(){{
-                tier = 10;
-            }});
+            produce(new ProduceDeepOre(10));
 
             produce(new SimpleProduce(new Resource().withLiquids(LiquidStack.with(Liquids.slag, 10))));
 
             size = 5;
             squareSprite = false;
 
-            drawer = new DrawMulti(
+            drawer = new DrawMultiExtended(
                     new DrawRegion("-bottom"),
                     new DrawDefault(),
                     new DrawRegion("-rotator", 6f, true)

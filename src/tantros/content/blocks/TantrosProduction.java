@@ -2,7 +2,6 @@ package tantros.content.blocks;
 
 import arc.graphics.Color;
 import arc.math.Interp;
-import arc.struct.Seq;
 import mindustry.content.Fx;
 import mindustry.content.Items;
 import mindustry.content.Liquids;
@@ -20,14 +19,13 @@ import mindustry.world.meta.Env;
 import tantros.content.TantrosFx;
 import tantros.content.world.TantrosLiquids;
 import tantros.world.blocks.production.Boiler;
-import tantros.content.world.draw.DrawIconOverride;
-import tantros.content.world.draw.DrawLight;
-import tantros.content.world.draw.output.DrawLiquidOutputRegion;
-import tantros.content.world.draw.output.DrawMultiLiquidOutput;
-import tantros.content.world.draw.output.DrawOutputLiquid;
-import tantros.content.world.draw.output.DrawOutputRegion;
+import tantros.world.draw.DrawIconOverride;
+import tantros.world.draw.DrawLight;
+import tantros.world.draw.output.DrawLiquidOutputRegion;
+import tantros.world.draw.output.DrawMultiLiquidOutput;
+import tantros.world.draw.output.DrawOutputLiquid;
+import tantros.world.draw.output.DrawOutputRegion;
 import tantros.world.blocks.production.RecipeCrafter;
-import tantros.world.consumers.ConsumeRecipes;
 import tantros.content.recipes.TantrosRecipes;
 
 import static mindustry.type.ItemStack.with;
@@ -253,7 +251,6 @@ public class TantrosProduction {
 
                 hasLiquids = true;
                 liquidCapacity = 40;
-                envDisabled |= Env.oxygen;
                 consumeLiquids(LiquidStack.with(Liquids.water, 5f/60f));
 
                 heatRequirement = 5f;

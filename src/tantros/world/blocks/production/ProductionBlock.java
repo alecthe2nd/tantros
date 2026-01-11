@@ -1,40 +1,37 @@
 package tantros.world.blocks.production;
 
-import arc.Core;
+import arc.func.Prov;
 import arc.graphics.g2d.TextureRegion;
 import arc.math.Mathf;
 import arc.struct.EnumSet;
+import arc.struct.ObjectMap;
 import arc.struct.Seq;
 import arc.util.Eachable;
-import arc.util.Time;
 import arc.util.io.Reads;
 import arc.util.io.Writes;
 import mindustry.content.Fx;
 import mindustry.entities.Effect;
 import mindustry.entities.units.BuildPlan;
+import mindustry.game.Team;
 import mindustry.gen.Building;
 import mindustry.gen.Sounds;
-import mindustry.graphics.Pal;
 import mindustry.logic.LAccess;
 import mindustry.type.Item;
 import mindustry.type.ItemStack;
 import mindustry.type.LiquidStack;
-import mindustry.ui.Bar;
 import mindustry.world.Block;
-import mindustry.world.blocks.environment.Floor;
-import mindustry.world.consumers.ConsumeLiquidBase;
-import mindustry.world.draw.DrawBlock;
+import mindustry.world.Tile;
 import mindustry.world.draw.DrawDefault;
 import mindustry.world.meta.BlockFlag;
-import mindustry.world.meta.Stat;
-import mindustry.world.meta.StatUnit;
-import mindustry.world.meta.StatValues;
+import tantros.type.blockState.BlockConfig;
+import tantros.type.buildingState.BuildingState;
 import tantros.type.production.Produce;
-
-import static mindustry.Vars.indexer;
-import static mindustry.Vars.state;
+import tantros.world.draw.extended.DrawBlockExtended;
+import tantros.world.draw.extended.DrawMultiExtended;
 
 public class ProductionBlock extends Block {
+
+    public boolean rotatedOutput;
 
     public float productionTime = 1;
 
@@ -44,11 +41,17 @@ public class ProductionBlock extends Block {
 
     public float warmupSpeed = 0.019f;
 
+    public boolean warmupEffectsProduction = false;
+
     public Seq<Produce> producers = new Seq<>();
+
+    public ObjectMap<Class<? extends BlockConfig>, ? super BlockConfig> states = new ObjectMap<>();
+
+    public Seq<Prov<BuildingState>> stateSources = new Seq<>();
 
     public Produce powerProduction;
 
-    public DrawBlock drawer = new DrawDefault();
+    public DrawBlockExtended drawer = new DrawMultiExtended(new DrawDefault());
 
     public Effect craftEffect = Fx.none;
 
@@ -62,6 +65,7 @@ public class ProductionBlock extends Block {
         ambientSoundVolume = 0.03f;
         flags = EnumSet.of(BlockFlag.factory);
         drawArrow = false;
+        rotatedOutput = false;
     }
 
     @Override
@@ -76,6 +80,17 @@ public class ProductionBlock extends Block {
             this.consumesPower = false;
         }
 
+    }
+
+
+    @SuppressWarnings("unchecked")
+    public <T extends BlockConfig> T getBlockState(Class<T> type){
+        return (T) this.states.get(type);
+    }
+
+
+    public <T extends BlockConfig> void putBlockState(T state){
+        this.states.put(state.getClass(), state);
     }
 
     @Override
@@ -112,8 +127,17 @@ public class ProductionBlock extends Block {
     }
 
     @Override
+    public boolean rotatedOutput(int x, int y){
+        return rotatedOutput;
+    }
+
+    @Override
     public void drawPlanRegion(BuildPlan plan, Eachable<BuildPlan> list){
         drawer.drawPlan(this, plan, list);
+    }
+
+    public void drawPlace(int x, int y, int rotation, boolean valid){
+        drawer.drawPlace(x,y,rotation,valid, this);
     }
 
     @Override
@@ -138,14 +162,60 @@ public class ProductionBlock extends Block {
         return produce;
     }
 
+    @Override
+    public boolean canPlaceOn(Tile tile, Team team, int rotation){
+        boolean allowed = true;
+        for(Produce producer : producers){
+            allowed &= producer.placementAllowed(this, tile, team, rotation);
+        }
+        return allowed;
+    }
+
     public class ProductionBuild extends Building{
 
         public float progress;
-        public float totalProgress;
+        public float totalProgress = 0;
         public float warmup;
         public float currentProductionTime = productionTime;
+        public float progressThisTick = 0;
 
         public float powerProductionEfficiency = 0.0f;
+
+        public ObjectMap<Class<? extends BuildingState>, ? super BuildingState> states = new ObjectMap<>();
+
+        @SuppressWarnings("unchecked")
+        public <state extends BuildingState> state getState(Class<state> type){
+            return (state) this.states.get(type);
+        }
+
+
+        public <T extends BuildingState> void putState(T state){
+            this.states.put(state.getClass(), state);
+        }
+
+        @Override
+        public void created() {
+            super.created();
+            for(Produce producer: producers){
+                producer.applyToBuild((ProductionBlock) block, this);
+            }
+            for(Prov<BuildingState> stateSource : stateSources){
+                BuildingState state = stateSource.get();
+                putState(state);
+            }
+            for(Class<? extends BuildingState> type : this.states.keys()){
+                getState(type).initState((ProductionBlock) this.block, this);
+            }
+        }
+
+        @Override
+        public void onProximityUpdate() {
+            super.onProximityUpdate();
+
+            for(Class<? extends BuildingState> type : this.states.keys()){
+                getState(type).onProximity((ProductionBlock) this.block, this);
+            }
+        }
 
         @Override
         public boolean shouldConsume(){
@@ -171,10 +241,16 @@ public class ProductionBlock extends Block {
             super.updateTile();
             updateProductionTime();
 
+            for(Class<? extends BuildingState> type : this.states.keys()){
+                getState(type).update((ProductionBlock) this.block, this);
+            }
+
+            progressThisTick = getProgressIncrease(currentProductionTime);
             if(efficiency > 0){
 
-                progress += getProgressIncrease(currentProductionTime);
                 warmup = Mathf.approachDelta(warmup, 1f/*warmupTarget()*/, warmupSpeed);
+
+                progress += progressThisTick;
 
                 for(Produce producer: producers){
                     producer.update(this);
@@ -188,7 +264,7 @@ public class ProductionBlock extends Block {
             }
 
             //TODO may look bad, revert to edelta() if so
-            totalProgress += warmup * Time.delta;
+            totalProgress += progressThisTick;
 
             if(progress >= 1f){
                 craft();
@@ -200,7 +276,7 @@ public class ProductionBlock extends Block {
         @Override
         public float getProgressIncrease(float baseTime){
 
-            float limit = 1f;
+            float limit = (warmupEffectsProduction)? warmup: 1;
 
             for(Produce producer: producers){
                 limit = Math.min(limit, producer.progressLimit(this));
@@ -290,7 +366,7 @@ public class ProductionBlock extends Block {
         public void write(Writes write){
             super.write(write);
             write.f(progress);
-            write.f(warmup);;
+            write.f(warmup);
             write.f(powerProductionEfficiency);
             //write.f(outputHeat);
         }
