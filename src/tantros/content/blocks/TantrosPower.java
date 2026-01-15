@@ -1,6 +1,5 @@
 package tantros.content.blocks;
 
-import mindustry.content.Fx;
 import mindustry.content.Items;
 import mindustry.content.Liquids;
 import mindustry.type.Category;

@@ -246,6 +246,7 @@ public class TantrosProduction {
                         new DrawHeatInput()
                 );
                 squareSprite = false;
+                stressExplosiveness = 10;
 
                 craftTime = 60f;
 

@@ -41,6 +41,13 @@ public class TantrosDistribution {
             copperLiquidTank,
             copperLiquidSilo,
 
+            metaglassPipeline,
+            metaglassPipelineRouter,
+            metaglassPipelineBridge,
+            metaglassLiquidContainer,
+            metaglassLiquidTank,
+            metaglassLiquidSilo,
+
             pressureReleaseVent,
 
             sealedHeatRedirector
@@ -130,19 +137,20 @@ public class TantrosDistribution {
         copperPipeline = new Pipeline("copper-pipeline"){{
             requirements(Category.liquid, with(Items.copper, 1, Items.metaglass, 1));
             health = 35;
-            speed = 80f;
+            speed = 10f;
             leaks = true;
+            liquidCapacity = 10;
         }};
 
         copperPipelineBridge = new PipelineBridge("copper-pipeline-bridge"){{
             requirements(Category.liquid, with(Items.copper, 3, Items.metaglass, 2, Items.oxide, 3));
             range = 4;
             hasPower = false;
-            liquidCapacity = 120f;
+            liquidCapacity = copperPipeline.liquidCapacity*2;
             researchCostMultiplier = 1;
             underBullets = true;
             health = 50;
-            speed = 80f;
+            speed = 10f;
 
             ((Pipeline)copperPipeline).rotBridgeReplacement = this;
         }};
@@ -150,32 +158,90 @@ public class TantrosDistribution {
         copperPipelineRouter = new PipelineRouter("copper-pipeline-router"){{
             requirements(Category.liquid, with(Items.copper, 3, Items.metaglass, 2));
             health = 50;
-            speed = 80f;
+            speed = 10f;
+            liquidCapacity=copperPipeline.liquidCapacity;
+            squareSprite = false;
         }};
 
         copperLiquidContainer = new PipelineTank("copper-liquid-container"){{
             requirements(Category.liquid, with(Items.copper, 30, Items.metaglass, 20));
-            health = 180;
-            speed = 80f;
-            liquidCapacity = 600;
+            health = 45 * 4;
+            speed = 10f;
+            liquidCapacity = copperPipeline.liquidCapacity*4*10;
             size = 2;
             squareSprite = false;
         }};
 
         copperLiquidTank = new PipelineTank("copper-liquid-tank"){{
             requirements(Category.liquid, with(Items.copper, 90, Items.metaglass, 70));
-            health = 180;
-            speed = 80f;
-            liquidCapacity = 1600;
+            health = 40 * 9;
+            speed = 10f;
+            liquidCapacity = copperPipeline.liquidCapacity*9*15;
             size = 3;
             squareSprite = false;
         }};
 
         copperLiquidSilo = new PipelineTank("copper-liquid-silo"){{
             requirements(Category.liquid, with(Items.copper, 150, Items.metaglass, 90, Items.titanium, 60));
-            health = 180;
+            health = 35 * 16;
+            speed = 10f;
+            liquidCapacity = copperPipeline.liquidCapacity*16*20;
+            size = 4;
+            squareSprite = false;
+        }};
+
+        metaglassPipeline = new Pipeline("metaglass-pipeline"){{
+            requirements(Category.liquid, with(Items.metaglass, 3, Items.graphite, 1));
+            health = 70;
             speed = 80f;
-            liquidCapacity = 4000;
+            leaks = false;
+            liquidCapacity = 15;
+        }};
+
+        metaglassPipelineBridge = new PipelineBridge("metaglass-pipeline-bridge"){{
+            requirements(Category.liquid, with(Items.metaglass, 3, Items.graphite, 2, Items.oxide, 3));
+            range = 4;
+            hasPower = false;
+            liquidCapacity = metaglassPipeline.liquidCapacity*2;
+            researchCostMultiplier = 1;
+            underBullets = true;
+            health = 85;
+            speed = 80f;
+
+            ((Pipeline)metaglassPipeline).rotBridgeReplacement = this;
+        }};
+
+        metaglassPipelineRouter = new PipelineRouter("metaglass-pipeline-router"){{
+            requirements(Category.liquid, with(Items.metaglass, 3, Items.graphite, 2));
+            health = 85;
+            speed = 80f;
+            liquidCapacity=metaglassPipeline.liquidCapacity;
+            squareSprite = false;
+        }};
+
+        metaglassLiquidContainer = new PipelineTank("metaglass-liquid-container"){{
+            requirements(Category.liquid, with(Items.metaglass, 30, Items.graphite, 20, Items.oxide, 16));
+            health = 60 * 4;
+            speed = 80f;
+            liquidCapacity = metaglassPipeline.liquidCapacity*4*10;
+            size = 2;
+            squareSprite = false;
+        }};
+
+        metaglassLiquidTank = new PipelineTank("metaglass-liquid-tank"){{
+            requirements(Category.liquid, with(Items.metaglass, 90, Items.graphite, 70, Items.oxide, 36));
+            health = 55 * 9;
+            speed = 80f;
+            liquidCapacity = metaglassPipeline.liquidCapacity*9*15;
+            size = 3;
+            squareSprite = false;
+        }};
+
+        metaglassLiquidSilo = new PipelineTank("metaglass-liquid-silo"){{
+            requirements(Category.liquid, with(Items.metaglass, 150, Items.graphite, 90, Items.titanium, 60, Items.oxide, 64));
+            health = 50 * 16;
+            speed = 80f;
+            liquidCapacity = metaglassPipeline.liquidCapacity*16*20;
             size = 4;
             squareSprite = false;
         }};

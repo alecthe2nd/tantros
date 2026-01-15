@@ -40,7 +40,6 @@ public class Boiler extends HeatCrafter {
         /** Called when the block is destroyed. The tile is still intact at this stage. */
         @Override
         public void onDestroyed(){
-
             float explosiveness = block.baseExplosiveness;
             float flammability = 0f;
             float power = 0f;

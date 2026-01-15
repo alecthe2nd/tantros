@@ -2,7 +2,6 @@ package tantros.content.blocks;
 
 import arc.graphics.Color;
 import arc.math.Interp;
-import arc.math.Mathf;
 import arc.struct.EnumSet;
 import mindustry.content.*;
 import mindustry.entities.Effect;

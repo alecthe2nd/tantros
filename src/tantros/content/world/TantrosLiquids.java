@@ -15,7 +15,7 @@ public class TantrosLiquids {
             heatCapacity = 0;
             viscosity = 0.1f;
             flammability = 0f;
-            explosiveness = 0.3f;
+            explosiveness = 0.75f;
             effect = StatusEffects.wet;
         }};
     }

@@ -4,13 +4,11 @@ package tantros.content;
 import arc.struct.Seq;
 import mindustry.content.*;
 import mindustry.game.Objectives;
-import mindustry.type.SectorPreset;
 import tantros.content.blocks.*;
 import tantros.content.planets.TantrosSectorPresets;
 import tantros.content.recipes.TantrosRecipes;
 import tantros.content.world.TantrosLiquids;
 import tantros.content.world.TantrosUnitTypes;
-import tantros.type.production.Produce;
 
 public class TantrosTechTree {
 
@@ -108,7 +106,7 @@ public class TantrosTechTree {
                     });
                 });
             });
-            TechTree.node(TantrosBlocks.copperBulkhead, Seq.with(copper, embark), () -> {
+            TechTree.node(TantrosDefense.copperBulkhead, Seq.with(copper, embark), () -> {
                 TechTree.node(TantrosTurret.bident, Seq.with(copper, embark), () -> {
                     TechTree.node(TantrosTurret.puncture, Seq.with(
                             copper, graphite, oldReef
@@ -124,8 +122,14 @@ public class TantrosTechTree {
 
                     });
                 });
-                TechTree.node(TantrosBlocks.largeCopperBulkhead, () -> {
+                TechTree.node(TantrosDefense.largeCopperBulkhead, () -> {
+                    TechTree.node(TantrosDefense.metaglassBulkhead, Seq.with(metaglass, never), () -> {
+                        TechTree.node(TantrosDefense.largeMetaglassBulkhead, Seq.with(metaglass, never), () -> {
+                            TechTree.node(TantrosDefense.largeMetaglassBulkheadDoor, () -> {
 
+                            });
+                        });
+                    });
                 });
             });
             TechTree.nodeProduce(Items.copper, () -> {

@@ -33,10 +33,8 @@ public class TantrosBlocks {
             coreShell,
 
             //power
-            sealed_node,
+            sealed_node
 
-            //defense
-            copperBulkhead, largeCopperBulkhead
                     ;
     public static void load(){
 
@@ -106,24 +104,8 @@ public class TantrosBlocks {
 
         //endregion
 
-        //region defense
 
-        copperBulkhead = new Wall("copper-bulkhead"){{
-            requirements(Category.defense, with(Items.copper, 4, Items.oxide, 2));
-            health = 320;
-            researchCostMultiplier = 0.1f;
-            envEnabled |= Env.underwater;
-        }};
-
-        largeCopperBulkhead = new Wall("copper-bulkhead-large"){{
-            requirements(Category.defense, ItemStack.mult(copperBulkhead.requirements, 4));
-            health = copperBulkhead.health * 4;
-            size = 2;
-            envEnabled |= Env.underwater;
-        }};
-
-        //endregion
-
+        TantrosDefense.load();
         TantrosEnvironment.load();
         TantrosDistribution.load();
         TantrosSource.load();

@@ -8,6 +8,7 @@ import tantros.content.planets.*;
 import tantros.content.world.*;
 import tantros.gen.*;
 import tantros.content.recipes.TantrosRecipes;
+import tantros.net.TantrosCalls;
 
 public class Tantros extends Mod{
 
@@ -24,6 +25,7 @@ public class Tantros extends Mod{
         TantrosRecipes.load();
         TantrosBlocks.load();
         TantrosOverride.override();
+        TantrosCalls.initPackets();
     }
 
     @Override
