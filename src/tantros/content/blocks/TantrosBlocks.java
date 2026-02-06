@@ -114,5 +114,6 @@ public class TantrosBlocks {
         TantrosPower.load();
         TantrosPayload.load();
         TantrosTurret.load();
+        TantrosLogic.load();
     }
 }

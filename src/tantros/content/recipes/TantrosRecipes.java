@@ -4,6 +4,7 @@ import mindustry.content.Items;
 import mindustry.content.Liquids;
 import mindustry.type.ItemStack;
 import mindustry.type.LiquidStack;
+import tantros.content.world.TantrosLiquids;
 import tantros.type.Recipe;
 import tantros.type.Resource;
 
@@ -23,7 +24,9 @@ public class TantrosRecipes {
         berylliumOxidization,
         leadOxidization,
         carbonOxidization,
-        siliconOxidization
+        siliconOxidization,
+        siliconWeaving,
+        phaseWeaving
         ;
 
     public static void load(){
@@ -176,6 +179,57 @@ public class TantrosRecipes {
                     .withHeat(10f)//.withItems(ItemStack.with(Items.sand, 3))
             ;
             craftTime = 100f;
+        }};
+
+        siliconWeaving = new Recipe("silicon-weaving"){{
+            cost = new Resource()
+                    .withItems(ItemStack.with(
+                            Items.sand, 8
+                    ))
+                    .withLiquids(LiquidStack.with(
+                            Liquids.hydrogen, 8/60f
+                    ))
+                    .withHeat(15f)
+                    .withPower(2)
+                    ;
+            overheat = 10;
+
+            maxEfficiency = 2;
+
+            output = new Resource()
+                    .withItems(ItemStack.with(
+                            Items.silicon, 8
+                    ))
+                    .withLiquids(LiquidStack.with(
+                            TantrosLiquids.steam, 8/60f
+                    ))
+                    ;
+            craftTime = 120f;
+
+        }};
+
+        phaseWeaving = new Recipe("phase-weaving"){{
+            cost = new Resource()
+                    .withItems(ItemStack.with(
+                            Items.sand, 8,
+                            Items.thorium, 3
+                    ))
+                    .withLiquids(LiquidStack.with(
+                            Liquids.ozone, 6/60f
+                    ))
+                    .withHeat(15)
+                    .withPower(4);
+                    ;
+            overheat = 10;
+
+            maxEfficiency = 2;
+
+            output = new Resource()
+                    .withItems(ItemStack.with(
+                            Items.phaseFabric, 1
+                    ))
+            ;
+            craftTime = 120f;
         }};
     }
 }

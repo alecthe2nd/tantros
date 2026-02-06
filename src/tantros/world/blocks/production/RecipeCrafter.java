@@ -323,7 +323,7 @@ public class RecipeCrafter extends ProductionBlock {
 
         @Override
         public float warmup(){
-            return warmup;
+            return super.warmup;
         }
 
         @Override

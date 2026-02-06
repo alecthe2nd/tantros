@@ -1,16 +1,13 @@
 package tantros.world.draw.extended;
 
-import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.TextureRegion;
 import arc.struct.Seq;
 import arc.util.Eachable;
-import arc.util.Log;
 import mindustry.entities.units.BuildPlan;
 import mindustry.gen.Building;
 import mindustry.world.Block;
 import mindustry.world.draw.DrawBlock;
-import mindustry.world.draw.DrawMulti;
-import tantros.world.blocks.production.ProductionBlock;
+import tantros.world.blocks.BlockExtended;
 
 public class DrawMultiExtended extends DrawBlockExtended{
     public DrawBlock[] drawers = {};
@@ -71,10 +68,19 @@ public class DrawMultiExtended extends DrawBlockExtended{
     }
 
     @Override
-    public void drawPlace(int x, int y, int rotation, boolean valid, ProductionBlock block) {
+    public void drawPlace(int x, int y, int rotation, boolean valid, BlockExtended block) {
         for(var draw : drawers){
             if(draw instanceof DrawBlockExtended extendedDraw){
                 extendedDraw.drawPlace(x,y,rotation,valid, block);
+            }
+        }
+    }
+
+    @Override
+    public void drawConfigure(BlockExtended.BuildExtended build) {
+        for(var draw : drawers){
+            if(draw instanceof DrawBlockExtended extendedDraw){
+                extendedDraw.drawConfigure(build);
             }
         }
     }

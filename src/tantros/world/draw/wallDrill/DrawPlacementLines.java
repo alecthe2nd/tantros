@@ -8,7 +8,8 @@ import mindustry.gen.Icon;
 import mindustry.graphics.Drawf;
 import mindustry.graphics.Pal;
 import mindustry.world.Tile;
-import tantros.type.blockState.BoreDrillConfig;
+import tantros.type.blockConfig.BoreDrillConfig;
+import tantros.world.blocks.BlockExtended;
 import tantros.world.blocks.production.ProductionBlock;
 import tantros.world.draw.extended.DrawBlockExtended;
 
@@ -18,8 +19,9 @@ import static mindustry.Vars.world;
 public class DrawPlacementLines extends DrawBlockExtended {
 
     @Override
-    public void drawPlace(int x, int y, int rotation, boolean valid, ProductionBlock block) {
-        BoreDrillConfig boreState = block.getBlockState(BoreDrillConfig.class);
+    public void drawPlace(int x, int y, int rotation, boolean valid, BlockExtended block) {
+        if(!(block instanceof ProductionBlock)) return;
+        BoreDrillConfig boreState = ((ProductionBlock)block).getBlockConfig(BoreDrillConfig.class);
 
         for(int i = 0; i < block.size; i++) {
             block.nearbySide(x, y, rotation, i, Tmp.p1);

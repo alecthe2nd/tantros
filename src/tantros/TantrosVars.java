@@ -9,7 +9,9 @@ import tantros.ai.types.BurrowAI;
 import tantros.gen.BurrowerUnit;
 import tantros.gen.Burrowerc;
 import tantros.graphics.overlays.SonarTracking;
+import tantros.type.buildingState.CooldownState;
 import tantros.world.BuildingIndexer;
+import tantros.world.blocks.BlockExtended;
 import tantros.world.blocks.effect.GroundPenetratingRadar;
 import tantros.world.environment.LocalEnvIndexer;
 
@@ -35,5 +37,7 @@ public class TantrosVars {
                 BurrowAI.hit(burrower, event.bullet);
             }
         });
+
+        BlockExtended.order.add(CooldownState.class);
     }
 }

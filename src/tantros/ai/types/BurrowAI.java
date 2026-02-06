@@ -1,9 +1,7 @@
 package tantros.ai.types;
 
-import arc.util.Log;
 import mindustry.ai.*;
 import mindustry.ai.types.CommandAI;
-import mindustry.entities.Effect;
 import mindustry.entities.units.*;
 import mindustry.gen.Bullet;
 import tantros.gen.BurrowerUnit;

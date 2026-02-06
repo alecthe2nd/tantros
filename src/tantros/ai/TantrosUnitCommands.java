@@ -14,7 +14,8 @@ public class TantrosUnitCommands {
             groundRepairCommand,
             groundMineCommand,
             groundRebuildCommand,
-            groundAssistCommand
+            groundAssistCommand,
+            processorCommand
                     ;
 
 

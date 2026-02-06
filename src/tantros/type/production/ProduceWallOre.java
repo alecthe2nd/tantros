@@ -19,7 +19,8 @@ import mindustry.world.meta.StatUnit;
 import mindustry.world.meta.StatValues;
 import mindustry.world.meta.Stats;
 import tantros.type.Resource;
-import tantros.type.blockState.BoreDrillConfig;
+import tantros.type.blockConfig.BoreDrillConfig;
+import tantros.type.buildingState.BuildingState;
 import tantros.type.buildingState.LaserState;
 import tantros.world.blocks.production.ProductionBlock;
 import tantros.world.meta.TantrosStats;
@@ -41,7 +42,7 @@ public class ProduceWallOre extends Produce{
 
     @Override
     public Resource output(ProductionBlock.ProductionBuild build) {
-        BoreDrillConfig boreConfig = ((ProductionBlock)build.block).getBlockState(BoreDrillConfig.class);
+        BoreDrillConfig boreConfig = ((ProductionBlock)build.block).getBlockConfig(BoreDrillConfig.class);
         LaserState laserState = build.getState(LaserState.class);
 
         tempOreCount.clear();
@@ -70,17 +71,15 @@ public class ProduceWallOre extends Produce{
         block.hasItems = true;
 
         block.rotate = true;
-        block.putBlockState(config);
+        block.putBlockConfig(config);
+        block.stateSources.add(this::newState);
     }
 
-    @Override
-    public void applyToBuild(ProductionBlock block, ProductionBlock.ProductionBuild build) {
-        super.applyToBuild(block, build);
-        BoreDrillConfig boreConfig = block.getBlockState(BoreDrillConfig.class);
+    public BuildingState newState(){
         LaserState laserState = new LaserState();
         laserState.range = config.range;
-        laserState.oreCondition=boreConfig::canMine;
-        build.putState(laserState);
+        laserState.oreCondition=config::canMine;
+        return laserState;
     }
 
     @Override
@@ -133,7 +132,7 @@ public class ProduceWallOre extends Produce{
 
     @Override
     public boolean placementAllowed(ProductionBlock block, Tile tile, Team team, int rotation) {
-        BoreDrillConfig boreConfig = block.getBlockState(BoreDrillConfig.class);
+        BoreDrillConfig boreConfig = block.getBlockConfig(BoreDrillConfig.class);
         for(int i = 0; i < block.size; i++){
             block.nearbySide(tile.x, tile.y, rotation, i, Tmp.p1);
             for(int j = 0; j < config.range; j++){

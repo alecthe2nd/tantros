@@ -36,6 +36,7 @@ public class TantrosProduction {
             metaglassAnnealer,
             graphiticDecomposer,
             siliconPressureSmelter,
+            nanostructureWeaver,
             electrolysisChamber,
             combustionHeater,
             hydrogenCatalysisHeater,
@@ -99,6 +100,28 @@ public class TantrosProduction {
             itemCapacity = 30;
             liquidCapacity = 30;
             drawer = new DrawMulti(new DrawRegion("-bottom"), new DrawArcSmelt(), new DrawDefault());
+            squareSprite = false;
+            fogRadius = 3;
+            ambientSound = Sounds.loopSmelter;
+            ambientSoundVolume = 0.12f;
+            researchCostMultiplier = 0.5f;
+            researchCostMultipliers.put(Items.graphite,0.07f);
+        }};
+
+        nanostructureWeaver = new RecipeCrafter("nanostructure-weaver"){{
+            requirements(Category.crafting, with(Items.copper, 30, Items.oxide, 20, Items.metaglass, 40, Items.graphite, 50));
+
+            addRecipe(TantrosRecipes.siliconWeaving);
+            addRecipe(TantrosRecipes.phaseWeaving);
+            craftEffect = TantrosFx.fourBubbles;
+            size = 4;
+            envEnabled |= Env.space | Env.underwater;
+            envDisabled = Env.none;
+            itemCapacity = 30;
+            liquidCapacity = 30;
+            drawer = new DrawMulti(new DrawRegion("-bottom"), new DrawMultiWeave(){{
+                rotateSpeed = 20;
+            }}, new DrawDefault());
             squareSprite = false;
             fogRadius = 3;
             ambientSound = Sounds.loopSmelter;

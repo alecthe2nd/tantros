@@ -23,7 +23,7 @@ import mindustry.world.meta.StatValues;
 import mindustry.world.meta.Stats;
 import tantros.TantrosVars;
 import tantros.type.Resource;
-import tantros.type.blockState.DeepDrillConfig;
+import tantros.type.blockConfig.DeepDrillConfig;
 import tantros.world.blocks.effect.GroundPenetratingRadar;
 import tantros.world.blocks.environment.DeepOreBlock;
 import tantros.world.blocks.production.ProductionBlock;

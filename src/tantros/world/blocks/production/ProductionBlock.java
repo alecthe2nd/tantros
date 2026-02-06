@@ -1,35 +1,26 @@
 package tantros.world.blocks.production;
 
-import arc.func.Prov;
-import arc.graphics.g2d.TextureRegion;
 import arc.math.Mathf;
 import arc.struct.EnumSet;
-import arc.struct.ObjectMap;
 import arc.struct.Seq;
-import arc.util.Eachable;
+import arc.util.Log;
 import arc.util.io.Reads;
 import arc.util.io.Writes;
 import mindustry.content.Fx;
 import mindustry.entities.Effect;
-import mindustry.entities.units.BuildPlan;
 import mindustry.game.Team;
-import mindustry.gen.Building;
 import mindustry.gen.Sounds;
 import mindustry.logic.LAccess;
 import mindustry.type.Item;
 import mindustry.type.ItemStack;
 import mindustry.type.LiquidStack;
-import mindustry.world.Block;
 import mindustry.world.Tile;
-import mindustry.world.draw.DrawDefault;
 import mindustry.world.meta.BlockFlag;
-import tantros.type.blockState.BlockConfig;
 import tantros.type.buildingState.BuildingState;
 import tantros.type.production.Produce;
-import tantros.world.draw.extended.DrawBlockExtended;
-import tantros.world.draw.extended.DrawMultiExtended;
+import tantros.world.blocks.BlockExtended;
 
-public class ProductionBlock extends Block {
+public class ProductionBlock extends BlockExtended {
 
     public boolean rotatedOutput;
 
@@ -45,13 +36,7 @@ public class ProductionBlock extends Block {
 
     public Seq<Produce> producers = new Seq<>();
 
-    public ObjectMap<Class<? extends BlockConfig>, ? super BlockConfig> states = new ObjectMap<>();
-
-    public Seq<Prov<BuildingState>> stateSources = new Seq<>();
-
     public Produce powerProduction;
-
-    public DrawBlockExtended drawer = new DrawMultiExtended(new DrawDefault());
 
     public Effect craftEffect = Fx.none;
 
@@ -59,9 +44,9 @@ public class ProductionBlock extends Block {
         super(name);
         update = true;
         solid = true;
+        sync = true;
         hasItems = true;
         ambientSound = Sounds.loopMachine;
-        sync = true;
         ambientSoundVolume = 0.03f;
         flags = EnumSet.of(BlockFlag.factory);
         drawArrow = false;
@@ -82,16 +67,6 @@ public class ProductionBlock extends Block {
 
     }
 
-
-    @SuppressWarnings("unchecked")
-    public <T extends BlockConfig> T getBlockState(Class<T> type){
-        return (T) this.states.get(type);
-    }
-
-
-    public <T extends BlockConfig> void putBlockState(T state){
-        this.states.put(state.getClass(), state);
-    }
 
     @Override
     public void setStats(){
@@ -131,32 +106,6 @@ public class ProductionBlock extends Block {
         return rotatedOutput;
     }
 
-    @Override
-    public void drawPlanRegion(BuildPlan plan, Eachable<BuildPlan> list){
-        drawer.drawPlan(this, plan, list);
-    }
-
-    public void drawPlace(int x, int y, int rotation, boolean valid){
-        drawer.drawPlace(x,y,rotation,valid, this);
-    }
-
-    @Override
-    public TextureRegion[] icons(){
-        return drawer.finalIcons(this);
-    }
-
-    @Override
-    public void load(){
-        super.load();
-
-        drawer.load(this);
-    }
-
-    @Override
-    public void getRegionsToOutline(Seq<TextureRegion> out){
-        drawer.getRegionsToOutline(this, out);
-    }
-
     public Produce produce(Produce produce){
         producers.add(produce);
         return produce;
@@ -171,7 +120,7 @@ public class ProductionBlock extends Block {
         return allowed;
     }
 
-    public class ProductionBuild extends Building{
+    public class ProductionBuild extends BuildExtended {
 
         public float progress;
         public float totalProgress = 0;
@@ -181,31 +130,13 @@ public class ProductionBlock extends Block {
 
         public float powerProductionEfficiency = 0.0f;
 
-        public ObjectMap<Class<? extends BuildingState>, ? super BuildingState> states = new ObjectMap<>();
-
-        @SuppressWarnings("unchecked")
-        public <state extends BuildingState> state getState(Class<state> type){
-            return (state) this.states.get(type);
-        }
-
-
-        public <T extends BuildingState> void putState(T state){
-            this.states.put(state.getClass(), state);
-        }
 
         @Override
         public void created() {
-            super.created();
             for(Produce producer: producers){
                 producer.applyToBuild((ProductionBlock) block, this);
             }
-            for(Prov<BuildingState> stateSource : stateSources){
-                BuildingState state = stateSource.get();
-                putState(state);
-            }
-            for(Class<? extends BuildingState> type : this.states.keys()){
-                getState(type).initState((ProductionBlock) this.block, this);
-            }
+            super.created();
         }
 
         @Override
@@ -269,7 +200,6 @@ public class ProductionBlock extends Block {
             if(progress >= 1f){
                 craft();
             }
-
             dumpOutputs();
         }
 
@@ -382,17 +312,6 @@ public class ProductionBlock extends Block {
 
         public ProductionBlock getBlock(){
             return (ProductionBlock) block;
-        }
-
-        @Override
-        public void draw(){
-            drawer.draw(this);
-        }
-
-        @Override
-        public void drawLight(){
-            super.drawLight();
-            drawer.drawLight(this);
         }
 
     }
