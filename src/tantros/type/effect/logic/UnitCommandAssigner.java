@@ -1,6 +1,5 @@
 package tantros.type.effect.logic;
 
-import arc.math.geom.Position;
 import arc.util.Log;
 import mindustry.ai.types.CommandAI;
 import mindustry.gen.Unit;

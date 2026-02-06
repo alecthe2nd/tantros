@@ -26,7 +26,6 @@ import mindustry.gen.Icon;
 import mindustry.gen.Player;
 import mindustry.gen.Sounds;
 import mindustry.logic.LAccess;
-import mindustry.type.Item;
 import mindustry.type.ItemStack;
 import mindustry.type.LiquidStack;
 import mindustry.type.PayloadStack;
@@ -221,7 +220,6 @@ public class RecipeCrafter extends ProductionBlock {
         public Recipe currentRecipe = null;
 
         public float progress;
-        public float totalProgress;
         public float warmup;
 
         //TODO sideHeat could be smooth
@@ -322,11 +320,6 @@ public class RecipeCrafter extends ProductionBlock {
         }
 
         @Override
-        public float warmup(){
-            return super.warmup;
-        }
-
-        @Override
         public double sense(LAccess sensor){
             if(sensor == LAccess.progress) return progress();
             //attempt to prevent wild total liquid fluctuation, at least for crafters
@@ -407,8 +400,7 @@ public class RecipeCrafter extends ProductionBlock {
                     label59: {
                         heater = (HeatBlock)build;
                         Block var9 = build.block;
-                        if (var9 instanceof HeatConductor) {
-                            HeatConductor cond = (HeatConductor)var9;
+                        if (var9 instanceof HeatConductor cond) {
                             if (cond.splitHeat) {
                                 var10000 = true;
                                 break label59;
@@ -420,10 +412,9 @@ public class RecipeCrafter extends ProductionBlock {
 
                     boolean split = var10000;
                     if (!build.block.rotate || !split && (this.relativeTo(build) + 2) % 4 == build.rotation || split && this.relativeTo(build) != build.rotation) {
-                        float add = 0;
+                        float add;
                         label70: {
-                            if (build instanceof HeatConductor.HeatConductorBuild) {
-                                HeatConductor.HeatConductorBuild hc = (HeatConductor.HeatConductorBuild)build;
+                            if (build instanceof HeatConductor.HeatConductorBuild hc) {
                                 if (hc.cameFrom.contains(this.id()) && this.outputHeat > 0) {
                                     break label70;
                                 }
@@ -443,8 +434,7 @@ public class RecipeCrafter extends ProductionBlock {
 
                         if (cameFrom != null) {
                             cameFrom.add(build.id);
-                            if (build instanceof HeatConductor.HeatConductorBuild) {
-                                HeatConductor.HeatConductorBuild hc = (HeatConductor.HeatConductorBuild)build;
+                            if (build instanceof HeatConductor.HeatConductorBuild hc) {
                                 cameFrom.addAll(hc.cameFrom);
                             }
                         }

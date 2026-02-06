@@ -5,7 +5,6 @@ import arc.util.Log;
 import mindustry.Vars;
 import mindustry.content.Items;
 import mindustry.game.EventType;
-import mindustry.gen.Unit;
 import mindustry.type.Category;
 import mindustry.world.Block;
 import mindustry.world.draw.DrawDefault;
@@ -46,9 +45,7 @@ public class TantrosLogic {
             effects.add(
                     new UnitLinkSetter<>(
                             OneLink.class,
-                            ()->{
-                                return new OneLink((b)->b.block.configurations.containsKey(AddUnitConfig.class));
-                                },
+                            ()-> new OneLink((b)->b.block.configurations.containsKey(AddUnitConfig.class)),
                             new RangeConfig(4*Vars.tilesize)
                     )
             );
@@ -72,8 +69,6 @@ public class TantrosLogic {
         }};
 
 
-        Events.on(EventType.ConfigEvent.class, (e)->{
-            Log.info("Config event detected at '" + e.tile + "' by player '"+ e.player + "' of value " + e.value);
-        });
+        Events.on(EventType.ConfigEvent.class, (e)-> Log.info("Config event detected at '" + e.tile + "' by player '"+ e.player + "' of value " + e.value));
     }
 }

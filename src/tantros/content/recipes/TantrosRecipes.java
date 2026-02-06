@@ -35,7 +35,7 @@ public class TantrosRecipes {
             cost = new Resource()
                    .withItems(ItemStack.with(Items.lead, 2, Items.sand, 3))
                    .withPower(1.5f);
-            ;
+
             output = new Resource()
                    .withItems(new ItemStack(Items.metaglass, 4))
             ;
@@ -47,7 +47,7 @@ public class TantrosRecipes {
             cost = new Resource()
                     .withItems(ItemStack.with(Items.copper, 3, Items.lead, 4, Items.titanium, 2, Items.silicon, 3))
                     .withPower(4f);
-            ;
+
             output = new Resource()
                     .withItems(new ItemStack(Items.surgeAlloy, 1))
             ;
@@ -61,7 +61,7 @@ public class TantrosRecipes {
                     .withItems(ItemStack.with(Items.silicon, 3))
                     .withLiquids(LiquidStack.with(Liquids.slag, 2f/3f))
                     .withPower(4f);
-            ;
+
             output = new Resource()
                     .withItems(new ItemStack(Items.surgeAlloy, 1))
             ;
@@ -72,7 +72,7 @@ public class TantrosRecipes {
             cost = new Resource()
                     .withItems(ItemStack.with(Items.coal, 2))
                     .withPower(0.5f);
-            ;
+
             output = new Resource()
                     .withItems(new ItemStack(Items.graphite, 1))
                     .withLiquids(new LiquidStack(Liquids.hydrogen, 0.5f / 60f))
@@ -87,7 +87,7 @@ public class TantrosRecipes {
                     .withItems(ItemStack.with(Items.coal, 1, Items.sand, 3))
                     .withLiquids(LiquidStack.with(Liquids.hydrogen, 0.5f/60f))
                     .withPower(120f/60f);
-            ;
+
             output = new Resource()
                     .withItems(new ItemStack(Items.silicon, 3))
             ;
@@ -219,7 +219,7 @@ public class TantrosRecipes {
                     ))
                     .withHeat(15)
                     .withPower(4);
-                    ;
+
             overheat = 10;
 
             maxEfficiency = 2;

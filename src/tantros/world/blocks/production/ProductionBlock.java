@@ -3,7 +3,6 @@ package tantros.world.blocks.production;
 import arc.math.Mathf;
 import arc.struct.EnumSet;
 import arc.struct.Seq;
-import arc.util.Log;
 import arc.util.io.Reads;
 import arc.util.io.Writes;
 import mindustry.content.Fx;
