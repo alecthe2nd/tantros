@@ -44,6 +44,10 @@ public interface BuildingState {
 
     }
 
+    default void onOverflow(Object resource){
+
+    }
+
     void reset();
 
 }

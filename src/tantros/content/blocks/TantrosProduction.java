@@ -90,7 +90,7 @@ public class TantrosProduction {
         }};
 
         siliconPressureSmelter = new RecipeCrafter("silicon-pressure-smelter"){{
-            requirements(Category.crafting, with(Items.copper, 30, Items.oxide, 20, Items.metaglass, 40, Items.graphite, 50));
+            requirements(Category.crafting, with(Items.copper, 30, Items.oxide, 20, Items.metaglass, 40));
 
             addRecipe(TantrosRecipes.siliconPressureSmelting);
             craftEffect = Fx.none;

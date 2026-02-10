@@ -29,7 +29,7 @@ public class TantrosDefense {
     public static void load(){
 
         copperBulkhead = new WallExtended("copper-bulkhead"){{
-            requirements(Category.defense, with(Items.copper, 4, Items.oxide, 2));
+            requirements(Category.defense, with(Items.copper, 6));
             health = 80 * wallHealthMultiplier;
             damageModifiers.add(new DamageModifer(DamageTypes.energy, 1.5f));
             researchCostMultiplier = 0.1f;

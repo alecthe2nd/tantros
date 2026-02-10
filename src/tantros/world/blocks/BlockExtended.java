@@ -2,6 +2,7 @@ package tantros.world.blocks;
 
 import arc.func.Prov;
 import arc.graphics.g2d.TextureRegion;
+import arc.math.Mathf;
 import arc.scene.ui.layout.Table;
 import arc.struct.ObjectMap;
 import arc.struct.OrderedSet;
@@ -10,6 +11,9 @@ import arc.util.Eachable;
 import arc.util.io.Reads;
 import arc.util.io.Writes;
 import mindustry.Vars;
+import mindustry.content.Liquids;
+import mindustry.entities.Damage;
+import mindustry.entities.Effect;
 import mindustry.entities.units.BuildPlan;
 import mindustry.gen.Building;
 import mindustry.gen.Call;
@@ -17,6 +21,7 @@ import mindustry.gen.Player;
 import mindustry.gen.Unit;
 import mindustry.type.Item;
 import mindustry.type.Liquid;
+import mindustry.type.LiquidStack;
 import mindustry.type.UnitType;
 import mindustry.world.Block;
 import mindustry.world.draw.DrawDefault;
@@ -25,11 +30,15 @@ import tantros.type.blockConfig.BlockConfig;
 import tantros.type.blockConfig.ConfigApplier;
 import tantros.type.blockInput.BlockInput;
 import tantros.type.blockInput.util.InputListener;
+import tantros.type.blockUtil.OnDestroyExplosionContext;
 import tantros.type.buildConfig.BuildConfigurationUnit;
 import tantros.type.buildingState.BuildingState;
 import tantros.type.effect.BlockEffect;
 import tantros.world.draw.extended.DrawBlockExtended;
 import tantros.world.draw.extended.DrawMultiExtended;
+
+import static mindustry.Vars.*;
+import static mindustry.Vars.state;
 
 public class BlockExtended extends Block {
 
@@ -40,6 +49,9 @@ public class BlockExtended extends Block {
     * BuildingStates not given a priority here will be skipped during saving.
      */
     public static OrderedSet<Class<? extends BuildingState>> order = new OrderedSet<>();
+
+    public static final LiquidStack tempLiquid = new LiquidStack(Liquids.water, 0f);
+    public static final OnDestroyExplosionContext tempContext = new OnDestroyExplosionContext();
 
     public DrawBlockExtended drawer = new DrawMultiExtended(new DrawDefault());
     public ObjectMap<Class<? extends BlockConfig>, ? super BlockConfig> blockConfigs = new ObjectMap<>();
@@ -250,6 +262,65 @@ public class BlockExtended extends Block {
                 if (conf != null && !(conf instanceof Building)) {
                     this.configured(builder, conf);
                 }
+            }
+        }
+
+        @Override
+        public void handleLiquid(Building source, Liquid liquid, float amount) {
+            if(amount > liquidCapacity - liquids.get(liquid)){
+                float overflow = amount - (liquidCapacity - liquids.get(liquid));
+                amount = amount - overflow;
+                tempLiquid.set(liquid, overflow);
+                for(Class<? extends BuildingState> type: this.states.keys()){
+                    BuildingState state = getState(type);
+                    state.onOverflow(tempLiquid);
+                }
+            }
+            super.handleLiquid(source, liquid, amount);
+        }
+
+        /** Called when the block is destroyed. The tile is still intact at this stage. */
+        @Override
+        public void onDestroyed(){
+            float explosiveness = block.baseExplosiveness;
+            float flammability = 0f;
+            float power = 0f;
+
+            if(block.hasItems){
+                for(Item item : content.items()){
+                    int amount = Math.min(items.get(item), explosionItemCap());
+                    explosiveness += item.explosiveness * amount;
+                    flammability += item.flammability * amount;
+                    power += item.charge * Mathf.pow(amount, 1.1f) * 150f;
+                }
+            }
+
+            if(block.hasLiquids){
+                flammability += liquids.sum((liquid, amount) -> liquid.flammability * amount / 2f);
+                explosiveness += liquids.sum((liquid, amount) -> liquid.explosiveness * amount / 2f);
+            }
+
+            if(block.consPower != null && block.consPower.buffered){
+                power += this.power.status * block.consPower.capacity;
+            }
+
+            if(block.hasLiquids && state.rules.damageExplosions){
+                liquids.each(this::splashLiquid);
+            }
+            tempContext.clear();
+            tempContext.explosiveness = explosiveness * 3.5f * block.explosivenessScale;
+            tempContext.flammability = flammability * block.flammabilityScale;
+            tempContext.radius = tilesize * block.size / 2f;
+
+            for(BlockEffect effect : effects){
+                effect.onDestroyedExplosion(this, tempContext);
+            }
+
+            //cap explosiveness so fluid tanks/vaults don't instakill units
+            Damage.dynamicExplosion(x, y,tempContext.flammability, tempContext.explosiveness, power, tempContext.radius, state.rules.damageExplosions, block.destroyEffect, block.baseShake);
+
+            if(block.createRubble && !floor().solid && !floor().isLiquid){
+                Effect.rubble(x, y, block.size);
             }
         }
 

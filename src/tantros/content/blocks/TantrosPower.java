@@ -27,7 +27,7 @@ public class TantrosPower {
     public static void load(){
 
         tidalTurbine = new ConsumeGenerator("tidal-turbine"){{
-            requirements(Category.power, with(Items.copper, 25, Items.lead, 10));
+            requirements(Category.power, with(Items.copper, 25, Items.oxide, 10));
             powerProduction = 1f;
             //customShadow = true;
 
