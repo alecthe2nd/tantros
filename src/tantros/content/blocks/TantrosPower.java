@@ -40,8 +40,8 @@ public class TantrosPower {
         }};
 
         tidalTurbine = new ConsumeGenerator("tidal-turbine"){{
-            requirements(Category.power, with(Items.copper, 25, Items.oxide, 10));
-            powerProduction = 1f;
+            requirements(Category.power, with(Items.copper, 25, Items.oxide, 10, Items.lead, 10));
+            powerProduction = 1f/2f;
             //customShadow = true;
 
             envEnabled = Env.underwater;

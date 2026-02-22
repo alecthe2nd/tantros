@@ -332,7 +332,7 @@ public class TantrosTurret {
 
 
         leviathan = new ItemTurret("leviathan"){{
-            float brange = range = 290;
+            float brange = range = 400;
 
             Prov<BulletType> wave = () -> new BasicBulletType(10f, 50){{
                 width = 20f;

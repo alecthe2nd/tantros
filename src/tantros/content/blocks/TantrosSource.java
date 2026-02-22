@@ -137,7 +137,7 @@ public class TantrosSource {
         siltSifter = new Sifter("silt-sifter"){{
             requirements(Category.production, with(Items.copper, 16, Items.oxide, 8));
             tier = 1;
-            drillTime = 600;
+            drillTime = 480;
             size = 2;
             liquidBoostIntensity = 1.0f;
 

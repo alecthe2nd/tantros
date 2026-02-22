@@ -6,7 +6,7 @@ import static mindustry.content.Planets.tantros;
 
 public class TantrosSectorPresets {
     public static SectorPreset embark,
-    oldReef;
+    shallows;
 
     public static void load(){
         embark = new SectorPreset("embark", tantros, 10){{
@@ -16,10 +16,10 @@ public class TantrosSectorPresets {
             difficulty = 1;
             overrideLaunchDefaults = true;
         }};
-        /*oldReef = new SectorPreset("old-reef", tantros, 83){{
+        shallows = new SectorPreset("shallows", tantros, 83){{
             captureWave = 10;
             difficulty = 1;
             overrideLaunchDefaults = true;
-        }};*/
+        }};
     }
 }
