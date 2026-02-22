@@ -16,10 +16,10 @@ public class TantrosSectorPresets {
             difficulty = 1;
             overrideLaunchDefaults = true;
         }};
-        oldReef = new SectorPreset("old-reef", tantros, 83){{
+        /*oldReef = new SectorPreset("old-reef", tantros, 83){{
             captureWave = 10;
             difficulty = 1;
             overrideLaunchDefaults = true;
-        }};
+        }};*/
     }
 }

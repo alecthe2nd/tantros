@@ -312,6 +312,5 @@ public class ProductionBlock extends BlockExtended {
         public ProductionBlock getBlock(){
             return (ProductionBlock) block;
         }
-
     }
 }

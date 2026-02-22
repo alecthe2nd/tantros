@@ -75,14 +75,14 @@ public class TantrosBlocks {
         //region storage
 
         coreShell = new CustomCoreBlock("core-shell"){{
-            requirements(Category.effect, BuildVisibility.coreZoneOnly, with(Items.copper, 800, Items.lead, 800, Items.metaglass, 1000));
+            requirements(Category.effect, BuildVisibility.coreZoneOnly, with(Items.copper, 800, Items.oxide, 600));
             alwaysUnlocked = true;
             squareSprite = false;
             isFirstTier = true;
             unitType = TantrosUnitTypes.enact;
             health = 1100;
             hasItems = true;
-            itemCapacity = 4000;
+            itemCapacity = 2000;
             size = 4;
             buildCostMultiplier = 2f;
 

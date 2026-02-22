@@ -19,6 +19,7 @@ public class Tantros extends Mod{
         EntityRegistry.register();
 
         TantrosVars.load();
+        TantrosItems.load();
         TantrosLiquids.load();
         TantrosUnitCommands.load();
         TantrosUnitTypes.load();

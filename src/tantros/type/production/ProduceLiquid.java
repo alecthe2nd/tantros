@@ -2,6 +2,8 @@ package tantros.type.production;
 
 import arc.scene.ui.layout.Table;
 import mindustry.type.LiquidStack;
+import mindustry.world.meta.Stat;
+import mindustry.world.meta.StatValues;
 import mindustry.world.meta.Stats;
 import tantros.type.Resource;
 import tantros.type.blockConfig.BoilerConfig;
@@ -26,6 +28,8 @@ public class ProduceLiquid extends Produce{
 
     @Override
     public void apply(ProductionBlock block) {
+        block.hasLiquids = true;
+        block.outputsLiquid = true;
     }
 
     @Override
@@ -78,6 +82,12 @@ public class ProduceLiquid extends Produce{
 
     @Override
     public void display(Stats stats, ProductionBlock block) {
+        stats.add(Stat.output, StatValues.liquids(1f, output));
+    }
 
+    @Override
+    public void setBars(ProductionBlock block) {
+        super.setBars(block);
+        block.addLiquidBar(output.liquid);
     }
 }

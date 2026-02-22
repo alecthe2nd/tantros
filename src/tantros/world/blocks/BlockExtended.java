@@ -24,6 +24,7 @@ import mindustry.type.Liquid;
 import mindustry.type.LiquidStack;
 import mindustry.type.UnitType;
 import mindustry.world.Block;
+import mindustry.world.consumers.Consume;
 import mindustry.world.draw.DrawDefault;
 import tantros.net.TantrosCalls;
 import tantros.type.blockConfig.BlockConfig;
@@ -34,6 +35,7 @@ import tantros.type.blockUtil.OnDestroyExplosionContext;
 import tantros.type.buildConfig.BuildConfigurationUnit;
 import tantros.type.buildingState.BuildingState;
 import tantros.type.effect.BlockEffect;
+import tantros.world.consumers.ExtendedConsume;
 import tantros.world.draw.extended.DrawBlockExtended;
 import tantros.world.draw.extended.DrawMultiExtended;
 
@@ -74,10 +76,6 @@ public class BlockExtended extends Block {
             effect.apply(this);
         }
 
-        for(BlockInput input: inputs){
-            input.apply(this);
-        }
-
     }
 
     @Override
@@ -95,6 +93,11 @@ public class BlockExtended extends Block {
 
     @Override
     public void postInit() {
+
+        for(BlockInput input: inputs){
+            input.apply(this);
+        }
+
         for(Class<? extends BlockConfig> configType : blockConfigs.keys()){
             BlockConfig config = getBlockConfig(configType);
             if(config != null){
@@ -382,6 +385,23 @@ public class BlockExtended extends Block {
             for(BlockInput input: inputs){
                 input.buildConfiguration(this, table);
             }
+        }
+
+        @Override
+        public void displayBars(Table table) {
+            super.displayBars(table);
+            for(Class<? extends BuildingState> type : this.states.keys()){
+                getState(type).displayBars(this, table);
+            }
+        }
+
+        @Override
+        public float efficiencyScale() {
+            float scale = 1f;
+            for(Consume consume: consumers){
+                scale *= consume.efficiencyMultiplier(this);
+            }
+            return scale;
         }
     }
 

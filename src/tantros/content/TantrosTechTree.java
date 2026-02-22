@@ -7,33 +7,34 @@ import mindustry.game.Objectives;
 import tantros.content.blocks.*;
 import tantros.content.planets.TantrosSectorPresets;
 import tantros.content.recipes.TantrosRecipes;
+import tantros.content.world.TantrosItems;
 import tantros.content.world.TantrosLiquids;
 import tantros.content.world.TantrosUnitTypes;
 
 public class TantrosTechTree {
 
     public static Objectives.Objective
-            copper, lead, graphite, steam, coal, metaglass, silicon,
-            embark, oldReef,
+            copper, lead, steam, coal, metaglass, silicon,
+            titanium,
+            embark,
             never
             ;
 
     public static void load(){
         copper = new Objectives.Produce(Items.copper);
         lead = new Objectives.Produce(Items.lead);
-        graphite = new Objectives.Produce(Items.graphite);
         steam = new Objectives.Produce(TantrosLiquids.steam);
         coal = new Objectives.Produce(Items.coal);
         metaglass = new Objectives.Produce(Items.metaglass);
         silicon = new Objectives.Produce(Items.silicon);
+        titanium = new Objectives.Produce(Items.titanium);
         embark = new Objectives.OnSector(TantrosSectorPresets.embark);
-        oldReef = new Objectives.OnSector(TantrosSectorPresets.oldReef);
         never = new Objectives.Produce(Items.dormantCyst);
         Planets.tantros.techTree = TechTree.nodeRoot("tantros", TantrosBlocks.coreShell, true, () -> {
             TechTree.node(TantrosSectorPresets.embark, () -> {
-                TechTree.node(TantrosSectorPresets.oldReef, Seq.with(new Objectives.SectorComplete(TantrosSectorPresets.embark)), () -> {
+                /*TechTree.node(TantrosSectorPresets.oldReef, Seq.with(new Objectives.SectorComplete(TantrosSectorPresets.embark)), () -> {
 
-                });
+                });*/
             });
             TechTree.node(TantrosDistribution.copperDuct, Seq.with(copper, embark), () -> {
                 TechTree.node(TantrosDistribution.copperDuctRouter, () -> {
@@ -49,10 +50,10 @@ public class TantrosTechTree {
                 });
             });
             TechTree.node(TantrosSource.copperBore, Seq.with(copper, embark), () -> {
-                TechTree.node(TantrosSource.effervescenceCollector, Seq.with(graphite, oldReef), () -> {
-                    TechTree.node(TantrosDistribution.copperPipeline, Seq.with(metaglass, oldReef), () -> {
-                        TechTree.node(TantrosDistribution.copperPipelineRouter, Seq.with(metaglass, oldReef), () -> {
-                            TechTree.node(TantrosDistribution.copperLiquidContainer, Seq.with(metaglass, oldReef), () -> {
+                TechTree.node(TantrosSource.effervescenceCollector, Seq.with(never), () -> {
+                    TechTree.node(TantrosDistribution.copperPipeline, Seq.with(metaglass, never), () -> {
+                        TechTree.node(TantrosDistribution.copperPipelineRouter, Seq.with(metaglass, never), () -> {
+                            TechTree.node(TantrosDistribution.copperLiquidContainer, Seq.with(metaglass, never), () -> {
                                 TechTree.node(TantrosDistribution.copperLiquidTank, Seq.with(never), () -> {
                                     TechTree.node(TantrosDistribution.copperLiquidSilo, Seq.with(never), () -> {
 
@@ -65,7 +66,7 @@ public class TantrosTechTree {
                                 });
                             });
                         });
-                        TechTree.node(TantrosDistribution.copperPipelineBridge, Seq.with(metaglass, oldReef), () -> {
+                        TechTree.node(TantrosDistribution.copperPipelineBridge, Seq.with(metaglass, never), () -> {
 
                         });
                     });
@@ -73,11 +74,11 @@ public class TantrosTechTree {
                 TechTree.node(TantrosSource.seawaterIntake, Seq.with(never), () -> {
                 });
 
-                TechTree.node(TantrosSource.siltSifter, Seq.with(new Objectives.Produce(Items.lead)), () -> {
+                TechTree.node(TantrosSource.siltSifter, Seq.with(never), () -> {
 
                 });
             });
-            TechTree.node(TantrosPower.tidalTurbine, Seq.with(copper, embark), () -> {
+            TechTree.node(TantrosPower.tidalTurbine, Seq.with(copper, never), () -> {
                 TechTree.node(TantrosBlocks.sealed_node, () -> {
                 });
                 TechTree.node(TantrosProduction.combustionHeater, Seq.with(never), () -> {
@@ -93,11 +94,11 @@ public class TantrosTechTree {
                     });
                 });
             });
-            TechTree.node(TantrosProduction.metaglassAnnealer, Seq.with(copper, embark), () -> {
-                TechTree.node(TantrosProduction.graphiticDecomposer, Seq.with(oldReef), () -> {
-                    TechTree.node(TantrosProduction.siliconPressureSmelter, Seq.with(oldReef, graphite), () -> {
+            TechTree.node(TantrosProduction.metaglassAnnealer, Seq.with(copper, never), () -> {
+                TechTree.node(TantrosProduction.siliconPressureSmelter, Seq.with(never), () -> {
 
-                    });
+                });
+                TechTree.node(TantrosProduction.graphiticDecomposer, Seq.with(never), () -> {
                     TechTree.node(TantrosProduction.electrolysisChamber, Seq.with(never), () -> {
 
                     });
@@ -109,12 +110,12 @@ public class TantrosTechTree {
             TechTree.node(TantrosDefense.copperBulkhead, Seq.with(copper, embark), () -> {
                 TechTree.node(TantrosTurret.bident, Seq.with(copper, embark), () -> {
                     TechTree.node(TantrosTurret.puncture, Seq.with(
-                            copper, graphite, oldReef
+                            copper, never
                     ), () -> {
 
                     });
                     TechTree.node(TantrosTurret.thrust, Seq.with(
-                            copper, graphite, steam
+                            copper, steam
                     ), () -> {
 
                     });
@@ -165,16 +166,37 @@ public class TantrosTechTree {
                                 new Objectives.Research(TantrosProduction.graphiticDecomposer)
                         ), () -> {
                             TechTree.nodeProduce(Items.graphite, () -> {
-                                TechTree.node(TantrosRecipes.siliconPressureSmelting, Seq.with(
-                                        new Objectives.Research(TantrosProduction.siliconPressureSmelter)
-                                ), () -> {
-                                    TechTree.nodeProduce(Items.silicon, () -> {
-                                        TechTree.nodeProduce(Items.titanium, () -> {
+                            });
 
-                                        });
+                        });
+                    });
+                    TechTree.nodeProduce(TantrosItems.bluecyst, () -> {
+                        TechTree.node(TantrosRecipes.siliconPressureSmelting, Seq.with(
+                                new Objectives.Research(TantrosProduction.siliconPressureSmelter)
+                        ), () -> {
+                            TechTree.nodeProduce(Items.silicon, () -> {
+                                TechTree.node(TantrosRecipes.surgeAnnealing, Seq.with(titanium), () -> {
+                                    TechTree.nodeProduce(Items.surgeAlloy, () -> {
                                     });
                                 });
                             });
+                        });
+                    });
+                    TechTree.nodeProduce(TantrosItems.redcyst, () -> {
+                    });
+                    TechTree.nodeProduce(Items.titanium, () -> {
+                        TechTree.nodeProduce(Items.thorium, () -> {
+                            TechTree.nodeProduce(Items.tungsten, () -> {
+                                TechTree.nodeProduce(Items.carbide, () -> {
+
+                                });
+                            });
+                            TechTree.nodeProduce(Items.phaseFabric, () -> {
+
+                            });
+                        });
+                        TechTree.nodeProduce(Items.plastanium, () -> {
+
                         });
                     });
                 });
@@ -182,8 +204,8 @@ public class TantrosTechTree {
             TechTree.node(TantrosEffect.deepSonar, Seq.with(never), ()->{
 
             });
-            TechTree.node(TantrosPayload.smallUnitAssembler, Seq.with(oldReef, silicon), ()->{
-                TechTree.node(TantrosUnitTypes.delegate, Seq.with(oldReef, silicon), ()->{
+            TechTree.node(TantrosPayload.smallUnitAssembler, Seq.with(never, silicon), ()->{
+                TechTree.node(TantrosUnitTypes.delegate, Seq.with(never, silicon), ()->{
 
                 });
             });

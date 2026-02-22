@@ -10,6 +10,7 @@ import tantros.gen.BurrowerUnit;
 import tantros.gen.Burrowerc;
 import tantros.graphics.overlays.SonarTracking;
 import tantros.type.buildingState.CooldownState;
+import tantros.type.buildingState.InputHeatState;
 import tantros.world.BuildingIndexer;
 import tantros.world.blocks.BlockExtended;
 import tantros.world.blocks.effect.GroundPenetratingRadar;
@@ -39,5 +40,7 @@ public class TantrosVars {
         });
 
         BlockExtended.order.add(CooldownState.class);
+
+        BlockExtended.order.add(InputHeatState.class);
     }
 }

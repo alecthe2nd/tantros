@@ -1,14 +1,15 @@
 package tantros.content.blocks;
 
+import arc.func.Prov;
 import arc.graphics.Color;
 import arc.math.Interp;
 import arc.struct.EnumSet;
+import arc.struct.Seq;
 import mindustry.content.*;
 import mindustry.entities.Effect;
-import mindustry.entities.bullet.BasicBulletType;
-import mindustry.entities.bullet.LiquidBulletType;
-import mindustry.entities.bullet.MissileBulletType;
+import mindustry.entities.bullet.*;
 import mindustry.entities.effect.MultiEffect;
+import mindustry.entities.effect.WaveEffect;
 import mindustry.entities.part.RegionPart;
 import mindustry.entities.pattern.ShootAlternate;
 import mindustry.gen.Sounds;
@@ -23,6 +24,7 @@ import mindustry.world.consumers.ConsumeLiquid;
 import mindustry.world.draw.DrawTurret;
 import mindustry.world.meta.BlockFlag;
 import mindustry.world.meta.Env;
+import tantros.content.TantrosFx;
 import tantros.content.world.TantrosLiquids;
 
 import static mindustry.type.ItemStack.with;
@@ -33,7 +35,8 @@ public class TantrosTurret {
             bident,
             jetstream,
             thrust,
-            puncture
+            puncture,
+            leviathan
             ;
 
     public static void load(){
@@ -142,7 +145,7 @@ public class TantrosTurret {
 
 
         jetstream = new LiquidTurret("jetstream"){{
-            requirements(Category.turret, with(Items.metaglass, 55, Items.oxide, 125, Items.graphite, 55));
+            requirements(Category.turret, with(Items.metaglass, 55, Items.oxide, 125, Items.titanium, 55));
             drawer = new DrawTurret("sealed-");
 
             ammo(
@@ -176,7 +179,7 @@ public class TantrosTurret {
         }};
         thrust = new ItemTurret("thrust"){
             {
-                requirements(Category.turret, with(Items.copper, 25, Items.graphite, 20, Items.metaglass, 15));
+                requirements(Category.turret, with(Items.copper, 25, Items.metaglass, 15, Items.oxide, 10));
 
                 ammo(
                         Items.copper,  new MissileBulletType(3.7f, 15){{
@@ -265,7 +268,7 @@ public class TantrosTurret {
         };
 
         puncture = new ItemTurret("puncture"){{
-            requirements(Category.turret, with(Items.oxide, 35, Items.metaglass,50, Items.graphite, 75));
+            requirements(Category.turret, with(Items.oxide, 35, Items.metaglass,50, Items.copper, 25));
 
             Effect sfe = new MultiEffect(Fx.shootBigColor, Fx.colorSparkBig);
             drawer = new DrawTurret("sealed-");
@@ -326,5 +329,142 @@ public class TantrosTurret {
             buildTime = 60f * 9f;
             limitRange(12f);
         }};
+
+
+        leviathan = new ItemTurret("leviathan"){{
+            float brange = range = 290;
+
+            Prov<BulletType> wave = () -> new BasicBulletType(10f, 50){{
+                width = 20f;
+                height = 24f;
+                lifetime = brange / this.speed;
+                knockback = 2;
+                this.pierce = true;
+                this.pierceCap = 3;
+
+                hitEffect = despawnEffect = Fx.hitBulletColor;
+                hitColor = backColor = trailColor = Pal.water;
+                frontColor = Pal.water;
+            }};
+            requirements(Category.turret, with(Items.thorium, 100, Items.oxide, 200, Items.metaglass,300, Items.surgeAlloy, 100));
+
+            drawer = new DrawTurret("sealed-"){{
+                parts.add(new RegionPart("-rear"){{
+                    progress = PartProgress.recoil.curve(Interp.pow2In);
+                    under = true;
+                    y = -8;
+                    moveY = -12;
+                }});
+                for(int i = 0; i < 3; i++){
+                    int finalI = 2 - i;
+                    parts.add(new RegionPart("-tentacle"){{
+                        progress = PartProgress.warmup.curve(Interp.pow2In);
+                        x = 6 + 2*finalI;
+                        y = -6 - 4* finalI;
+                        moveX = -2*finalI;
+                        moveY = 9 - 3*finalI;
+                        mirror = true;
+                        moveRot = -15f * finalI;
+                        moves.add(new PartMove(PartProgress.recoil.curve(Interp.pow2In), 0f, 0f, -15f));
+                    }});
+                }
+                parts.add(new RegionPart("-arm"){{
+                    progress = PartProgress.recoil.curve(Interp.pow2In).inv();
+                    x = -10;
+                    mirror = true;
+                    moveX = 4;
+                    moveY = -2;
+                }});
+            }};
+            ammo(
+                    Items.tungsten, new RailBulletType(){{
+                        shootEffect = new MultiEffect(Fx.instShoot);
+                        hitEffect = Fx.instHit;
+                        pierceEffect = Fx.railHit;
+                        smokeEffect = Fx.smokeCloud;
+                        pointEffect = TantrosFx.instTrailTungsten;
+                        despawnEffect = Fx.instBomb;
+                        pointEffectSpace = 20f;
+                        damage = 700;
+                        buildingDamageMultiplier = 0.2f;
+                        pierceDamageFactor = 1f;
+                        length = brange;
+                        hitShake = 6f;
+                        ammoMultiplier = 1f;
+                        bulletWave(this,
+                                wave,
+                                90,
+                                1);
+                    }},
+                    Items.surgeAlloy, new RailBulletType(){{
+                        shootEffect = Fx.instShoot;
+                        hitEffect = Fx.instHit;
+                        pierceEffect = Fx.railHit;
+                        smokeEffect = Fx.smokeCloud;
+                        pointEffect = Fx.instTrail;
+                        despawnEffect = Fx.instBomb;
+                        pointEffectSpace = 20f;
+                        damage = 1150;
+                        buildingDamageMultiplier = 0.2f;
+                        pierceDamageFactor = 1f;
+                        length = brange;
+                        hitShake = 6f;
+                        ammoMultiplier = 1f;
+                        bulletWave(this,
+                                wave,
+                                90,
+                                1);
+                    }},
+                    Items.carbide, new RailBulletType(){{
+                        shootEffect = Fx.instShoot;
+                        hitEffect = Fx.instHit;
+                        pierceEffect = Fx.railHit;
+                        smokeEffect = Fx.smokeCloud;
+                        pointEffect = TantrosFx.instTrailCarbide;
+                        despawnEffect = Fx.instBomb;
+                        pointEffectSpace = 20f;
+                        damage = 1500;
+                        buildingDamageMultiplier = 0.2f;
+                        pierceDamageFactor = 1f;
+                        length = brange;
+                        hitShake = 6f;
+                        ammoMultiplier = 1f;
+                        bulletWave(this,
+                                wave,
+                                90,
+                                1);
+                    }}
+            );
+            shootSound = Sounds.shootForeshadow;
+
+            targetUnderBlocks = false;
+            shake = 1f;
+            ammoPerShot = 1;
+            shootY = -2;
+            size = 5;
+            envEnabled |= Env.space;
+            reload = 100f;
+            recoil = 0f;
+            scaledHealth = 180;
+            rotateSpeed = 1.5f;
+            researchCostMultiplier = 0.05f;
+            buildTime = 60f * 9f;
+            trackingRange = range * 1.4f;
+
+            shootWarmupSpeed = 0.04f;
+            warmupMaintainTime = 60f;
+            minWarmup = 0.99f;
+
+            limitRange(12f);
+        }};
+    }
+
+    public static void bulletWave(BulletType parent, Prov<BulletType> bulletToWave, int count, float spacing){
+        for(int i = 0; i < count; i++){
+            float angleOffset = i * spacing - (count - 1) * spacing / 2f;
+            BulletType bullet = bulletToWave.get();
+            bullet.angleOffset += angleOffset;
+            parent.spawnBullets.add(bullet);
+        }
     }
 }

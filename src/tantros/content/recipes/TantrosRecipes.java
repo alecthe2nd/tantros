@@ -4,6 +4,7 @@ import mindustry.content.Items;
 import mindustry.content.Liquids;
 import mindustry.type.ItemStack;
 import mindustry.type.LiquidStack;
+import tantros.content.world.TantrosItems;
 import tantros.content.world.TantrosLiquids;
 import tantros.type.Recipe;
 import tantros.type.Resource;
@@ -26,7 +27,12 @@ public class TantrosRecipes {
         carbonOxidization,
         siliconOxidization,
         siliconWeaving,
-        phaseWeaving
+        phaseWeaving,
+        graphitePressing,
+        plastaniumCompressing,
+        coalOilification,
+        bluecystOilification,
+        redcystOilification
         ;
 
     public static void load(){
@@ -230,6 +236,97 @@ public class TantrosRecipes {
                     ))
             ;
             craftTime = 120f;
+        }};
+
+        graphitePressing = new Recipe("graphite-pressing"){{
+            cost = new Resource()
+                    .withItems(ItemStack.with(
+                            Items.coal, 2
+                    ))
+                    .withPower(15/60f);
+
+            output = new Resource()
+                    .withItems(
+                            ItemStack.with(
+                                    Items.graphite, 1f
+                            )
+                    )
+            ;
+            craftTime = 60f;
+        }};
+
+        plastaniumCompressing = new Recipe("plastanium-compressing"){{
+            cost = new Resource()
+                    .withItems(ItemStack.with(
+                            Items.titanium, 1
+                    ))
+                    .withLiquids(LiquidStack.with(
+                            Liquids.oil, 15f/60f
+                    ))
+                    .withPower(15/60f);
+
+            output = new Resource()
+                    .withItems(
+                            ItemStack.with(
+                                    Items.plastanium, 1f
+                            )
+                    )
+            ;
+            craftTime = 60f;
+        }};
+
+        coalOilification = new Recipe("coal-oilification"){{
+            cost = new Resource()
+                    .withItems(ItemStack.with(
+                            Items.coal, 1
+                    ))
+                    .withLiquids(LiquidStack.with(
+                            Liquids.hydrogen, 2/60f
+                    ))
+                    .withPower(1);
+
+            output = new Resource()
+                    .withLiquids(
+                            LiquidStack.with(
+                                    Liquids.oil, 5/60f
+                            )
+                    )
+            ;
+            craftTime = 60f;
+        }};
+
+        bluecystOilification = new Recipe("bluecyst-oilification"){{
+            cost = new Resource()
+                    .withItems(ItemStack.with(
+                            TantrosItems.bluecyst, 1
+                    ))
+                    .withPower(1);
+
+            output = new Resource()
+                    .withLiquids(
+                            LiquidStack.with(
+                                    Liquids.oil, 18/60f
+                            )
+                    )
+            ;
+            craftTime = 60f;
+        }};
+
+        redcystOilification = new Recipe("redcyst-oilification"){{
+            cost = new Resource()
+                    .withItems(ItemStack.with(
+                            TantrosItems.redcyst, 1
+                    ))
+                    .withPower(1);
+
+            output = new Resource()
+                    .withLiquids(
+                            LiquidStack.with(
+                                    Liquids.oil, 18/60f
+                            )
+                    )
+            ;
+            craftTime = 60f;
         }};
     }
 }

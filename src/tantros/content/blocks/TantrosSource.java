@@ -54,6 +54,7 @@ public class TantrosSource {
             boreholeDrill,
             seawaterIntake,
             effervescenceCollector,
+            effervescenceConcentrator,
             atmosphereIntakeTower
     ;
 
@@ -116,6 +117,7 @@ public class TantrosSource {
             size = 2;
             researchCost = with(Items.copper, 10);
             warmupEffectsProduction = true;
+            rotateDraw = false;
             regionRotated1 = -2;
             ignoreLineRotation = true;
 
@@ -327,6 +329,48 @@ public class TantrosSource {
             liquidCapacity = 10f;
             ambientSound = Sounds.loopExtract;
             ambientSoundVolume = 0.06f;
+
+            //consumePower(20f/60f);
+            consume(new ConsumeEnv(LocalEnv.with(Liquids.water)));
+
+        }};
+
+        effervescenceConcentrator = new ProductionBlock("effervescence-concentrator"){{
+            requirements(Category.production, with(Items.metaglass, 15, Items.graphite, 5, Items.copper, 10));
+            size = 3;
+            envEnabled |= Env.underwater;
+            //customShadow = true;
+
+            drawer = new DrawMultiExtended(
+                    new DrawParticles(){{
+                        color = Liquids.water.color;
+                        alpha = 0.4f;
+                        particleSize = 2f;
+                        particles = 20;
+                        particleRad = 16f;
+                        particleLife = 280f;
+                    }},
+                    new DrawRegion("-rotator", 0.6f, true),
+                    new DrawDefault(),
+                    new DrawParticles(){{
+                        color = Liquids.water.color;
+                        alpha = 0.4f;
+                        particleSize = 2f;
+                        particles = 10;
+                        particleRad = 10f;
+                        particleLife = 140f;
+                        reverse = true;
+                    }}
+            );
+            produce(
+                    new ProducePumpedLiquid(){{
+                        pumpAmount = 3f/60f;
+                    }}
+            );
+            liquidCapacity = 10f;
+            ambientSound = Sounds.loopExtract;
+            ambientSoundVolume = 0.06f;
+            squareSprite = false;
 
             //consumePower(20f/60f);
             consume(new ConsumeEnv(LocalEnv.with(Liquids.water)));

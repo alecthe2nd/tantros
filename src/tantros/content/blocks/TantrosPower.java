@@ -5,6 +5,7 @@ import mindustry.content.Liquids;
 import mindustry.type.Category;
 import mindustry.type.LiquidStack;
 import mindustry.world.Block;
+import mindustry.world.blocks.power.BeamNode;
 import mindustry.world.blocks.power.ConsumeGenerator;
 import mindustry.world.draw.*;
 import mindustry.world.meta.Env;
@@ -21,10 +22,22 @@ public class TantrosPower {
 
             tidalTurbine,
             steamTurbine,
-            steamDynamo
+            steamDynamo,
+            sealedBeamNode
                     ;
 
     public static void load(){
+
+
+        sealedBeamNode = new BeamNode("sealed-beam-node"){{
+            requirements(Category.power, with(Items.oxide, 4, Items.lead, 4));
+            consumesPower = outputsPower = true;
+            health = 90;
+            range = 8;
+            buildCostMultiplier = 2.5f;
+
+            consumePowerBuffered(1000f);
+        }};
 
         tidalTurbine = new ConsumeGenerator("tidal-turbine"){{
             requirements(Category.power, with(Items.copper, 25, Items.oxide, 10));

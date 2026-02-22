@@ -1,10 +1,15 @@
 package tantros.type.production;
 
+import arc.Core;
+import arc.math.Mathf;
 import mindustry.content.StatusEffects;
+import mindustry.graphics.Pal;
 import mindustry.type.LiquidStack;
 import mindustry.type.StatusEffect;
+import mindustry.ui.Bar;
 import tantros.type.blockConfig.BoilerConfig;
 import tantros.type.buildingState.BoilerPressureBuildup;
+import tantros.world.blocks.production.Boiler;
 import tantros.world.blocks.production.ProductionBlock;
 
 public class ProduceBoilerLiquid extends ProduceLiquid{
@@ -13,6 +18,7 @@ public class ProduceBoilerLiquid extends ProduceLiquid{
 
     public ProduceBoilerLiquid(LiquidStack output) {
         super(output);
+        ignoreLiquidFullness = true;
     }
 
     @Override

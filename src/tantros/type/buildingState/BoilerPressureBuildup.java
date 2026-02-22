@@ -1,7 +1,11 @@
 package tantros.type.buildingState;
 
+import arc.Core;
 import arc.math.Mathf;
+import arc.scene.ui.layout.Table;
+import mindustry.graphics.Pal;
 import mindustry.type.LiquidStack;
+import mindustry.ui.Bar;
 import tantros.type.blockConfig.BoilerConfig;
 import tantros.world.blocks.BlockExtended;
 
@@ -52,5 +56,16 @@ public class BoilerPressureBuildup implements BuildingState{
             pressure += liquidOverflow.amount;
             overflow += liquidOverflow.amount;
         }
+    }
+
+    @Override
+    public void displayBars(BlockExtended.BuildExtended build, Table table) {
+        BuildingState.addBar(table,
+                new Bar(
+                        () -> Core.bundle.format("bar.pressure", Mathf.round(Math.max(this.pressure, 0))),
+                        () -> Pal.lightishGray,
+                        () -> this.pressure / boilerConfig.pressureCapacity
+                )
+        );
     }
 }

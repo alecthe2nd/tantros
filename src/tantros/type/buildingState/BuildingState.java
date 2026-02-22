@@ -1,7 +1,9 @@
 package tantros.type.buildingState;
 
+import arc.scene.ui.layout.Table;
 import arc.util.io.Reads;
 import arc.util.io.Writes;
+import mindustry.ui.Bar;
 import tantros.util.io.ReadContext;
 import tantros.util.io.WriteContext;
 import tantros.world.blocks.BlockExtended;
@@ -17,6 +19,10 @@ public interface BuildingState {
     void onProximity(BlockExtended ownerType, BlockExtended.BuildExtended owner);
 
     default <E> void onConfig(BlockExtended.BuildExtended owner, E config){
+
+    }
+
+    default void displayBars(BlockExtended.BuildExtended build, Table table){
 
     }
 
@@ -49,5 +55,11 @@ public interface BuildingState {
     }
 
     void reset();
+
+    static void addBar(Table table, Bar bar){
+        if(bar == null) return;
+        table.add(bar).growX();
+        table.row();
+    }
 
 }

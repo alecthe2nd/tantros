@@ -42,7 +42,7 @@ public abstract class Produce {
 
     public abstract void apply(ProductionBlock block);
 
-    public abstract void build(ProductionBlock.ProductionBuild build, Table table);
+    public void build(ProductionBlock.ProductionBuild build, Table table){};
 
     public abstract void trigger(ProductionBlock.ProductionBuild build);
 
@@ -50,7 +50,9 @@ public abstract class Produce {
 
     public abstract boolean canCraft(ProductionBlock.ProductionBuild build);
 
-    public abstract float progressLimit(ProductionBlock.ProductionBuild build);
+    public float progressLimit(ProductionBlock.ProductionBuild build) {
+        return 1;
+    }
 
     public abstract void display(Stats stats, ProductionBlock block);
 

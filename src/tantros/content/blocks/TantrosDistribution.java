@@ -66,7 +66,7 @@ public class TantrosDistribution {
         }};
 
         copperDuctBridge = new DuctBridge("copper-duct-bridge"){{
-            requirements(Category.distribution, with(Items.copper, 3, Items.oxide, 3));
+            requirements(Category.distribution, with(Items.copper, 6));
             health = 90;
             speed = 10f;
             researchCost = with(Items.copper, 5);

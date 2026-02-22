@@ -18,9 +18,15 @@ import mindustry.world.meta.BlockGroup;
 import mindustry.world.meta.Env;
 import tantros.content.TantrosFx;
 import tantros.content.world.TantrosLiquids;
+import tantros.type.blockConfig.HeatConsumptionConfig;
+import tantros.type.production.ProduceBoilerLiquid;
 import tantros.world.blocks.production.Boiler;
+import tantros.world.blocks.production.ProductionBlock;
+import tantros.world.consumers.ConsumeHeat;
 import tantros.world.draw.DrawIconOverride;
 import tantros.world.draw.DrawLight;
+import tantros.world.draw.extended.DrawHeatInputExtended;
+import tantros.world.draw.extended.DrawMultiExtended;
 import tantros.world.draw.output.DrawLiquidOutputRegion;
 import tantros.world.draw.output.DrawMultiLiquidOutput;
 import tantros.world.draw.output.DrawOutputLiquid;
@@ -42,7 +48,9 @@ public class TantrosProduction {
             hydrogenCatalysisHeater,
             sealedElectricHeater,
             oxidizationHeater,
-            copperBoiler
+            copperBoiler,
+            simpleBoiler,
+            pneumaticPress
                     ;
 
     public static void load(){
@@ -287,6 +295,37 @@ public class TantrosProduction {
             }
         };
 
+        simpleBoiler = new ProductionBlock("simple-boiler"){{
+            requirements(Category.crafting, with(Items.copper, 30, Items.oxide, 20));
+
+            size = 2;
+            drawer = new DrawMultiExtended(
+                    new DrawRegion("-bottom"),
+                    new DrawLiquidTile(Liquids.water, 2f),
+                    new DrawBubbles(),
+                    new DrawParticles(){{
+                        color = TantrosLiquids.steam.color;
+                        reverse = true;
+                        particleSize = 2f;
+                        particles = 20;
+                        particleRad = 8f;
+                        particleLife = 60f;
+                    }},
+                    new DrawDefault(),
+                    //new DrawWarmupRegion(),
+                    new DrawHeatInputExtended()
+            );
+            squareSprite = false;
+
+            hasLiquids = true;
+            liquidCapacity = 40;
+            consume(new ConsumeHeat(
+               new HeatConsumptionConfig(5, 6)
+            ));
+            consumeLiquids(LiquidStack.with(Liquids.water, 5f/60f));
+            produce(new ProduceBoilerLiquid(new LiquidStack(TantrosLiquids.steam, 10f/60f)));
+        }};
+
         electrolysisChamber = new GenericCrafter("electrolysis-chamber"){{
             requirements(Category.crafting, with(Items.copper, 20, Items.metaglass, 30, Items.silicon, 15, Items.graphite, 20));
             size = 2;
@@ -331,5 +370,27 @@ public class TantrosProduction {
             outputLiquids = LiquidStack.with(Liquids.ozone, 2f / 60, Liquids.hydrogen, 3f / 60);
             liquidOutputDirections = new int[]{1, 3};
         }};
+
+        pneumaticPress = new RecipeCrafter("pneumatic-press"){{
+            requirements(Category.crafting, with(Items.copper, 40, Items.oxide, 20, Items.metaglass, 30));
+            addRecipe(TantrosRecipes.coalOilification);
+            addRecipe(TantrosRecipes.bluecystOilification);
+            addRecipe(TantrosRecipes.redcystOilification);
+            addRecipe(TantrosRecipes.graphitePressing);
+            addRecipe(TantrosRecipes.plastaniumCompressing);
+
+            craftEffect = new MultiEffect(
+                    TantrosFx.parallaxBubble,
+                    TantrosFx.parallaxBubble,
+                    Fx.steam
+                    );
+            size = 2;
+            itemCapacity = 30;
+            liquidCapacity = 30;
+
+            drawer = new DrawMulti(
+                    new DrawDefault()
+            );
+            }};
     }
 }

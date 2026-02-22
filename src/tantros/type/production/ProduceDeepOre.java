@@ -137,11 +137,6 @@ public class ProduceDeepOre extends Produce{
     }
 
     @Override
-    public float progressLimit(ProductionBlock.ProductionBuild build) {
-        return 1;
-    }
-
-    @Override
     public void display(Stats stats, ProductionBlock block) {
         stats.add(Stat.drillTier, StatValues.drillables(block.productionTime, hardnessMultiplier, block.size * block.size, drillMultipliers, b -> b instanceof Floor f && !f.wallOre && f.itemDrop != null &&
                 f.itemDrop.hardness <= config.tier && (config.blockedItems == null || !config.blockedItems.contains(f.itemDrop)) && (indexer.isBlockPresent(f) || state.isMenu())));
