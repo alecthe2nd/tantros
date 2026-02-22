@@ -6,9 +6,11 @@ import arc.scene.ui.layout.Table;
 import arc.struct.Seq;
 import mindustry.type.ItemStack;
 import mindustry.type.LiquidStack;
+import mindustry.ui.Bar;
 import mindustry.world.meta.Stats;
 import tantros.type.Recipe;
 import tantros.type.Resource;
+import tantros.ui.UIUtil;
 import tantros.world.blocks.production.ProductionBlock;
 
 public class ProduceRecipeDynamic extends Produce{
@@ -145,5 +147,22 @@ public class ProduceRecipeDynamic extends Produce{
     @Override
     public float productionTimeMultiplier(ProductionBlock.ProductionBuild build){
         return this.recipe.get(build).craftTime;
+    }
+
+    @Override
+    public void displayBars(ProductionBlock.ProductionBuild owner, Table table) {
+        Recipe current = recipe.get(owner);
+        //set up liquid bars for liquid outputs
+        if(current.output.liquids != null && current.output.liquids.size > 0){
+
+            //then display output buffer
+            for(var stack : current.output.liquids){
+                UIUtil.addBar(table, new Bar(
+                    () -> stack.liquid.localizedName,
+                        stack.liquid::barColor,
+                    () -> owner.liquids.get(stack.liquid) / owner.block.liquidCapacity
+                ));
+            }
+        }
     }
 }

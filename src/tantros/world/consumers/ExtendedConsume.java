@@ -85,4 +85,8 @@ public class ExtendedConsume extends Consume {
     public void apply(BlockExtended block) {
         super.apply(block);
     }
+
+    public void displayBars(BlockExtended.BuildExtended build, Table table){
+
+    }
 }

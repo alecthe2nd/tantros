@@ -1,5 +1,6 @@
 package tantros.world.blocks;
 
+import arc.func.Func;
 import arc.func.Prov;
 import arc.graphics.g2d.TextureRegion;
 import arc.math.Mathf;
@@ -23,6 +24,7 @@ import mindustry.type.Item;
 import mindustry.type.Liquid;
 import mindustry.type.LiquidStack;
 import mindustry.type.UnitType;
+import mindustry.ui.Bar;
 import mindustry.world.Block;
 import mindustry.world.consumers.Consume;
 import mindustry.world.draw.DrawDefault;
@@ -135,6 +137,7 @@ public class BlockExtended extends Block {
         public ObjectMap<Class<? extends BuildingState>, ? super BuildingState> states = new ObjectMap<>();
 
         public Seq<InputListener<?>> listeners = new Seq<>();
+
 
         @Override
         public void draw(){
@@ -392,6 +395,12 @@ public class BlockExtended extends Block {
             super.displayBars(table);
             for(Class<? extends BuildingState> type : this.states.keys()){
                 getState(type).displayBars(this, table);
+            }
+
+            for(Consume consume: consumers){
+                if(consume instanceof ExtendedConsume extend){
+                    extend.displayBars(this, table);
+                }
             }
         }
 

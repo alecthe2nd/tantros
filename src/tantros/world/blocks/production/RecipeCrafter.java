@@ -1,5 +1,6 @@
 package tantros.world.blocks.production;
 
+import arc.Core;
 import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.TextureRegion;
 import arc.math.Mathf;
@@ -25,10 +26,12 @@ import mindustry.gen.Building;
 import mindustry.gen.Icon;
 import mindustry.gen.Player;
 import mindustry.gen.Sounds;
+import mindustry.graphics.Pal;
 import mindustry.logic.LAccess;
 import mindustry.type.ItemStack;
 import mindustry.type.LiquidStack;
 import mindustry.type.PayloadStack;
+import mindustry.ui.Bar;
 import mindustry.ui.Styles;
 import mindustry.world.Block;
 import mindustry.world.Tile;
@@ -42,6 +45,7 @@ import mindustry.world.meta.BlockFlag;
 import tantros.content.recipes.TantrosRecipes;
 import tantros.type.Recipe;
 import tantros.type.production.ProduceRecipeDynamic;
+import tantros.ui.UIUtil;
 import tantros.world.consumers.ConsumeRecipesDynamic;
 
 import java.util.Arrays;
@@ -113,6 +117,7 @@ public class RecipeCrafter extends ProductionBlock {
         //}
 
         super.init();
+        removeBar("items");
     }
 
     public void initRecipe(Recipe recipe){
@@ -229,6 +234,19 @@ public class RecipeCrafter extends ProductionBlock {
 
         public Recipe currentRecipe(){
             return currentRecipe != null ? currentRecipe : TantrosRecipes.nothing;
+        }
+
+        @Override
+        public void displayBars(Table table) {
+            super.displayBars(table);
+            Recipe current = currentRecipe();
+            if(current.cost.heat > 0 || current.overheat > 0){
+                UIUtil.addBar(table, new Bar(() ->
+                        Core.bundle.format("bar.heatpercent", (int) (this.inputHeat + 0.01f), (int)(heatEfficiency() * 100 + 0.01f)),
+                        () -> Pal.lightOrange,
+                        () -> this.inputHeat / current.cost.heat)
+                );
+            }
         }
 
         @Override
@@ -369,6 +387,11 @@ public class RecipeCrafter extends ProductionBlock {
 
         @Override
         public float efficiencyScale(){
+            float scale = super.efficiencyScale();
+            return scale * heatEfficiency();
+        }
+
+        public float heatEfficiency(){
             if(currentRecipe == null) return 0f;
             float over = Math.max(inputHeat - currentRecipe.cost.heat, 0f);
             return Math.min(Mathf.clamp((currentRecipe.cost.heat > 0f)?(inputHeat / currentRecipe.cost.heat):1f) + ((currentRecipe.overheat > 0f)?(over / currentRecipe.overheat):0f) * currentRecipe.overheatScale, currentRecipe.maxEfficiency);

@@ -74,7 +74,7 @@ public class TantrosProduction {
 
         graphiticDecomposer = new RecipeCrafter("graphitic-decomposer"){{
             requirements(Category.crafting, with(Items.copper, 40, Items.oxide, 20, Items.metaglass, 30));
-            addRecipe(TantrosRecipes.coalDecomposition);
+            addRecipe(TantrosRecipes.bluecystDecomposition);
             craftEffect = Fx.none;
             size = 2;
             itemCapacity = 30;
@@ -113,7 +113,6 @@ public class TantrosProduction {
             ambientSound = Sounds.loopSmelter;
             ambientSoundVolume = 0.12f;
             researchCostMultiplier = 0.5f;
-            researchCostMultipliers.put(Items.graphite,0.07f);
         }};
 
         nanostructureWeaver = new RecipeCrafter("nanostructure-weaver"){{
@@ -135,7 +134,6 @@ public class TantrosProduction {
             ambientSound = Sounds.loopSmelter;
             ambientSoundVolume = 0.12f;
             researchCostMultiplier = 0.5f;
-            researchCostMultipliers.put(Items.graphite,0.07f);
         }};
 
         combustionHeater = new RecipeCrafter("combustion-heater"){
@@ -143,8 +141,6 @@ public class TantrosProduction {
                 requirements(Category.crafting, with(Items.copper, 20, Items.oxide, 10, Items.metaglass, 30));
                 craftEffect = new MultiEffect(TantrosFx.parallaxBubble,TantrosFx.parallaxBubble,TantrosFx.parallaxBubble,TantrosFx.parallaxBubble);
 
-                addRecipe(TantrosRecipes.coalCombustion);
-                addRecipe(TantrosRecipes.graphiteCombustion);
                 addRecipe(TantrosRecipes.hydrogenCombustion);
                 size = 2;
                 drawer = new DrawMulti(
@@ -373,7 +369,6 @@ public class TantrosProduction {
 
         pneumaticPress = new RecipeCrafter("pneumatic-press"){{
             requirements(Category.crafting, with(Items.copper, 40, Items.oxide, 20, Items.metaglass, 30));
-            addRecipe(TantrosRecipes.coalOilification);
             addRecipe(TantrosRecipes.bluecystOilification);
             addRecipe(TantrosRecipes.redcystOilification);
             addRecipe(TantrosRecipes.graphitePressing);

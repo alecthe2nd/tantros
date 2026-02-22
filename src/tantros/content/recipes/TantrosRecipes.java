@@ -16,10 +16,8 @@ public class TantrosRecipes {
         metaglassAnnealing,
         surgeAnnealing,
         slagSurgeAnnealing,
-        coalDecomposition,
+        bluecystDecomposition,
         siliconPressureSmelting,
-        coalCombustion,
-        graphiteCombustion,
         hydrogenCombustion,
         electricHeating,
         berylliumOxidization,
@@ -30,7 +28,6 @@ public class TantrosRecipes {
         phaseWeaving,
         graphitePressing,
         plastaniumCompressing,
-        coalOilification,
         bluecystOilification,
         redcystOilification
         ;
@@ -74,9 +71,9 @@ public class TantrosRecipes {
             overheat = 5;
             craftTime = 120f;
         }};
-        coalDecomposition = new Recipe("coal-decomposition"){{
+        bluecystDecomposition = new Recipe("bluecyst-decomposition"){{
             cost = new Resource()
-                    .withItems(ItemStack.with(Items.coal, 2))
+                    .withItems(ItemStack.with(TantrosItems.bluecyst, 2))
                     .withPower(0.5f);
 
             output = new Resource()
@@ -107,28 +104,6 @@ public class TantrosRecipes {
             ;
             output = new Resource()
                     .withHeat(12f).withItems(ItemStack.with(Items.sand, 3))
-            ;
-            craftTime = 100f;
-        }};
-
-        coalCombustion = new Recipe("coal-combustion"){{
-            cost = new Resource()
-                    .withItems(ItemStack.with(Items.coal, 1))
-                    .withLiquids(LiquidStack.with(Liquids.ozone, 1f/60f))
-            ;
-            output = new Resource()
-                    .withHeat(5)
-            ;
-            craftTime = 120f;
-        }};
-
-        graphiteCombustion = new Recipe("graphite-combustion"){{
-            cost = new Resource()
-                    .withItems(ItemStack.with(Items.graphite, 1))
-                    .withLiquids(LiquidStack.with(Liquids.ozone, 1.2f/60f))
-            ;
-            output = new Resource()
-                    .withHeat(5f)
             ;
             craftTime = 100f;
         }};
@@ -269,26 +244,6 @@ public class TantrosRecipes {
                     .withItems(
                             ItemStack.with(
                                     Items.plastanium, 1f
-                            )
-                    )
-            ;
-            craftTime = 60f;
-        }};
-
-        coalOilification = new Recipe("coal-oilification"){{
-            cost = new Resource()
-                    .withItems(ItemStack.with(
-                            Items.coal, 1
-                    ))
-                    .withLiquids(LiquidStack.with(
-                            Liquids.hydrogen, 2/60f
-                    ))
-                    .withPower(1);
-
-            output = new Resource()
-                    .withLiquids(
-                            LiquidStack.with(
-                                    Liquids.oil, 5/60f
                             )
                     )
             ;

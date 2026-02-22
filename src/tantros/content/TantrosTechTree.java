@@ -14,7 +14,7 @@ import tantros.content.world.TantrosUnitTypes;
 public class TantrosTechTree {
 
     public static Objectives.Objective
-            copper, lead, steam, coal, metaglass, silicon,
+            copper, lead, steam, metaglass, silicon,
             titanium,
             embark, shallows,
             never
@@ -24,7 +24,6 @@ public class TantrosTechTree {
         copper = new Objectives.Produce(Items.copper);
         lead = new Objectives.Produce(Items.lead);
         steam = new Objectives.Produce(TantrosLiquids.steam);
-        coal = new Objectives.Produce(Items.coal);
         metaglass = new Objectives.Produce(Items.metaglass);
         silicon = new Objectives.Produce(Items.silicon);
         titanium = new Objectives.Produce(Items.titanium);
@@ -146,32 +145,17 @@ public class TantrosTechTree {
                         ), () -> {
                             TechTree.nodeProduce(Items.metaglass, () -> {
                                 TechTree.nodeProduce(Liquids.water, () -> {
-                                    TechTree.nodeProduce(Liquids.hydrogen, () -> {
-
-                                    });
-                                    TechTree.nodeProduce(Liquids.ozone, () -> {
-
-                                    });
                                     TechTree.nodeProduce(TantrosLiquids.steam, () -> {
-
-                                    });
-                                    TechTree.nodeProduce(Liquids.nitrogen, () -> {
 
                                     });
                                 });
                             });
                         });
                     });
-                    TechTree.nodeProduce(Items.coal, () -> {
-                        TechTree.node(TantrosRecipes.coalDecomposition, Seq.with(
-                                new Objectives.Research(TantrosProduction.graphiticDecomposer)
-                        ), () -> {
-                            TechTree.nodeProduce(Items.graphite, () -> {
-                            });
+                    TechTree.nodeProduce(TantrosItems.bluecyst, () -> {
+                        TechTree.nodeProduce(Liquids.hydrogen, () -> {
 
                         });
-                    });
-                    TechTree.nodeProduce(TantrosItems.bluecyst, () -> {
                         TechTree.node(TantrosRecipes.siliconPressureSmelting, Seq.with(
                                 new Objectives.Research(TantrosProduction.siliconPressureSmelter)
                         ), () -> {
@@ -184,6 +168,9 @@ public class TantrosTechTree {
                         });
                     });
                     TechTree.nodeProduce(TantrosItems.redcyst, () -> {
+                        TechTree.nodeProduce(Liquids.ozone, () -> {
+
+                        });
                     });
                     TechTree.nodeProduce(Items.titanium, () -> {
                         TechTree.nodeProduce(Items.thorium, () -> {

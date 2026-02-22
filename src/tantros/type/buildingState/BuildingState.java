@@ -56,10 +56,4 @@ public interface BuildingState {
 
     void reset();
 
-    static void addBar(Table table, Bar bar){
-        if(bar == null) return;
-        table.add(bar).growX();
-        table.row();
-    }
-
 }

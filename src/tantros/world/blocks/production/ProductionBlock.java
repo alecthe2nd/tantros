@@ -1,6 +1,7 @@
 package tantros.world.blocks.production;
 
 import arc.math.Mathf;
+import arc.scene.ui.layout.Table;
 import arc.struct.EnumSet;
 import arc.struct.Seq;
 import arc.util.io.Reads;
@@ -129,6 +130,13 @@ public class ProductionBlock extends BlockExtended {
 
         public float powerProductionEfficiency = 0.0f;
 
+        @Override
+        public void displayBars(Table table) {
+            super.displayBars(table);
+            for(Produce producer: producers){
+                producer.displayBars(this, table);
+            }
+        }
 
         @Override
         public void created() {

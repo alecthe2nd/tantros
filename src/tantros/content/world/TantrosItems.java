@@ -5,8 +5,7 @@ import mindustry.type.Item;
 public class TantrosItems {
     public static Item
     bluecyst,
-    redcyst,
-    waste
+    redcyst
     ;
 
     public static void load(){
@@ -18,11 +17,6 @@ public class TantrosItems {
         redcyst = new Item("redcyst"){{
             flammability = 1f;
             explosiveness = 0.5f;
-            buildable = false;
-        }};
-
-        waste = new Item("waste"){{
-            flammability = 0.4f;
             buildable = false;
         }};
     }

@@ -13,6 +13,7 @@ import mindustry.world.Block;
 import mindustry.world.blocks.heat.HeatBlock;
 import mindustry.world.blocks.heat.HeatConductor;
 import tantros.type.blockConfig.HeatConsumptionConfig;
+import tantros.ui.UIUtil;
 import tantros.util.io.ReadContext;
 import tantros.util.io.WriteContext;
 import tantros.world.blocks.BlockExtended;
@@ -50,13 +51,13 @@ public class InputHeatState implements BuildingState{
     @Override
     public void displayBars(BlockExtended.BuildExtended build, Table table) {
         if(consumptionConfig == null) {
-            BuildingState.addBar(table, new Bar(() ->
+            UIUtil.addBar(table, new Bar(() ->
                     Core.bundle.format("bar.heatamount", (int) (this.heat + 0.01f)),
                     () -> Pal.lightOrange,
                     () -> Mathf.clamp(this.heat))
             );
         } else {
-            BuildingState.addBar(table, new Bar(() ->
+            UIUtil.addBar(table, new Bar(() ->
                     Core.bundle.format("bar.heatpercent", (int) (this.heat + 0.01f), (int)(consumptionConfig.computeEfficiency(this.heat) * 100 + 0.01f)),
                     () -> Pal.lightOrange,
                     () -> this.heat / consumptionConfig.heatPerEfficiency)

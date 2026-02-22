@@ -146,7 +146,12 @@ public class ProduceWallOre extends Produce{
 
     @Override
     public void setBars(ProductionBlock block) {
-        block.addBar("drillspeed", (ProductionBlock.ProductionBuild e) ->
-                new Bar(() -> Core.bundle.format("bar.drillspeed", Strings.fixed(60 / e.currentProductionTime * e.timeScale() * e.block.size, 2)), () -> Pal.ammo, () -> e.warmup));
+        block.addBar("drillspeed", (ProductionBlock.ProductionBuild owner) ->
+                new Bar(
+                        () -> {
+                            LaserState laserState = owner.getState(LaserState.class);
+                            return Core.bundle.format("bar.drillspeed", Strings.fixed(60 / owner.currentProductionTime * owner.timeScale() * laserState.facingAmount, 2));
+                        },
+                        () -> Pal.ammo, () -> owner.warmup));
     }
 }

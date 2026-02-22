@@ -6,6 +6,7 @@ import mindustry.game.Team;
 import mindustry.world.Tile;
 import mindustry.world.meta.Stats;
 import tantros.type.Resource;
+import tantros.type.buildingState.BuildingState;
 import tantros.world.blocks.production.ProductionBlock;
 
 public abstract class Produce {
@@ -61,7 +62,13 @@ public abstract class Produce {
         return 1f;
     }
 
+    /** Sets the static bars of the owner block. (Static bars are not added or removed dynamically for some reason.)*/
     public void setBars(ProductionBlock block){
+
+    }
+
+    /** Sets the dynamic bars of the owner building. (Dynamic bars are added and removed dynamically, for when the interface needs to be able to adapt to state.)*/
+    public void displayBars(ProductionBlock.ProductionBuild owner, Table table) {
 
     }
 

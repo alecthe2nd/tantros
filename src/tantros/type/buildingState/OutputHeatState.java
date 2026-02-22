@@ -6,6 +6,7 @@ import mindustry.graphics.Pal;
 import mindustry.ui.Bar;
 import mindustry.world.blocks.heat.HeatProducer;
 import tantros.type.blockConfig.HeatProductionConfig;
+import tantros.ui.UIUtil;
 import tantros.util.io.ReadContext;
 import tantros.util.io.WriteContext;
 import tantros.world.blocks.BlockExtended;
@@ -70,7 +71,7 @@ public class OutputHeatState implements BuildingState{
     @Override
     public void displayBars(BlockExtended.BuildExtended build, Table table) {
 
-        BuildingState.addBar(table,
+        UIUtil.addBar(table,
                 new Bar(
                     "bar.heat",
                     Pal.lightOrange,
