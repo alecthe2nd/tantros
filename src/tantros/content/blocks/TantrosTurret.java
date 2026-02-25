@@ -53,7 +53,7 @@ public class TantrosTurret {
                         hitColor = backColor = trailColor = Pal.copperAmmoBack;
                         frontColor = Pal.copperAmmoFront;
                     }},
-                    Items.oxide, new BasicBulletType(1.5f, 6){{
+                    Items.oxide, new BasicBulletType(1.5f, 8){{
                         width = 7f;
                         height = 9f;
                         lifetime = 60f;
@@ -83,18 +83,18 @@ public class TantrosTurret {
                             hitEffect = despawnEffect = Fx.hitBulletColor;
                         }};
                     }},
-                    Items.metaglass, new BasicBulletType(3.5f, 18){{
+                    Items.metaglass, new BasicBulletType(3.5f, 12){{
                         width = 9f;
                         height = 12f;
                         ammoMultiplier = 4;
                         lifetime = 60f;
-                        rangeChange = 80f;
+                        rangeChange = 24f;
 
                         hitEffect = despawnEffect = Fx.hitBulletColor;
                         hitColor = backColor = trailColor = Pal.glassAmmoBack;
                         frontColor = Pal.glassAmmoFront;
                     }},
-                    Items.silicon, new BasicBulletType(3f, 12){{
+                    Items.silicon, new BasicBulletType(3f, 9){{
                         width = 7f;
                         height = 9f;
                         homingPower = 0.2f;
@@ -273,14 +273,66 @@ public class TantrosTurret {
             Effect sfe = new MultiEffect(Fx.shootBigColor, Fx.colorSparkBig);
             drawer = new DrawTurret("sealed-");
             ammo(
-                    Items.metaglass, new BasicBulletType(7.5f, 14){{
+                    Items.copper, new BasicBulletType(8f, 10){{
+                        width = 12f;
+                        hitSize = 7f;
+                        height = 20f;
+                        shootEffect = sfe;
+                        smokeEffect = Fx.shootBigSmoke;
+                        ammoMultiplier = 3;
+                        reloadMultiplier = 1.2f;
+                        pierceCap = 2;
+                        pierce = true;
+                        pierceBuilding = true;
+                        hitColor = backColor = trailColor = Pal.copperAmmoBack;
+                        frontColor = Pal.copperAmmoFront;
+                        trailWidth = 2.2f;
+                        trailLength = 11;
+                        hitEffect = despawnEffect = Fx.hitBulletColor;
+                        //buildingDamageMultiplier = 0.3f;
+                    }},
+                    Items.oxide, new BasicBulletType(6f, 7){{
+                        width = 12f;
+                        hitSize = 7f;
+                        height = 20f;
+                        shootEffect = sfe;
+                        smokeEffect = Fx.shootBigSmoke;
+                        pierceCap = 2;
+                        pierce = true;
+                        pierceBuilding = true;
+                        hitColor = backColor = trailColor = Items.oxide.color;
+                        frontColor = Color.white;
+                        trailWidth = 2.1f;
+                        trailLength = 10;
+                        hitEffect = despawnEffect = Fx.hitBulletColor;
+                        ammoMultiplier = 2;
+
+                        fragBullets = 3;
+                        fragRandomSpread = 0f;
+                        fragSpread = 25f;
+                        fragVelocityMin = 1f;
+
+                        fragBullet = new BasicBulletType(7f, 3f){{
+                            lifetime = 4f;
+                            width = 11f;
+                            height = 14f;
+                            hitSize = 7f;
+                            shootEffect = new MultiEffect(Fx.shootBigColor, Fx.colorSparkBig);
+                            hitColor = backColor = trailColor = Color.valueOf("ab8ec5");
+                            frontColor = Color.white;
+                            trailWidth = 1.8f;
+                            trailLength = 11;
+                            hitEffect = despawnEffect = Fx.hitBulletColor;
+                        }};
+                    }},
+                    Items.metaglass, new BasicBulletType(7.5f, 16){{
                         width = 12f;
                         hitSize = 7f;
                         height = 20f;
                         shootEffect = sfe;
                         smokeEffect = Fx.shootBigSmoke;
                         ammoMultiplier = 1;
-                        pierceCap = 2;
+                        pierceCap = 3;
                         pierce = true;
                         pierceBuilding = true;
                         hitColor = backColor = trailColor = Pal.glassAmmoFront;
@@ -289,6 +341,7 @@ public class TantrosTurret {
                         trailLength = 10;
                         hitEffect = despawnEffect = Fx.hitBulletColor;
                         //buildingDamageMultiplier = 0.3f;
+                        rangeChange = 32;
                     }},
                     Items.graphite, new BasicBulletType(8f, 12){{
                         width = 13f;
@@ -321,7 +374,7 @@ public class TantrosTurret {
             envEnabled |= Env.space;
             reload = 40f;
             recoil = 2f;
-            range = 90;
+            range = 100;
             shootCone = 3f;
             scaledHealth = 180;
             rotateSpeed = 1.5f;

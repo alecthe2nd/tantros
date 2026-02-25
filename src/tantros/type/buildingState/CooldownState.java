@@ -41,15 +41,12 @@ public class CooldownState implements BuildingState{
 
     @Override
     public void write(WriteContext write) {
-        Log.info("Wrote cooldown");
         write.f(cooldown);
     }
 
     @Override
     public void read(ReadContext read) {
-        Log.info("Read cooldown");
         cooldown = read.f();
-        Log.info(cooldown);
     }
 
     @Override
@@ -60,5 +57,6 @@ public class CooldownState implements BuildingState{
     @Override
     public void reset() {
         cooldown = 0;
+        Log.warn("Resetting cooldown");
     }
 }

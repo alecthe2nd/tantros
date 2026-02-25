@@ -24,7 +24,9 @@ import mindustry.world.meta.BuildVisibility;
 import mindustry.world.meta.Env;
 import tantros.content.recipes.TantrosRecipes;
 import tantros.type.Resource;
+import tantros.type.effect.IsBuilding;
 import tantros.type.production.*;
+import tantros.world.blocks.BlockExtended;
 import tantros.world.blocks.drill.CustomDrawerBeamDrill;
 import tantros.world.blocks.drill.CustomDrawerDrill;
 import tantros.world.blocks.production.ProductionBlock;
@@ -46,6 +48,7 @@ public class TantrosSource {
     public static Block
             testProdBlock,
             testBlock,
+            testExtended,
             mechanicalBore,
             copperBore,
             siltSifter,
@@ -90,6 +93,14 @@ public class TantrosSource {
             productionTime = 100;
 
             addRecipe(TantrosRecipes.metaglassAnnealing);
+        }};
+
+        testExtended = new BlockExtended("test-extended"){{
+            requirements(Category.production, with(Items.copper, 12));
+
+            size = 2;
+
+            effects.add(new IsBuilding());
         }};
 
         mechanicalBore = new CustomDrawerBeamDrill("mechanical-bore"){{
