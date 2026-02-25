@@ -19,7 +19,7 @@ public class TantrosSectorPresets {
         shallows = new SectorPreset("shallows", tantros, 83){{
             captureWave = 10;
             difficulty = 1;
-            overrideLaunchDefaults = true;
+            //overrideLaunchDefaults = true;
         }};
     }
 }
