@@ -3,8 +3,6 @@ package tantros.content.planets;
 import arc.func.Prov;
 import mindustry.Vars;
 import mindustry.content.Planets;
-import mindustry.ctype.ContentType;
-import mindustry.gen.Unit;
 import mindustry.world.blocks.defense.turrets.Turret;
 import tantros.content.TantrosLoadouts;
 import tantros.content.TantrosTechTree;

@@ -2,6 +2,7 @@ package tantros.ui;
 
 import arc.Core;
 import arc.scene.ui.layout.Table;
+import arc.util.Log;
 import mindustry.content.TechTree;
 import mindustry.ctype.UnlockableContent;
 import mindustry.gen.Tex;
@@ -26,6 +27,12 @@ public class ClearPlanetsDialog extends BaseDialog {
                 }
                 t.row();
             }
+            t.button(
+                    "Test Button",
+                    ()->{
+                        Log.info(universe.getLaunchResources());
+                    }
+            );
         });
     }
 
