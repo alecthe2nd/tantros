@@ -1,20 +1,30 @@
 package tantros.world.blocks.effect;
 
+import arc.Core;
 import arc.func.Cons;
 import arc.graphics.g2d.Draw;
+import arc.graphics.g2d.TextureRegion;
 import arc.math.Mathf;
 import arc.util.Time;
 import mindustry.Vars;
 import mindustry.world.Tile;
 import mindustry.world.blocks.defense.Radar;
 import tantros.TantrosVars;
+import tantros.graphics.TantrosLayers;
 import tantros.world.blocks.environment.DeepOreBlock;
 
 public class GroundPenetratingRadar extends Radar {
 
+    TextureRegion scanRegion;
 
     public GroundPenetratingRadar(String name) {
         super(name);
+    }
+
+    @Override
+    public void load() {
+        super.load();
+        scanRegion = Core.atlas.find("circle-shadow");
     }
 
     public class GroundPenetratingRadarBuild extends RadarBuild{
@@ -70,7 +80,13 @@ public class GroundPenetratingRadar extends Radar {
         @Override
         public void draw() {
             super.draw();
-
+            Draw.draw(TantrosLayers.radarMaskLayer, ()->{
+                Draw.color(outlineColor);
+                Draw.scl(fogRadius() / 2f);
+                Draw.rect(scanRegion, this.x, this.y);
+                Draw.reset();
+                Draw.color();
+            });
             //Draw.color(outlineColor);
             /*Draw.alpha(0.75f);
             int range = Mathf.ceil(fogRadius());

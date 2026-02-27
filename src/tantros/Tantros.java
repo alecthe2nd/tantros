@@ -27,6 +27,8 @@ import tantros.content.planets.*;
 import tantros.content.world.*;
 import tantros.gen.*;
 import tantros.content.recipes.TantrosRecipes;
+import tantros.graphics.TantrosShaders;
+import tantros.mod.ScriptInjector;
 import tantros.net.TantrosCalls;
 import tantros.ui.ClearPlanetsDialog;
 
@@ -55,6 +57,7 @@ public class Tantros extends Mod{
         TantrosBlocks.load();
         TantrosOverride.override();
         TantrosCalls.initPackets();
+        ScriptInjector.load(Vars.mods.getMod(this.getClass()), "packages.js");
     }
 
     @Override
@@ -62,6 +65,8 @@ public class Tantros extends Mod{
         super.init();
         ui.settings.graphics.checkPref("fast-parallax", Vars.mobile);
         ui.settings.graphics.checkPref("drill-assist-indicators", false);
+
+        TantrosShaders.init();
 
         Log.info("Attempting to access data settings ui.");
         clearPlanetsDialog = new ClearPlanetsDialog();

@@ -2,6 +2,7 @@ package tantros.type.units;
 
 import static mindustry.Vars.*;
 
+import arc.graphics.g2d.Draw;
 import arc.struct.Seq;
 import mindustry.entities.bullet.BulletType;
 import mindustry.entities.units.AIController;
@@ -13,6 +14,7 @@ import mindustry.world.blocks.defense.turrets.*;
 import tantros.ai.types.BurrowAI;
 import static tantros.ai.TantrosUnitCommands.*;
 import tantros.gen.Burrowerc;
+import tantros.graphics.TantrosLayers;
 
 public class BurrowerUnitType extends UnitType {
     public BurrowerUnitType(String name) {
@@ -47,6 +49,10 @@ public class BurrowerUnitType extends UnitType {
         if(unit instanceof Burrowerc burrower){
             if (!burrower.burrowed()){
                 super.draw(unit);
+            } else {
+                Draw.draw(TantrosLayers.radarObjectLayer,()->{
+                    Draw.rect(region, unit.x, unit.y, unit.rotation - 90);
+                });
             }
         } else {
             super.draw(unit);
@@ -63,6 +69,7 @@ public class BurrowerUnitType extends UnitType {
     }
 
     public static boolean canTurretTargetBurrowed(Turret turret){
+        tempBullSeq.clear();
         if(turret instanceof ItemTurret itemTurret){
             return itemTurret.ammoTypes.values().toSeq(tempBullSeq).find(BurrowerUnitType::canDislodge) != null;
         }

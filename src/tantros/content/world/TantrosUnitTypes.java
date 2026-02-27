@@ -37,6 +37,7 @@ public class TantrosUnitTypes {
     sherd,
     fractoid,
     roach,
+    infest,
     enact,
     delegate,
     largeFisk
@@ -296,6 +297,80 @@ public class TantrosUnitTypes {
                     collidesAir = false;
                 }};
             }});
+        }});
+
+        infest = EntityRegistry.content("infest", BurrowerUnit.class, name -> new BurrowerUnitType(name){{
+            //constructor = LegsUnit::create;
+            speed = 0.5f;
+            drag = 0.11f;
+            hitSize = 7f;
+            rotateSpeed = 6f;
+            health = 680;
+            armor = 4f;
+            legStraightness = 0.3f;
+            stepShake = 0f;
+            mechStepParticles = false;
+
+            legCount = 6;
+            legLength = 6f;
+            lockLegBase = true;
+            legContinuousMove = true;
+            legExtension = -2f;
+            legBaseOffset = 2f;
+            legMaxLength = 1.0f;
+            legMinLength = 0.7f;
+            legLengthScl = 0.98f;
+            legForwardScl = 1.5f;
+            legGroupSize = 3;
+            rippleScale = 0.2f;
+
+            legMoveSpace = 1f;
+            allowLegStep = true;
+            hovering = true;
+            legPhysicsLayer = false;
+
+            shadowElevation = 0.1f;
+            groundLayer = Layer.legUnit - 1f;
+            targetAir = false;
+            researchCostMultiplier = 0f;
+
+            weapons.add(new Weapon("infest-weapon"){{
+                            mirror = false;
+                            top = false;
+                            shake = 4f;
+                            shootY = 7f;
+                            x = y = 0f;
+
+                            alwaysContinuous = true;
+
+                            parentizeEffects = true;
+
+                            recoil = 0f;
+                            shootSound = Sounds.shootSublimate;
+                            continuous = true;
+
+
+                            bullet = new ContinuousFlameBulletType(){{
+                                damage = 35f;
+                                length = 8f;
+                                width = 1.7f;
+                                hitEffect = Fx.hitMeltHeal;
+                                drawSize = 420f;
+                                lifetime = 160f;
+                                despawnEffect = Fx.none;
+                                smokeEffect = Fx.none;
+                                drawFlare = false;
+                                maxRange = length + 10;
+
+                                collidesTeam = true;
+
+                                colors = new Color[]{Pal.sapBullet.cpy().a(.2f), Pal.sapBullet.cpy().a(.5f), Pal.sapBullet.cpy().mul(1.2f), Color.white};
+                            }};
+
+                            shootStatus = StatusEffects.slow;
+                            shootStatusDuration = bullet.lifetime + shoot.firstShotDelay;
+                        }}
+            );
         }});
 
         enact = new UnitType("enact"){{

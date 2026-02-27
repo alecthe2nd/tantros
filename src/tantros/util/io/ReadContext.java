@@ -46,6 +46,7 @@ public class ReadContext {
             reset.run();
             //skip any remaining bytes to prevent corruption
             if (space > used) forceSkip(space - used);
+            Log.warn("Failed to read data. Resetting state");
         };
 
         init = false;
