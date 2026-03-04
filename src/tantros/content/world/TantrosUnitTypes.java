@@ -24,6 +24,7 @@ import mindustry.world.meta.*;
 import static tantros.ai.TantrosUnitCommands.*;
 
 import tantros.content.TantrosFx;
+import tantros.entities.abilities.burrow.BurrowAbility;
 import tantros.gen.*;
 import tantros.type.units.*;
 
@@ -38,6 +39,7 @@ public class TantrosUnitTypes {
     fractoid,
     roach,
     infest,
+    invade,
     enact,
     delegate,
     largeFisk
@@ -109,7 +111,7 @@ public class TantrosUnitTypes {
             constructor = MechUnit::create;
             researchCostMultiplier = 0.5f;
             speed = 1.9f;
-            hitSize = 8f;
+            hitSize = 7f;
             health = 150;
             maxRange = 35;
 
@@ -149,7 +151,7 @@ public class TantrosUnitTypes {
                 top = false;
                 layerOffset = -0.01f;
                 ejectEffect = new MultiEffect(Fx.casing1, TantrosFx.parallaxBubble);
-                bullet = new BasicBulletType(3f, 9){{
+                bullet = new BasicBulletType(3f, 12){{
                     width = 7f;
                     height = 9f;
                     lifetime = 60f;
@@ -163,7 +165,7 @@ public class TantrosUnitTypes {
                     fragSpread = 60f;
                     fragVelocityMin = 1f;
 
-                    fragBullet = new BasicBulletType(3f, 3f){{
+                    fragBullet = new BasicBulletType(5f, 3f){{
                         lifetime = 4f;
                         width = 11f;
                         height = 14f;
@@ -236,7 +238,7 @@ public class TantrosUnitTypes {
             drag = 0.11f;
             hitSize = 7f;
             rotateSpeed = 6f;
-            health = 680;
+            health = 360;
             armor = 4f;
             legStraightness = 0.3f;
             stepShake = 0f;
@@ -297,13 +299,14 @@ public class TantrosUnitTypes {
                     collidesAir = false;
                 }};
             }});
+            abilities.add(new BurrowAbility());
         }});
 
         infest = EntityRegistry.content("infest", BurrowerUnit.class, name -> new BurrowerUnitType(name){{
             //constructor = LegsUnit::create;
             speed = 0.5f;
             drag = 0.11f;
-            hitSize = 7f;
+            hitSize = 10f;
             rotateSpeed = 6f;
             health = 680;
             armor = 4f;
@@ -371,6 +374,83 @@ public class TantrosUnitTypes {
                             shootStatusDuration = bullet.lifetime + shoot.firstShotDelay;
                         }}
             );
+            abilities.add(new BurrowAbility());
+        }});
+
+        invade = EntityRegistry.content("invade", BurrowerUnit.class, name -> new BurrowerUnitType(name){{
+            //constructor = LegsUnit::create;
+            speed = 0.5f;
+            drag = 0.11f;
+            hitSize = 14f;
+            rotateSpeed = 6f;
+            health = 990;
+            armor = 4f;
+            legStraightness = 0.7f;
+            stepShake = 0.01f;
+            mechStepParticles = false;
+
+            legCount = 6;
+            legLength = 12f;
+
+            lockLegBase = true;
+            legContinuousMove = true;
+            legExtension = -2f;
+            legBaseOffset = 3f;
+            legMaxLength = 1.0f;
+            legMinLength = 0.7f;
+            legLengthScl = 1.1f;
+            legForwardScl = 1f;
+            legGroupSize = 3;
+            rippleScale = 0.2f;
+
+            legMoveSpace = 1.4f;
+            allowLegStep = true;
+            hovering = true;
+            legPhysicsLayer = false;
+
+            shadowElevation = 0.1f;
+            groundLayer = Layer.legUnit - 1f;
+            targetAir = false;
+            researchCostMultiplier = 0f;
+
+            weapons.add(new Weapon("tantros-invade-weapon"){{
+                            mirror = true;
+                            top = false;
+                            shake = 4f;
+                            shootY = 6f;
+                            reload = 30;
+                            layerOffset = -0.01f;
+                            rotate = true;
+                            rotationLimit = 90f;
+
+                            x = 6;
+                            y = 7f;
+
+                            parentizeEffects = true;
+
+                            recoil = 2f;
+                            shootSound = Sounds.shootLancer;
+
+
+                            bullet = new LaserBulletType(){{
+                                damage = 45f;
+                                recoil = 0f;
+                                sideAngle = 45f;
+                                sideWidth = 1f;
+                                sideLength = 16f;
+                                length = 32f;
+                                colors = new Color[]{Pal.sapBullet.cpy().a(.2f), Pal.sapBullet.cpy().a(.5f), Pal.sapBullet.cpy().mul(1.2f), Color.white};
+                            }};
+
+                            shootStatus = StatusEffects.slow;
+                            shootStatusDuration = bullet.lifetime + shoot.firstShotDelay;
+                        }}
+            );
+
+            abilities.add(
+                    new ShieldRegenFieldAbility(20f, 60f, 60f * 5, 60f)
+            );
+            abilities.add(new BurrowAbility());
         }});
 
         enact = new UnitType("enact"){{

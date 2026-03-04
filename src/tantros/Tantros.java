@@ -1,24 +1,14 @@
 package tantros;
 
-import arc.Core;
-import arc.files.Fi;
-import arc.scene.ui.TextButton;
-import arc.scene.ui.layout.Table;
-import arc.struct.ObjectMap;
+import arc.Events;
 import arc.util.Log;
-import arc.util.Strings;
 import mindustry.Vars;
-import mindustry.Vars.*;
 import mindustry.content.Planets;
-import mindustry.content.TechTree;
-import mindustry.core.GameState;
-import mindustry.ctype.UnlockableContent;
-import mindustry.game.Saves;
-import mindustry.gen.Icon;
+import mindustry.game.EventType;
+import mindustry.game.Team;
 import mindustry.gen.Tex;
 import mindustry.mod.*;
-import mindustry.type.Planet;
-import mindustry.ui.Styles;
+import mindustry.ui.Fonts;
 import mindustry.ui.dialogs.BaseDialog;
 import mindustry.ui.dialogs.SettingsMenuDialog;
 import tantros.ai.TantrosUnitCommands;
@@ -31,11 +21,10 @@ import tantros.graphics.TantrosShaders;
 import tantros.mod.ScriptInjector;
 import tantros.net.TantrosCalls;
 import tantros.ui.ClearPlanetsDialog;
+import tantros.ui.TantrosFonts;
 
 import java.lang.reflect.Field;
 
-import static arc.Core.app;
-import static arc.Core.settings;
 import static mindustry.Vars.*;
 
 public class Tantros extends Mod{
@@ -44,11 +33,19 @@ public class Tantros extends Mod{
 
     public static ClearPlanetsDialog clearPlanetsDialog;
 
+
+    public Tantros(){
+        Events.on(EventType.ClientLoadEvent.class, e -> {
+            TantrosFonts.loadFonts();
+            Team.blue.emoji = Fonts.getUnicodeStr("archae");
+        });
+    }
+
     @Override
     public void loadContent(){
         EntityRegistry.register();
 
-        TantrosVars.load();
+        TantrosVars.load(this);
         TantrosItems.load();
         TantrosLiquids.load();
         TantrosUnitCommands.load();
@@ -57,14 +54,16 @@ public class Tantros extends Mod{
         TantrosBlocks.load();
         TantrosOverride.override();
         TantrosCalls.initPackets();
-        ScriptInjector.load(Vars.mods.getMod(this.getClass()), "packages.js");
+        ScriptInjector.load(TantrosVars.modWrapper, "packages.js");
     }
 
     @Override
     public void init() {
         super.init();
+
         ui.settings.graphics.checkPref("fast-parallax", Vars.mobile);
         ui.settings.graphics.checkPref("drill-assist-indicators", false);
+        ui.settings.graphics.checkPref("debug-sonar-renderer", false);
 
         TantrosShaders.init();
 

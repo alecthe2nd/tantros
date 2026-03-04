@@ -39,7 +39,7 @@ public class TantrosEffect {
         deepSonar = new GroundPenetratingRadar("deep-sonar"){{
             requirements(Category.effect, with( Items.copper, 10, Items.lead, 10, Items.metaglass, 30, Items.silicon, 20));
             glowColor = outlineColor = Color.valueOf("00ffb2");
-            fogRadius = 12;
+            fogRadius = 15;//12;
             envEnabled |= Env.underwater;
             consumePower(6f/60f);
         }};

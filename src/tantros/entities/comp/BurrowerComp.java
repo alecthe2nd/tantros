@@ -2,6 +2,7 @@ package tantros.entities.comp;
 
 import ent.anno.Annotations.*;
 import mindustry.gen.*;
+import tantros.TantrosVars;
 import tantros.gen.Burrowerc;
 
 import static tantros.type.units.BurrowerUnitType.canDislodge;
@@ -37,7 +38,7 @@ abstract public class BurrowerComp implements Legsc {
     @Replace(1)
     @Override
     public boolean collides(Hitboxc other) {
-        return hittable() && (!burrowed || (other instanceof Burrowerc burrower && burrower.burrowed()) || ((other instanceof Bullet bullet) && canDislodge(bullet))) ;
+        return hittable() && (!burrowed || (other instanceof Burrowerc burrower && burrower.burrowed()) || ((other instanceof Bullet bullet) && (canDislodge(bullet) || TantrosVars.sonarTracking.get(bullet.team, this.x(), this.y()))));
     }
 
 

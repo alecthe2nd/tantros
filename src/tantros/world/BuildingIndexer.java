@@ -49,14 +49,14 @@ public class BuildingIndexer<E extends Building> extends TileIndexer {
     @Override
     public void onTilePreChange(EventType.TilePreChangeEvent event) {
         if(checkTileCondition(event.tile)){
-            index.remove(unpack(event.tile));
+            this.remove(unpack(event.tile));
         }
     }
 
     @Override
     public void onTileChange(EventType.TileChangeEvent event) {
         if(checkTileCondition(event.tile)){
-            index.add(unpack(event.tile));
+            this.add(unpack(event.tile));
         }
     }
 
@@ -66,12 +66,18 @@ public class BuildingIndexer<E extends Building> extends TileIndexer {
         Log.log(Log.LogLevel.info, "Loaded '" , buildType,"' building index");
         for (Tile tile : Vars.world.tiles){
             if (checkTileCondition(tile)){
-                index.add(unpack(tile));
+                this.add(unpack(tile));
             }
         }
     }
 
+    protected void add(E building){
+        index.add(building);
+    }
 
+    protected void remove(E building){
+        index.remove(building);
+    }
 
     public E get(Boolf<E> filter){
         for(E build: index) {

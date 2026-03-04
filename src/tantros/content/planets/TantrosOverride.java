@@ -3,6 +3,8 @@ package tantros.content.planets;
 import arc.func.Prov;
 import mindustry.Vars;
 import mindustry.content.Planets;
+import mindustry.game.Team;
+import mindustry.ui.Fonts;
 import mindustry.world.blocks.defense.turrets.Turret;
 import tantros.content.TantrosLoadouts;
 import tantros.content.TantrosTechTree;
@@ -32,7 +34,7 @@ public class TantrosOverride {
 
     public static void applyUnitFilterToTurrets( Prov<UnitFilter> filterSource){
         Vars.content.each(content -> {
-            if(content instanceof Turret turret && !BurrowerUnitType.canTurretTargetBurrowed(turret)){
+            if(content instanceof Turret turret/* && !BurrowerUnitType.canTurretTargetBurrowed(turret)*/){
                 turret.unitFilter = filterSource.get().withChain(turret.unitFilter);
             }
         });

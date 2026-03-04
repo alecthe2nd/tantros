@@ -56,8 +56,8 @@ public class DeepOreBlock extends OverlayFloor {
     @Override
     public void drawBase(Tile tile) {
         //if(tile instanceof EditorTile){
-        GroundPenetratingRadar.GroundPenetratingRadarBuild build = TantrosVars.sonarIndexer.get((b)-> tile.dst(b) < b.fogRadius() * Vars.tilesize);
-        if(build != null){
+        boolean revealed = TantrosVars.sonarTracking.get(Vars.player.team(), tile.worldx(), tile.worldy());
+        if(revealed){
             super.drawBase(tile);
         }
         //}
