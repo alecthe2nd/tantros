@@ -2,10 +2,12 @@ package tantros.content.blocks;
 
 import mindustry.content.Blocks;
 import mindustry.content.Items;
+import mindustry.content.Liquids;
 import mindustry.game.SpawnGroup;
 import mindustry.game.Team;
 import mindustry.world.Block;
 import mindustry.world.blocks.environment.StaticWall;
+import tantros.content.world.TantrosItems;
 import tantros.content.world.TantrosUnitTypes;
 import tantros.world.blocks.environment.AmbientSpawn;
 import tantros.world.blocks.environment.TallSeaBush;
@@ -32,6 +34,10 @@ public class TantrosEnvironment {
             team = Team.blue;
         }});
 
+
+        Blocks.redmat.asFloor().itemDrop = TantrosItems.redcyst;
+        Blocks.bluemat.asFloor().itemDrop = TantrosItems.bluecyst;
+
         redmatWall = new StaticWall("redmat-wall"){{
             Blocks.redmat.asFloor().wall = this;
         }};
@@ -42,7 +48,7 @@ public class TantrosEnvironment {
 
         kelp = new TallSeaBush("kelp"){{
             //bluemat.asFloor().decoration = this;
-            lobesMin = 4; //4
+            lobesMin = 4;
             lobesMax = 6;
             levelsMin = 3;
             levelsMax = 7;

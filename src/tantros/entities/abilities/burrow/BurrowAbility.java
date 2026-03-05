@@ -21,7 +21,8 @@ import java.lang.reflect.Field;
 public class BurrowAbility extends Ability {
 
     public float checkTimer = 0;
-    public static float updateTime = 30;
+    public static float updateTime = 5;
+    public Teamc lastTarget = null;
 
     @Override
     public void created(Unit unit) {
@@ -43,13 +44,13 @@ public class BurrowAbility extends Ability {
             } catch(Exception e){
                 Log.err(e);
             }
-            if(unit instanceof Burrowerc burrowerc){
-                burrowerc.burrowed(enemy == null);
-
-            }
-        }
-        if(checkTimer < updateTime){
+            lastTarget = enemy;
+            checkTimer = 0;
+        } else if (checkTimer < updateTime){
             checkTimer += Time.delta;
+        }
+        if(unit instanceof Burrowerc burrowerc){
+            burrowerc.burrowed(lastTarget == null);
         }
     }
 }

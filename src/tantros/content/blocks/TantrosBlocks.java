@@ -38,10 +38,6 @@ public class TantrosBlocks {
                     ;
     public static void load(){
 
-
-        Blocks.redmat.asFloor().liquidDrop = Liquids.ozone;
-        Blocks.bluemat.asFloor().liquidDrop = Liquids.hydrogen;
-
         //endregion
 
         //region ore

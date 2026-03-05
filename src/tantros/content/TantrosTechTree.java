@@ -16,7 +16,7 @@ public class TantrosTechTree {
     public static Objectives.Objective
             copper, lead, steam, metaglass, silicon,
             titanium,
-            embark, shallows,
+            embark, shallows, polarEdge,
             never
             ;
 
@@ -29,11 +29,14 @@ public class TantrosTechTree {
         titanium = new Objectives.Produce(Items.titanium);
         embark = new Objectives.OnSector(TantrosSectorPresets.embark);
         shallows = new Objectives.OnSector(TantrosSectorPresets.shallows);
+        polarEdge = new Objectives.OnSector(TantrosSectorPresets.polarEdge);
         never = new Objectives.Produce(Items.dormantCyst);
         Planets.tantros.techTree = TechTree.nodeRoot("tantros", TantrosBlocks.coreShell, true, () -> {
             TechTree.node(TantrosSectorPresets.embark, () -> {
                 TechTree.node(TantrosSectorPresets.shallows, Seq.with(new Objectives.SectorComplete(TantrosSectorPresets.embark)), () -> {
+                    TechTree.node(TantrosSectorPresets.polarEdge, Seq.with(new Objectives.SectorComplete(TantrosSectorPresets.shallows)), () -> {
 
+                    });
                 });
             });
             TechTree.node(TantrosDistribution.copperDuct, Seq.with(copper, embark), () -> {
@@ -95,7 +98,7 @@ public class TantrosTechTree {
                 });
             });
             TechTree.node(TantrosProduction.metaglassAnnealer, Seq.with(shallows), () -> {
-                TechTree.node(TantrosProduction.siliconPressureSmelter, Seq.with(never), () -> {
+                TechTree.node(TantrosProduction.siliconPressureSmelter, Seq.with(polarEdge), () -> {
 
                 });
                 TechTree.node(TantrosProduction.graphiticDecomposer, Seq.with(never), () -> {
@@ -189,7 +192,7 @@ public class TantrosTechTree {
                     });
                 });
             });
-            TechTree.node(TantrosEffect.deepSonar, Seq.with(never), ()->{
+            TechTree.node(TantrosEffect.deepSonar, Seq.with(polarEdge, silicon), ()->{
 
             });
             TechTree.node(TantrosPayload.smallUnitAssembler, Seq.with(never, silicon), ()->{

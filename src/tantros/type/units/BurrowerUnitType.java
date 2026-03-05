@@ -7,6 +7,7 @@ import arc.graphics.g2d.Lines;
 import arc.struct.Seq;
 import arc.util.Align;
 import mindustry.Vars;
+import mindustry.ai.types.CommandAI;
 import mindustry.entities.bullet.BulletType;
 import mindustry.entities.units.AIController;
 import mindustry.game.Team;
@@ -42,12 +43,17 @@ public class BurrowerUnitType extends UnitType {
     @Override
     public void update(Unit unit) {
         if(unit instanceof Burrowerc burrower){
-
-            if(unit.controller() instanceof Player player && burrower.burrowCooldown() <= 0) {
-                burrower.burrowed(player.boosting());
+            if(burrower.isShooting()){
+                burrower.triggerCooldown();
             }
-            if(!net.client() && unit.controller() instanceof AIController && !(unit.controller() instanceof BurrowAI)){
-                burrower.burrowed(false);
+            if(!net.client()) {
+                if (unit.controller() instanceof Player player) {
+                    burrower.burrowed(player.boosting());
+                } else if (unit.controller() instanceof CommandAI) {
+                    burrower.burrowed(false);
+                } else {
+                    burrower.burrowed(true);
+                }
             }
             burrower.burrowCooldown(Math.max(burrower.burrowCooldown() - 1, 0));
         }

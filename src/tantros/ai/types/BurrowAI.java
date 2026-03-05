@@ -21,20 +21,10 @@ public class BurrowAI extends AIController{
 
         if(unit.controller() instanceof CommandAI ai){
             ai.defaultBehavior();
-            //auto land when near target
-            if(ai.attackTarget != null && unit.within(ai.attackTarget, unit.range())){
-                shouldBurrow = false;
-                unit.command().command(UnitCommand.moveCommand);
-            }
         }
-        if(unit instanceof Burrowerc burrower){
-            burrower.burrowed(shouldBurrow);
+        if(unit instanceof Burrowerc burrower) {
+            burrower.burrowed(true);
         }
-    }
-
-    @Override
-    public boolean shouldShoot() {
-        return !(unit instanceof Burrowerc burrower && burrower.burrowed());
     }
 
 

@@ -26,6 +26,7 @@ public class TallSeaBush extends SeaBush {
     public float parallaxRange = 20;
 
     public int levelsMin = 3,
+            aboveBridges = 1,
             tallestLevels = 5,
             levelsMax = 7;
 
@@ -75,6 +76,8 @@ public class TallSeaBush extends SeaBush {
         for(int i = 0; i < levels; i++){
             if(i >= tallestLevels){
                 Draw.z(Layer.flyingUnit + 1f);
+            } else if(i >= aboveBridges) {
+                Draw.z(Layer.power + 0.1f);
             } else {
                 Draw.z(layer);
             }

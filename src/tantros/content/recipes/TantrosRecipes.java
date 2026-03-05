@@ -87,8 +87,7 @@ public class TantrosRecipes {
 
         siliconPressureSmelting = new Recipe("silicon-pressure-smelting"){{
             cost = new Resource()
-                    .withItems(ItemStack.with(Items.coal, 1, Items.sand, 3))
-                    .withLiquids(LiquidStack.with(Liquids.hydrogen, 0.5f/60f))
+                    .withItems(ItemStack.with(TantrosItems.bluecyst, 1, Items.sand, 3))
                     .withPower(120f/60f);
 
             output = new Resource()

@@ -151,7 +151,7 @@ public class TantrosUnitTypes {
                 top = false;
                 layerOffset = -0.01f;
                 ejectEffect = new MultiEffect(Fx.casing1, TantrosFx.parallaxBubble);
-                bullet = new BasicBulletType(3f, 12){{
+                bullet = new BasicBulletType(3f, 15){{
                     width = 7f;
                     height = 9f;
                     lifetime = 60f;
@@ -165,7 +165,7 @@ public class TantrosUnitTypes {
                     fragSpread = 60f;
                     fragVelocityMin = 1f;
 
-                    fragBullet = new BasicBulletType(5f, 3f){{
+                    fragBullet = new BasicBulletType(5f, 5f){{
                         lifetime = 4f;
                         width = 11f;
                         height = 14f;
@@ -299,7 +299,7 @@ public class TantrosUnitTypes {
                     collidesAir = false;
                 }};
             }});
-            abilities.add(new BurrowAbility());
+            //abilities.add(new BurrowAbility());
         }});
 
         infest = EntityRegistry.content("infest", BurrowerUnit.class, name -> new BurrowerUnitType(name){{
@@ -374,7 +374,7 @@ public class TantrosUnitTypes {
                             shootStatusDuration = bullet.lifetime + shoot.firstShotDelay;
                         }}
             );
-            abilities.add(new BurrowAbility());
+            //abilities.add(new BurrowAbility());
         }});
 
         invade = EntityRegistry.content("invade", BurrowerUnit.class, name -> new BurrowerUnitType(name){{
@@ -450,7 +450,7 @@ public class TantrosUnitTypes {
             abilities.add(
                     new ShieldRegenFieldAbility(20f, 60f, 60f * 5, 60f)
             );
-            abilities.add(new BurrowAbility());
+            //abilities.add(new BurrowAbility());
         }});
 
         enact = new UnitType("enact"){{
