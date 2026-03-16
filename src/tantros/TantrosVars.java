@@ -11,8 +11,7 @@ import mindustry.game.Team;
 import mindustry.mod.Mods;
 import tantros.ai.OneTimeSpawner;
 import tantros.ai.spawn.SpawnType;
-import tantros.ai.types.BurrowAI;
-import tantros.gen.BurrowerUnit;
+import tantros.gen.Burrowerc;
 import tantros.graphics.overlays.SonarTracking;
 import tantros.type.buildingState.CooldownState;
 import tantros.type.buildingState.InputHeatState;
@@ -57,8 +56,8 @@ public class TantrosVars {
         }};
 
         Events.on(EventType.UnitDamageEvent.class, (event)->{
-            if(event.unit instanceof BurrowerUnit burrower){
-                BurrowAI.hit(burrower, event.bullet);
+            if(event.unit instanceof Burrowerc burrower){
+                burrower.dislodge(event.bullet);
             }
         });
 

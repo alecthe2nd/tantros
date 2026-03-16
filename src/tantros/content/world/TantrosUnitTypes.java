@@ -354,7 +354,7 @@ public class TantrosUnitTypes {
 
 
                             bullet = new ContinuousFlameBulletType(){{
-                                damage = 35f;
+                                damage = 15f;
                                 length = 8f;
                                 width = 1.7f;
                                 hitEffect = Fx.hitMeltHeal;

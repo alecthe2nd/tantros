@@ -4,6 +4,6 @@ import arc.graphics.Color;
 
 public class TantrosPal {
     public static Color
-            radarLight = Color.valueOf("26bf00"),
-            radarDark = Color.valueOf("2a7a16");
+            radarLight = Color.valueOf("00ffb2"),
+            radarDark = Color.valueOf("17b07f");
 }

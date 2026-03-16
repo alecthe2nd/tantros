@@ -353,13 +353,7 @@ public class BlockExtended extends Block {
         public void read(Reads read, byte revision) {
             super.read(read, revision);
             int expectedCount = read.i();
-            int count = 0;
-            for(Class<? extends BuildingState> stateType : order){
-                BuildingState state = getState(stateType);
-                if( state != null && !state.isTransient()){
-                    count++;
-                }
-            }
+            int count = states.size;
             if(count == expectedCount) {
                 for (Class<? extends BuildingState> stateType : order) {
                     BuildingState state = getState(stateType);

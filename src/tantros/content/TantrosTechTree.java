@@ -115,14 +115,18 @@ public class TantrosTechTree {
                     TechTree.node(TantrosTurret.puncture, Seq.with(
                             shallows
                     ), () -> {
+                        TechTree.node(TantrosTurret.thrust, Seq.with(
+                                copper, steam
+                        ), () -> {
 
+                        });
+                        TechTree.node(TantrosTurret.jetstream, Seq.with(copper, never), () -> {
+
+                        });
                     });
-                    TechTree.node(TantrosTurret.thrust, Seq.with(
-                            copper, steam
+                    TechTree.node(TantrosTurret.lob, Seq.with(
+                            polarEdge
                     ), () -> {
-
-                    });
-                    TechTree.node(TantrosTurret.jetstream, Seq.with(copper, never), () -> {
 
                     });
                 });
@@ -155,19 +159,19 @@ public class TantrosTechTree {
                             });
                         });
                     });
+                    TechTree.node(TantrosRecipes.siliconPressureSmelting, Seq.with(
+                            new Objectives.Research(TantrosProduction.siliconPressureSmelter)
+                    ), () -> {
+                        TechTree.nodeProduce(Items.silicon, () -> {
+                            TechTree.node(TantrosRecipes.surgeAnnealing, Seq.with(titanium), () -> {
+                                TechTree.nodeProduce(Items.surgeAlloy, () -> {
+                                });
+                            });
+                        });
+                    });
                     TechTree.nodeProduce(TantrosItems.bluecyst, () -> {
                         TechTree.nodeProduce(Liquids.hydrogen, () -> {
 
-                        });
-                        TechTree.node(TantrosRecipes.siliconPressureSmelting, Seq.with(
-                                new Objectives.Research(TantrosProduction.siliconPressureSmelter)
-                        ), () -> {
-                            TechTree.nodeProduce(Items.silicon, () -> {
-                                TechTree.node(TantrosRecipes.surgeAnnealing, Seq.with(titanium), () -> {
-                                    TechTree.nodeProduce(Items.surgeAlloy, () -> {
-                                    });
-                                });
-                            });
                         });
                     });
                     TechTree.nodeProduce(TantrosItems.redcyst, () -> {
@@ -199,6 +203,21 @@ public class TantrosTechTree {
                 TechTree.node(TantrosUnitTypes.delegate, Seq.with(never, silicon), ()->{
 
                 });
+                TechTree.node(TantrosUnitTypes.flak, Seq.with(never, silicon), ()->{
+                    TechTree.node(TantrosUnitTypes.sherd, Seq.with(never, silicon), ()->{
+                        TechTree.node(TantrosUnitTypes.fractoid, Seq.with(never, silicon), ()->{
+
+                        });
+                    });
+                });
+                TechTree.node(TantrosUnitTypes.roach, Seq.with(never, silicon), ()->{
+                    TechTree.node(TantrosUnitTypes.infest, Seq.with(never, silicon), ()->{
+                        TechTree.node(TantrosUnitTypes.invade, Seq.with(never, silicon), ()->{
+
+                        });
+                    });
+                });
+
             });
         });
     }

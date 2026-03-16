@@ -1,9 +1,11 @@
 package tantros.entities.comp;
 
 import ent.anno.Annotations.*;
+import mindustry.game.Team;
 import mindustry.gen.*;
 import tantros.TantrosVars;
 import tantros.gen.Burrowerc;
+import tantros.type.units.BurrowerUnitType;
 
 import static tantros.type.units.BurrowerUnitType.canDislodge;
 
@@ -25,8 +27,17 @@ abstract public class BurrowerComp implements Legsc {
     }
 
     public void triggerCooldown(int cooldown){
-        burrowed = false;
-        burrowCooldown = cooldown;
+        if(cooldown > 0) burrowed = false;
+        if(cooldown > burrowCooldown) burrowCooldown = cooldown;
+    }
+
+    public void dislodge(Bullet bullet){
+        if(canDislodge(bullet)){
+            if(this.type() instanceof BurrowerUnitType btype){
+                if(this.burrowed) this.apply(btype.dislodgeEffect, btype.dislodgeStatusDuration);
+            }
+            this.triggerCooldown(90);
+        }
     }
 
     @Replace(1)

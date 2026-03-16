@@ -11,6 +11,7 @@ import mindustry.world.consumers.ConsumeLiquidFilter;
 import mindustry.world.draw.DrawMulti;
 import mindustry.world.draw.DrawRegion;
 import mindustry.world.meta.Env;
+import tantros.graphics.TantrosPal;
 import tantros.world.blocks.effect.FacingPressureBooster;
 import tantros.world.blocks.effect.GenericProjector;
 import tantros.world.blocks.effect.GroundPenetratingRadar;
@@ -38,10 +39,10 @@ public class TantrosEffect {
 
         deepSonar = new GroundPenetratingRadar("deep-sonar"){{
             requirements(Category.effect, with( Items.copper, 10, Items.lead, 10, Items.metaglass, 30, Items.silicon, 20));
-            glowColor = outlineColor = Color.valueOf("00ffb2");
+            glowColor = outlineColor = TantrosPal.radarLight;
             fogRadius = 15;//12;
             envEnabled |= Env.underwater;
-            consumePower(6f/60f);
+            consumePower(18f/60f);
         }};
 
         pneumaticPump = new FacingPressureBooster("pneumatic-pump"){{

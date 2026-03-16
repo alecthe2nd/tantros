@@ -26,11 +26,4 @@ public class BurrowAI extends AIController{
             burrower.burrowed(true);
         }
     }
-
-
-    public static void hit(BurrowerUnit unit, Bullet bullet) {
-        if(canDislodge(bullet)){
-            unit.triggerCooldown();
-        }
-    }
 }

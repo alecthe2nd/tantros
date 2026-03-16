@@ -35,6 +35,7 @@ public class TantrosTurret {
             bident,
             jetstream,
             thrust,
+            lob,
             puncture,
             leviathan
             ;
@@ -381,6 +382,101 @@ public class TantrosTurret {
             researchCostMultiplier = 0.05f;
             buildTime = 60f * 9f;
             limitRange(12f);
+        }};
+
+        lob = new ItemTurret("lob"){{
+            requirements(Category.turret, with(Items.copper, 15, Items.oxide, 12, Items.metaglass, 10));
+            ammo(
+                    Items.sand, new ArtilleryBulletType(5f, 3){{
+                        knockback = 0.8f;
+                        lifetime = 80f;
+                        width = height = 11f;
+                        collidesTiles = false;
+                        splashDamageRadius = 32f;
+                        splashDamage = 3f;
+
+                        hitColor = backColor = trailColor = Items.sand.color;
+                        frontColor = Items.scrap.color;
+                        despawnEffect = Fx.hitBulletColor;
+                    }},
+                    Items.graphite, new ArtilleryBulletType(3f, 20){{
+                        knockback = 0.8f;
+                        lifetime = 80f;
+                        width = height = 11f;
+                        collidesTiles = false;
+                        splashDamageRadius = 25f * 0.75f;
+                        splashDamage = 33f;
+
+                        hitColor = backColor = trailColor = Pal.graphiteAmmoBack;
+                        frontColor = Pal.graphiteAmmoFront;
+                        despawnEffect = Fx.hitBulletColor;
+                    }},
+                    Items.silicon, new ArtilleryBulletType(3f, 20){{
+                        knockback = 0.8f;
+                        lifetime = 80f;
+                        width = height = 11f;
+                        collidesTiles = false;
+                        splashDamageRadius = 25f * 0.75f;
+                        splashDamage = 33f;
+                        reloadMultiplier = 1.2f;
+                        ammoMultiplier = 3f;
+                        homingPower = 0.08f;
+                        homingRange = 50f;
+
+                        trailLength = 7;
+                        trailWidth = 3f;
+
+                        hitColor = backColor = trailColor = Pal.siliconAmmoBack;
+                        frontColor = Pal.siliconAmmoFront;
+                        despawnEffect = Fx.hitBulletColor;
+                    }},
+                    Items.pyratite, new ArtilleryBulletType(3f, 25){{
+                        hitEffect = Fx.blastExplosion;
+                        knockback = 0.8f;
+                        lifetime = 80f;
+                        width = height = 13f;
+                        collidesTiles = false;
+                        splashDamageRadius = 25f * 0.75f;
+                        splashDamage = 45f;
+                        status = StatusEffects.burning;
+                        statusDuration = 60f * 12f;
+                        frontColor = trailColor = hitColor = Pal.lightishOrange;
+                        backColor = Pal.lightOrange;
+                        makeFire = true;
+                        trailEffect = Fx.incendTrail;
+                        ammoMultiplier = 4f;
+                        despawnEffect = Fx.hitBulletColor;
+                    }},
+                    Items.blastCompound, new ArtilleryBulletType(3f, 30){{
+                        hitEffect = Fx.blastExplosion;
+                        knockback = 0.8f;
+                        lifetime = 80f;
+                        width = height = 13f;
+                        collidesTiles = false;
+                        splashDamageRadius = 25f * 0.75f;
+                        splashDamage = 65f;
+                        status = StatusEffects.blasted;
+                        statusDuration = 60f * 12f;
+                        frontColor = trailColor = hitColor = Pal.blastAmmoFront;
+                        backColor = Pal.blastAmmoBack;
+                        trailEffect = Fx.incendTrail;
+                        ammoMultiplier = 2f;
+                        despawnEffect = Fx.hitBulletColor;
+                    }}
+            );
+
+            drawer = new DrawTurret("sealed-");
+
+            targetAir = false;
+            reload = 80f;
+            recoil = 5f;
+            range = 90;
+
+            inaccuracy = 1f;
+            shootCone = 10f;
+            health = 260;
+            shootSound = Sounds.shootArtillerySmall;
+            limitRange(0f);
         }};
 
 

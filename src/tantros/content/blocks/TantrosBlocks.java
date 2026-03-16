@@ -108,6 +108,7 @@ public class TantrosBlocks {
         TantrosProduction.load();
         TantrosEffect.load();
         TantrosPower.load();
+        TantrosFrame.load();
         TantrosPayload.load();
         TantrosTurret.load();
         TantrosLogic.load();

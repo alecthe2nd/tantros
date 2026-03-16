@@ -8,6 +8,7 @@ import arc.struct.Seq;
 import arc.util.Align;
 import mindustry.Vars;
 import mindustry.ai.types.CommandAI;
+import mindustry.content.StatusEffects;
 import mindustry.entities.bullet.BulletType;
 import mindustry.entities.units.AIController;
 import mindustry.game.Team;
@@ -16,6 +17,7 @@ import mindustry.gen.Player;
 import mindustry.gen.Unit;
 import mindustry.graphics.Layer;
 import mindustry.graphics.Pal;
+import mindustry.type.StatusEffect;
 import mindustry.type.UnitType;
 import mindustry.ui.Fonts;
 import mindustry.world.blocks.defense.turrets.*;
@@ -28,6 +30,14 @@ import tantros.graphics.TantrosPal;
 import tantros.ui.TantrosFonts;
 
 public class BurrowerUnitType extends UnitType {
+
+    public int burrowFiringCooldown = 60;
+    public int burrowDislodgeCooldown = 90;
+    public int burrowDefaultCooldown = 60;
+
+    public StatusEffect dislodgeEffect = StatusEffects.unmoving;
+    public float dislodgeStatusDuration = 30;
+
     public BurrowerUnitType(String name) {
         super(name);
     }
@@ -44,7 +54,7 @@ public class BurrowerUnitType extends UnitType {
     public void update(Unit unit) {
         if(unit instanceof Burrowerc burrower){
             if(burrower.isShooting()){
-                burrower.triggerCooldown();
+                burrower.triggerCooldown(burrowFiringCooldown);
             }
             if(!net.client()) {
                 if (unit.controller() instanceof Player player) {
@@ -68,11 +78,13 @@ public class BurrowerUnitType extends UnitType {
             } else if(unit.team == player.team()){
                 Draw.draw(Layer.overlayUI,()->{
                     Lines.stroke(1f);
-                    Draw.color(TantrosPal.radarLight);
+                    Draw.color(TantrosPal.radarDark);
                     Lines.poly(unit.x, unit.y, 4, (unit.hitSize * 3 / 4) + 0.5f);
                     Draw.color(unit.team.color);
                     if(unit.vel.len2() > 0.01){
                         Lines.poly(unit.x, unit.y, 3, (unit.hitSize / 2) + 0.5f, unit.vel.angle());
+                    } else {
+                        Lines.poly(unit.x, unit.y, 4, (unit.hitSize / 2) + 0.5f, unit.vel.angle());
                     }
                     //Draw.rect(region, unit.x, unit.y, unit.rotation - 90);
                     //uncomment for a dark border
@@ -84,11 +96,13 @@ public class BurrowerUnitType extends UnitType {
                 Draw.draw(TantrosLayers.radarObjectLayer,()->{
 
                     Lines.stroke(1f);
-                    Draw.color(TantrosPal.radarLight);
+                    Draw.color(TantrosPal.radarDark);
                     Lines.poly(unit.x, unit.y, 4, (unit.hitSize * 3 / 4) + 0.5f);
                     Draw.color(unit.team.color);
                     if(unit.vel.len2() > 0.01){
                         Lines.poly(unit.x, unit.y, 3, (unit.hitSize / 2) + 0.5f, unit.vel.angle());
+                    } else {
+                        Lines.poly(unit.x, unit.y, 4, (unit.hitSize / 2) + 0.5f, unit.vel.angle());
                     }
 
                     //uncomment for a dark border

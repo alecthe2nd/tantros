@@ -23,7 +23,7 @@ public class TantrosSectorPresets {
             overrideLaunchDefaults = true;
         }};
         polarEdge = new SectorPreset("polar-edge", tantros, 19){{
-            captureWave = 21;
+            captureWave = 10;
             difficulty = 1;
             overrideLaunchDefaults = true;
         }};

@@ -30,6 +30,8 @@ public interface BuildingState {
         return true;
     }
 
+    String name();
+
     default void write(Writes write){
         writeContext.init(write);
         this.write(writeContext);
