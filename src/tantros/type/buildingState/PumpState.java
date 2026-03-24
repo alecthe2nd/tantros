@@ -46,6 +46,16 @@ public class PumpState implements BuildingState{
     }
 
     @Override
+    public String getName() {
+        return "PumpState";
+    }
+
+    @Override
+    public int getVersion() {
+        return 0;
+    }
+
+    @Override
     public void reset() {
         amount = 0;
         liquidDrop = null;

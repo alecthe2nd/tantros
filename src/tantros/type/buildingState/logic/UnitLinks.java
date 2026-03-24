@@ -5,6 +5,8 @@ import arc.func.Boolf2;
 import arc.struct.IntSeq;
 import arc.struct.Seq;
 import arc.util.Log;
+import arc.util.io.Reads;
+import arc.util.io.Writes;
 import mindustry.gen.Groups;
 import mindustry.gen.Unit;
 import tantros.type.buildConfig.AddUnitConfig;
@@ -69,6 +71,21 @@ public class UnitLinks implements BuildingState {
     }
 
     @Override
+    public boolean isTransient() {
+        return false;
+    }
+
+    @Override
+    public String getName() {
+        return "UnitLinks";
+    }
+
+    @Override
+    public int getVersion() {
+        return 0;
+    }
+
+    @Override
     public void onProximity(BlockExtended ownerType, BlockExtended.BuildExtended owner) {
 
     }
@@ -81,7 +98,7 @@ public class UnitLinks implements BuildingState {
     }
 
     @Override
-    public void write(WriteContext write) {
+    public void write(Writes write) {
         write.i(unitLinks.size);
         for(Unit unit : unitLinks){
             write.i(unit.id);
@@ -89,7 +106,7 @@ public class UnitLinks implements BuildingState {
     }
 
     @Override
-    public void read(ReadContext read) {
+    public void read(Reads read) {
         int size = read.i();
         for(int i = 0 ; i < size; i++){
             this.unitIds.add(read.i());

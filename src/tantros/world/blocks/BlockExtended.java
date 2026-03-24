@@ -1,14 +1,13 @@
 package tantros.world.blocks;
 
-import arc.func.Func;
 import arc.func.Prov;
 import arc.graphics.g2d.TextureRegion;
 import arc.math.Mathf;
 import arc.scene.ui.layout.Table;
 import arc.struct.ObjectMap;
-import arc.struct.OrderedSet;
 import arc.struct.Seq;
 import arc.util.Eachable;
+import arc.util.Log;
 import arc.util.io.Reads;
 import arc.util.io.Writes;
 import mindustry.Vars;
@@ -17,14 +16,11 @@ import mindustry.entities.Damage;
 import mindustry.entities.Effect;
 import mindustry.entities.units.BuildPlan;
 import mindustry.gen.Building;
-import mindustry.gen.Call;
-import mindustry.gen.Player;
 import mindustry.gen.Unit;
 import mindustry.type.Item;
 import mindustry.type.Liquid;
 import mindustry.type.LiquidStack;
 import mindustry.type.UnitType;
-import mindustry.ui.Bar;
 import mindustry.world.Block;
 import mindustry.world.consumers.Consume;
 import mindustry.world.draw.DrawDefault;
@@ -41,26 +37,25 @@ import tantros.world.consumers.ExtendedConsume;
 import tantros.world.draw.extended.DrawBlockExtended;
 import tantros.world.draw.extended.DrawMultiExtended;
 
+import java.io.ByteArrayOutputStream;
+import java.io.DataOutputStream;
+
 import static mindustry.Vars.*;
 import static mindustry.Vars.state;
 
 public class BlockExtended extends Block {
 
-    /*
-    * List of allowed dynamic state classes and their respective read/write priorities. Do not modify!
-    * This allows for dynamically sized states to have a definite order during read/write. Tampering with this order
-    * WILL lead to corrupted save data.
-    * BuildingStates not given a priority here will be skipped during saving.
-     */
-    public static OrderedSet<Class<? extends BuildingState>> order = new OrderedSet<>();
-
     public static final LiquidStack tempLiquid = new LiquidStack(Liquids.water, 0f);
     public static final OnDestroyExplosionContext tempContext = new OnDestroyExplosionContext();
+
+    public static final ByteArrayOutputStream writeOutputStream = new ByteArrayOutputStream();
+
+    public static final Writes writeDelegate = new Writes(new DataOutputStream(writeOutputStream));
 
     public DrawBlockExtended drawer = new DrawMultiExtended(new DrawDefault());
     public ObjectMap<Class<? extends BlockConfig>, ? super BlockConfig> blockConfigs = new ObjectMap<>();
     public Seq<ConfigApplier<?,?>> configAppliers = new Seq<>();
-    public Seq<Prov<BuildingState>> stateSources = new Seq<>();
+    public Seq<BuildingStateSource> stateSources = new Seq<>();
 
     public Seq<BlockEffect> effects =  new Seq<>();
 
@@ -134,9 +129,12 @@ public class BlockExtended extends Block {
     }
 
     public class BuildExtended extends Building{
-        public ObjectMap<Class<? extends BuildingState>, ? super BuildingState> states = new ObjectMap<>();
+        public ObjectMap<String, BuildingState> states = new ObjectMap<>();
+        private final ObjectMap.Values<BuildingState> stateValuesForSearching = new ObjectMap.Values<>(states);
 
         public Seq<InputListener<?>> listeners = new Seq<>();
+
+        public boolean initializedStates = false;
 
 
         @Override
@@ -157,34 +155,68 @@ public class BlockExtended extends Block {
             drawer.drawConfigure(this);
         }
 
-        @SuppressWarnings("unchecked")
-        public <state extends BuildingState> state getState(Class<state> type){
-            return (state) this.states.get(type);
+        public <state extends BuildingState> state getState(Class<state> type, String name){
+            BuildingState found = this.states.get(name);
+            if(type.isInstance(found)){
+                return type.cast(found);
+            }
+            return null;
         }
 
-        public <E> E getStateImplementing(Class<E> type){
-            for(Class<? extends BuildingState> stateType : states.keys()){
-                if(type.isAssignableFrom(stateType)){
-                    return type.cast(this.getState(stateType));
+        public BuildingState getState(String name){
+            return this.states.get(name);
+        }
+
+        public <state extends BuildingState> state getState(Class<state> type){
+            stateValuesForSearching.reset();
+            for(BuildingState state : stateValuesForSearching){
+                if(type.isInstance(state)){
+                    return type.cast(state);
                 }
             }
             return null;
         }
 
-        public <T extends BuildingState> void putState(T state){
-            this.states.put(state.getClass(), state);
+        public int computeNumberOfIdenticalStateNames(String name){
+            int i = 0;
+            for(BuildingState state: states.values()){
+                if(state.getName().equals(name)){
+                    i++;
+                }
+            }
+            return i;
+        }
+
+        /**
+        * Adds a state to this building. Returns the name of the building.
+        */
+        public String putState(BuildingState state){
+            String name = state.getName();
+            int suffixNum = computeNumberOfIdenticalStateNames(name);
+            name += "-" + suffixNum;
+            this.putState(state,name);
+            return name;
+        }
+
+        /**
+         * Adds a state to this building with the given name.
+         */
+        public void putState(BuildingState state, String name){
+            this.states.put(name, state);
         }
 
         @Override
         public void created() {
             super.created();
-            for(Prov<BuildingState> stateSource : stateSources){
+            for(BuildingStateSource stateSource : stateSources){
                 BuildingState state = stateSource.get();
                 putState(state);
             }
-            for(Class<? extends BuildingState> type : this.states.keys()){
-                getState(type).initState((BlockExtended) this.block, this);
+
+            for(BuildingState state : this.states.values()){
+                state.initState((BlockExtended) this.block, this);
             }
+            initializedStates = true;
 
             for(BlockInput input: inputs){
                 input.post(this);
@@ -227,7 +259,7 @@ public class BlockExtended extends Block {
         @Override
         public void configureAny(Object value) {
             if(value instanceof BuildConfigurationUnit buildConfig){
-                TantrosCalls.tileConfig((Player)null, this, buildConfig);
+                TantrosCalls.tileConfig(null, this, buildConfig);
             }
             super.configureAny(value);
         }
@@ -277,8 +309,7 @@ public class BlockExtended extends Block {
                 float overflow = amount - (liquidCapacity - liquids.get(liquid));
                 amount = amount - overflow;
                 tempLiquid.set(liquid, overflow);
-                for(Class<? extends BuildingState> type: this.states.keys()){
-                    BuildingState state = getState(type);
+                for(BuildingState state: this.states.values()){
                     state.onOverflow(tempLiquid);
                 }
             }
@@ -333,18 +364,39 @@ public class BlockExtended extends Block {
         @Override
         public void write(Writes write){
             super.write(write);
+            //step one, count the non-transient states
             int count = 0;
-            for(Class<? extends BuildingState> stateType : order){
-                BuildingState state = getState(stateType);
-                if( state != null && !state.isTransient()){
+            for(ObjectMap.Entry<String, BuildingState> entry : states.entries()){
+                if(!entry.value.isTransient()){
                     count++;
                 }
             }
-            write.i(count);
-            for(Class<? extends BuildingState> stateType : order){
-                BuildingState state = getState(stateType);
-                if( state != null && !state.isTransient()){
-                    state.write(write);
+
+            //step two: perform write operations
+            if(count > 255){
+                Log.err("There are somehow more than 255 non-transient states on block " + this.block.name +". This is ridiculous.\nTo prevent save corruption, all states past the 255th will be discarded.");
+                count = 255;
+            }
+            write.b(count);
+
+            //guard against ever writing more states than count. This may happen if some building ends up with more than 255 states.
+            int guardCount = 0;
+            for(ObjectMap.Entry<String, BuildingState> entry : states.entries()){
+                if(!entry.value.isTransient() && guardCount < count){
+                    write.str(entry.key);
+                    write.i(entry.value.getVersion());
+
+                    //prepare buffer to count the size of the data to be written
+                    writeOutputStream.reset();
+
+                    //send state data to buffer
+                    entry.value.write(writeDelegate);
+
+                    //write the number of bytes in the buffer, then write the contents of the buffer
+                    write.i(writeOutputStream.size());
+                    write.b(writeOutputStream.toByteArray());
+
+                    guardCount++;
                 }
             }
         }
@@ -352,14 +404,24 @@ public class BlockExtended extends Block {
         @Override
         public void read(Reads read, byte revision) {
             super.read(read, revision);
-            int expectedCount = read.i();
-            int count = states.size;
-            if(count == expectedCount) {
-                for (Class<? extends BuildingState> stateType : order) {
-                    BuildingState state = getState(stateType);
-                    if (state != null && !state.isTransient()) {
-                        state.read(read);
-                    }
+            int numStates = read.b();
+            for(int i = 0; i < numStates; i++){
+                //read name of the state
+                String name = read.str();
+                //read version of the state
+                int version = read.i();
+                //read number of incoming bytes, for later.
+                int size = read.i();
+
+                BuildingState state = getState(name);
+
+                if(state != null && state.getVersion() == version){
+                    //state is valid, should be safe to read it
+                    state.read(read);
+                } else {
+                    //state is missing or wrong version, all bytes that
+                    //   make up its data should be read and dumped
+                    read.b(size);
                 }
             }
         }
@@ -387,8 +449,8 @@ public class BlockExtended extends Block {
         @Override
         public void displayBars(Table table) {
             super.displayBars(table);
-            for(Class<? extends BuildingState> type : this.states.keys()){
-                getState(type).displayBars(this, table);
+            for(BuildingState state : this.states.values()){
+                state.displayBars(this, table);
             }
 
             for(Consume consume: consumers){
@@ -408,4 +470,7 @@ public class BlockExtended extends Block {
         }
     }
 
+    public interface BuildingStateSource extends Prov<BuildingState>{
+
+    }
 }

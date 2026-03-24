@@ -51,6 +51,16 @@ public class LaserState implements BuildingState {
     }
 
     @Override
+    public String getName() {
+        return "LaserState";
+    }
+
+    @Override
+    public int getVersion() {
+        return 0;
+    }
+
+    @Override
     public void reset() {
         this.facing = new Tile[this.size];
         this.lasers = new Point2[this.size];

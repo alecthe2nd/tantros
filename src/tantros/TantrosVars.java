@@ -60,9 +60,5 @@ public class TantrosVars {
                 burrower.dislodge(event.bullet);
             }
         });
-
-        BlockExtended.order.add(CooldownState.class);
-
-        BlockExtended.order.add(InputHeatState.class);
     }
 }

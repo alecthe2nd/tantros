@@ -1,7 +1,10 @@
 package tantros.content.blocks;
 
+import arc.graphics.Color;
+import mindustry.content.Fx;
 import mindustry.content.Items;
 import mindustry.content.Liquids;
+import mindustry.gen.Sounds;
 import mindustry.type.Category;
 import mindustry.type.LiquidStack;
 import mindustry.world.Block;
@@ -11,7 +14,11 @@ import mindustry.world.draw.*;
 import mindustry.world.meta.Env;
 import tantros.content.TantrosFx;
 import tantros.content.world.TantrosLiquids;
+import tantros.type.production.ProducePower;
+import tantros.world.blocks.BlockExtended;
+import tantros.world.blocks.production.ProductionBlock;
 import tantros.world.consumers.ConsumeEnv;
+import tantros.world.draw.extended.DrawMultiExtended;
 import tantros.world.environment.LocalEnv;
 
 import static mindustry.type.ItemStack.with;
@@ -23,7 +30,9 @@ public class TantrosPower {
             tidalTurbine,
             steamTurbine,
             steamDynamo,
-            sealedBeamNode
+            sealedBeamNode,
+            steamEngineVanilla,
+            steamEngine
                     ;
 
     public static void load(){
@@ -99,5 +108,55 @@ public class TantrosPower {
             size = 2;
         }};
 
+        steamEngineVanilla = new ConsumeGenerator("steam-engine-vanilla"){{
+                requirements(Category.power, with(Items.graphite, 40));
+                powerProduction = 550f / 60f;
+                consumeLiquids(LiquidStack.with(TantrosLiquids.steam, 5f / 60f));
+                size = 3;
+                drawer = new DrawMulti(new DrawRegion("-bottom"), new DrawPistons() {{
+                    sinMag = 3f;
+                    sinScl = 5f;
+                    sideOffset = 30f;
+                }}/*, new DrawRegion("-mid"), new DrawLiquidTile(Liquids.arkycite, 37f / 4f), new DrawDefault(), new DrawGlowRegion(){{
+                alpha = 1f;
+                glowScale = 5f;
+                color = Color.valueOf("c967b099");
+            }}*/);
+                generateEffect = Fx.none;
+
+                liquidCapacity = 20f * 5;
+
+                ambientSound = Sounds.loopSmelter;
+                ambientSoundVolume = 0.06f;
+
+                warmupSpeed = 0.0005f;
+        }};
+
+        steamEngine = new ProductionBlock("steam-engine"){{
+            requirements(Category.power, with(Items.graphite, 40));
+            ProducePower powerOut = new ProducePower(550f/60f);
+            powerOut.powerOutput = (b)-> powerOut.maxPower * b.warmup();
+            produce(powerOut);
+            consumeLiquids(LiquidStack.with(TantrosLiquids.steam, 5f / 60f));
+            size = 3;
+            drawer = new DrawMultiExtended(new DrawRegion("-bottom"), new DrawPistons() {{
+                sinMag = 3f;
+                sinScl = 5f;
+                sideOffset = 180f;
+                angleOffset = 45f;
+            }}, new DrawRegion("-flywheel", 3f, true)
+                    /*, new DrawRegion("-mid"), new DrawLiquidTile(Liquids.arkycite, 37f / 4f)*/, new DrawDefault()/*, new DrawGlowRegion(){{
+                alpha = 1f;
+                glowScale = 5f;
+                color = Color.valueOf("c967b099");
+            }}*/);
+
+            liquidCapacity = 20f * 5;
+
+            ambientSound = Sounds.loopSmelter;
+            ambientSoundVolume = 0.06f;
+            warmupEffectsProduction = true;
+            warmupSpeed = 0.0005f;
+        }};
     }
 }

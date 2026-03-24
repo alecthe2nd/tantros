@@ -42,6 +42,16 @@ public class OreCache implements BuildingState {
     }
 
     @Override
+    public String getName() {
+        return "OreCache";
+    }
+
+    @Override
+    public int getVersion() {
+        return 0;
+    }
+
+    @Override
     public void reset() {
 
     }

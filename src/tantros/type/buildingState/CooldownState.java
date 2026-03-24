@@ -2,6 +2,8 @@ package tantros.type.buildingState;
 
 import arc.math.Mathf;
 import arc.util.Log;
+import arc.util.io.Reads;
+import arc.util.io.Writes;
 import tantros.util.io.ReadContext;
 import tantros.util.io.WriteContext;
 import tantros.world.blocks.BlockExtended;
@@ -40,18 +42,28 @@ public class CooldownState implements BuildingState{
     }
 
     @Override
-    public void write(WriteContext write) {
+    public void write(Writes write) {
         write.f(cooldown);
     }
 
     @Override
-    public void read(ReadContext read) {
+    public void read(Reads read) {
         cooldown = read.f();
     }
 
     @Override
     public boolean isTransient() {
         return false;
+    }
+
+    @Override
+    public String getName() {
+        return "CooldownState";
+    }
+
+    @Override
+    public int getVersion() {
+        return 0;
     }
 
     @Override

@@ -69,4 +69,14 @@ public class BoilerPressureBuildup implements BuildingState{
                 )
         );
     }
+
+    @Override
+    public String getName() {
+        return "BoilerPressureBuildup";
+    }
+
+    @Override
+    public int getVersion() {
+        return 0;
+    }
 }

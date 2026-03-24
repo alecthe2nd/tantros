@@ -1,12 +1,14 @@
 package tantros.content.blocks;
 
 import arc.Events;
+import arc.func.Cons;
 import arc.math.Mathf;
 import arc.struct.Seq;
 import mindustry.Vars;
 import mindustry.content.Items;
 import mindustry.game.EventType;
 import mindustry.type.Category;
+import mindustry.type.ItemStack;
 import mindustry.type.UnitType;
 import mindustry.type.Weapon;
 import mindustry.world.Block;
@@ -14,6 +16,7 @@ import mindustry.world.draw.DrawBlock;
 import mindustry.world.draw.DrawDefault;
 import mindustry.world.draw.DrawRegion;
 import mindustry.world.meta.BuildVisibility;
+import tantros.content.world.TantrosItems;
 import tantros.content.world.TantrosUnitTypes;
 import tantros.type.effect.IsBuilding;
 import tantros.world.blocks.BlockExtended;
@@ -37,25 +40,29 @@ public class TantrosFrame {
 
     public static void load(){
 
-        flakFrame = buildFrame(TantrosUnitTypes.flak);
+        flakFrame = buildFrame(TantrosUnitTypes.flak, with(Items.metaglass, 10));
 
-        sherdFrame = buildFrame(TantrosUnitTypes.sherd);
+        sherdFrame = buildFrame(TantrosUnitTypes.sherd, with(Items.lead, 10, Items.metaglass, 25));
 
-        fractoidFrame = buildFrame(TantrosUnitTypes.fractoid);
+        fractoidFrame = buildFrame(TantrosUnitTypes.fractoid, with(Items.titanium, 60, Items.metaglass, 60, Items.silicon, 10));
 
-        roachFrame = buildFrame(TantrosUnitTypes.roach);
+        roachFrame = buildFrame(TantrosUnitTypes.roach, with(Items.lead, 30, TantrosItems.redcyst, 15));
 
-        infestFrame = buildFrame(TantrosUnitTypes.infest);
+        infestFrame = buildFrame(TantrosUnitTypes.infest, with(Items.lead, 40, TantrosItems.redcyst, 25));
 
-        invadeFrame = buildFrame(TantrosUnitTypes.invade);
+        invadeFrame = buildFrame(TantrosUnitTypes.invade, with(Items.lead, 60, Items.tungsten, 30, Items.silicon, 20));
 
-        delegateFrame = buildFrame(TantrosUnitTypes.delegate);
+        delegateFrame = buildFrame(TantrosUnitTypes.delegate, with(Items.silicon, 10, Items.lead, 5));
 
     }
 
-    public static BlockExtended buildFrame(UnitType unitType){
+    public static BlockExtended buildFrame(UnitType unitType, ItemStack[] cost){
+        return buildFrame(unitType, cost, (b)->{});
+    }
+
+    public static BlockExtended buildFrame(UnitType unitType, ItemStack[] cost, Cons<BlockExtended> modifier){
         return new BlockExtended(unitType.name + "-frame"){{
-            requirements(Category.units, BuildVisibility.sandboxOnly, with(Items.copper, 20, Items.metaglass, 35, Items.silicon, 20));
+            requirements(Category.units, BuildVisibility.sandboxOnly, cost);
             effects.add(new IsBuilding());
 
             rotate = true;

@@ -199,7 +199,7 @@ public class TantrosTechTree {
             TechTree.node(TantrosEffect.deepSonar, Seq.with(polarEdge, silicon), ()->{
 
             });
-            TechTree.node(TantrosPayload.smallUnitAssembler, Seq.with(never, silicon), ()->{
+            TechTree.node(TantrosPayload.delegateFabricator, Seq.with(never, silicon), ()->{
                 TechTree.node(TantrosUnitTypes.delegate, Seq.with(never, silicon), ()->{
 
                 });

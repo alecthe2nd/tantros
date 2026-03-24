@@ -2,6 +2,7 @@ package tantros.world.draw.extended;
 
 import arc.Core;
 import arc.graphics.Color;
+import arc.graphics.Texture;
 import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.TextureRegion;
 import arc.util.Eachable;
@@ -14,7 +15,11 @@ import mindustry.graphics.Layer;
 import mindustry.type.UnitType;
 import mindustry.world.Block;
 
-public class DrawUnit extends DrawBlockExtended{public TextureRegion region;
+public class DrawUnit extends DrawBlockExtended{
+
+    public TextureRegion region;
+
+    public TextureRegion icon;
 
     public UnitType unitType;
 
@@ -24,7 +29,7 @@ public class DrawUnit extends DrawBlockExtended{public TextureRegion region;
     public @Nullable Color color;
     public boolean spinSprite = false;
     public boolean drawPlan = true;
-    public boolean buildingRotate = false;
+    public boolean buildingRotate = true;
     public float rotateSpeed, x, y, rotation;
     /** Any number <=0 disables layer changes. */
     public float layer = -1;
@@ -32,7 +37,6 @@ public class DrawUnit extends DrawBlockExtended{public TextureRegion region;
     public DrawUnit(UnitType unitType){
         this.unitType = unitType;
         name = unitType.name;
-        buildingRotate = true;
         rotation = -90;
     }
 
@@ -60,9 +64,9 @@ public class DrawUnit extends DrawBlockExtended{public TextureRegion region;
     public void drawPlan(Block block, BuildPlan plan, Eachable<BuildPlan> list){
         if(!drawPlan) return;
         if(spinSprite){
-            Drawf.spinSprite(region, plan.drawx() + x, plan.drawy() + y, (buildingRotate ? plan.rotation * 90f : 0 + rotation));
+            Drawf.spinSprite(region, plan.drawx() + x, plan.drawy() + y, ((buildingRotate ? plan.rotation * 90f : 0) + rotation));
         }else{
-            Draw.rect(region, plan.drawx()+ x, plan.drawy() + y, (buildingRotate ? plan.rotation * 90f : 0 + rotation));
+            Draw.rect(region, plan.drawx()+ x, plan.drawy() + y, ((buildingRotate ? plan.rotation * 90f : 0) + rotation));
         }
     }
 

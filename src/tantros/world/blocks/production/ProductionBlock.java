@@ -150,8 +150,8 @@ public class ProductionBlock extends BlockExtended {
         public void onProximityUpdate() {
             super.onProximityUpdate();
 
-            for(Class<? extends BuildingState> type : this.states.keys()){
-                getState(type).onProximity((ProductionBlock) this.block, this);
+            for(BuildingState state : this.states.values()){
+                state.onProximity((ProductionBlock) this.block, this);
             }
         }
 
@@ -179,8 +179,8 @@ public class ProductionBlock extends BlockExtended {
             super.updateTile();
             updateProductionTime();
 
-            for(Class<? extends BuildingState> type : this.states.keys()){
-                getState(type).update((ProductionBlock) this.block, this);
+            for(BuildingState state : this.states.values()){
+                state.update((ProductionBlock) this.block, this);
             }
 
             progressThisTick = getProgressIncrease(currentProductionTime);
@@ -221,6 +221,7 @@ public class ProductionBlock extends BlockExtended {
 
             //when dumping excess take the maximum value instead of the minimum.
             return super.getProgressIncrease(baseTime) * limit;
+
         }
 
         @Override
@@ -286,7 +287,12 @@ public class ProductionBlock extends BlockExtended {
 
         @Override
         public float getPowerProduction(){
-            return enabled ? powerProduction.output(this).power * powerProductionEfficiency : 0f;
+            if(!enabled) return 0f;
+            float powerOutput = 0f;
+            for(Produce produce : producers){
+                powerOutput += produce.output(this).power;
+            }
+            return enabled ? powerOutput * powerProductionEfficiency : 0f;
         }
 
         @Override

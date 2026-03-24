@@ -1,6 +1,8 @@
 package tantros.type.buildingState;
 
 import arc.scene.ui.layout.Table;
+import arc.util.io.Reads;
+import arc.util.io.Writes;
 import mindustry.Vars;
 import mindustry.graphics.Pal;
 import mindustry.ui.Bar;
@@ -45,7 +47,17 @@ public class OutputHeatState implements BuildingState{
     }
 
     @Override
-    public void write(WriteContext write) {
+    public String getName() {
+        return "OutputHeatState";
+    }
+
+    @Override
+    public int getVersion() {
+        return 0;
+    }
+
+    @Override
+    public void write(Writes write) {
         write.f(this.heat);
         for(int i = 0; i < 4; i++){
             write.f(sideHeat[i]);
@@ -53,7 +65,7 @@ public class OutputHeatState implements BuildingState{
     }
 
     @Override
-    public void read(ReadContext read) {
+    public void read(Reads read) {
         this.heat = read.f();
         for(int i = 0; i < 4; i++){
             sideHeat[i] = read.f();

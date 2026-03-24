@@ -4,6 +4,8 @@ import arc.math.geom.Position;
 import arc.math.geom.Rect;
 import arc.math.geom.Vec2;
 import arc.struct.Seq;
+import arc.util.io.Reads;
+import arc.util.io.Writes;
 import mindustry.Vars;
 import mindustry.game.Teams;
 import mindustry.gen.*;
@@ -14,6 +16,8 @@ import tantros.type.buildingState.BuildingState;
 import tantros.util.io.ReadContext;
 import tantros.util.io.WriteContext;
 import tantros.world.blocks.BlockExtended;
+
+import java.beans.Transient;
 
 import static mindustry.Vars.player;
 import static mindustry.Vars.state;
@@ -79,7 +83,22 @@ public class UnitCommandQueueState implements BuildingState {
     }
 
     @Override
-    public void write(WriteContext write) {
+    public boolean isTransient() {
+        return false;
+    }
+
+    @Override
+    public String getName() {
+        return "UnitCommandQueueState";
+    }
+
+    @Override
+    public int getVersion() {
+        return 0;
+    }
+
+    @Override
+    public void write(Writes write) {
 
         write.b(commandQueue.size);
         for(var pos : commandQueue){
@@ -101,7 +120,7 @@ public class UnitCommandQueueState implements BuildingState {
     }
 
     @Override
-    public void read(ReadContext read) {
+    public void read(Reads read) {
         commandQueue.clear();
         int length = read.ub();
         for(int i = 0; i < length; i++){

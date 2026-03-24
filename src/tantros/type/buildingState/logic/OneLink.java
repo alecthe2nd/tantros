@@ -72,6 +72,16 @@ public class OneLink implements BuildingState, Links {
     }
 
     @Override
+    public String getName() {
+        return "OneLink";
+    }
+
+    @Override
+    public int getVersion() {
+        return 0;
+    }
+
+    @Override
     public boolean validLink(BlockExtended.BuildExtended owner, Building other){
         return other != null && other.isValid() && buildingCondition.get(other) && (owner.block.privileged || (!other.block.privileged && other.team == owner.team && other.within(owner, range.range + other.block.size*tilesize/2f))) && !(other instanceof ConstructBlock.ConstructBuild);
     }

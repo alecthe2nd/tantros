@@ -5,6 +5,8 @@ import arc.math.Mathf;
 import arc.scene.ui.layout.Table;
 import arc.struct.IntSet;
 import arc.util.Nullable;
+import arc.util.io.Reads;
+import arc.util.io.Writes;
 import mindustry.Vars;
 import mindustry.gen.Building;
 import mindustry.graphics.Pal;
@@ -14,8 +16,6 @@ import mindustry.world.blocks.heat.HeatBlock;
 import mindustry.world.blocks.heat.HeatConductor;
 import tantros.type.blockConfig.HeatConsumptionConfig;
 import tantros.ui.UIUtil;
-import tantros.util.io.ReadContext;
-import tantros.util.io.WriteContext;
 import tantros.world.blocks.BlockExtended;
 
 import java.util.Arrays;
@@ -66,7 +66,7 @@ public class InputHeatState implements BuildingState{
     }
 
     @Override
-    public void write(WriteContext write) {
+    public void write(Writes write) {
         write.f(heat);
         for(int i = 0; i < 4; i++){
             write.f(sideHeat[i]);
@@ -74,7 +74,7 @@ public class InputHeatState implements BuildingState{
     }
 
     @Override
-    public void read(ReadContext read) {
+    public void read(Reads read) {
         heat = read.f();
         for(int i = 0; i < 4; i++){
             sideHeat[i] = read.f();
@@ -92,6 +92,16 @@ public class InputHeatState implements BuildingState{
     @Override
     public boolean isTransient() {
         return false;
+    }
+
+    @Override
+    public String getName() {
+        return "InputHeatState";
+    }
+
+    @Override
+    public int getVersion() {
+        return 0;
     }
 
     public void updateHeat(BlockExtended.BuildExtended owner){
