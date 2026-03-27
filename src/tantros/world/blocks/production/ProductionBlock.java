@@ -179,10 +179,6 @@ public class ProductionBlock extends BlockExtended {
             super.updateTile();
             updateProductionTime();
 
-            for(BuildingState state : this.states.values()){
-                state.update((ProductionBlock) this.block, this);
-            }
-
             progressThisTick = getProgressIncrease(currentProductionTime);
             if(efficiency > 0){
 
@@ -201,6 +197,10 @@ public class ProductionBlock extends BlockExtended {
                 warmup = Mathf.approachDelta(warmup, 0f, warmupSpeed);
             }
 
+            for(Produce producer: producers){
+                producer.updateAlways(this);
+            }
+
             //TODO may look bad, revert to edelta() if so
             totalProgress += progressThisTick;
 
@@ -210,17 +210,21 @@ public class ProductionBlock extends BlockExtended {
             dumpOutputs();
         }
 
-        @Override
-        public float getProgressIncrease(float baseTime){
+        public float getProgressIncreaseLimit(){
 
             float limit = (warmupEffectsProduction)? warmup: 1;
 
             for(Produce producer: producers){
                 limit = Math.min(limit, producer.progressLimit(this));
             }
+            return limit;
+        }
+
+        @Override
+        public float getProgressIncrease(float baseTime){
 
             //when dumping excess take the maximum value instead of the minimum.
-            return super.getProgressIncrease(baseTime) * limit;
+            return super.getProgressIncrease(baseTime) * getProgressIncreaseLimit();
 
         }
 

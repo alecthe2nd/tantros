@@ -9,6 +9,7 @@ import mindustry.graphics.Drawf;
 import mindustry.world.Block;
 import mindustry.world.Build;
 import mindustry.world.draw.DrawBlock;
+import tantros.graphics.TantrosDraw;
 
 import java.util.function.Supplier;
 
@@ -40,7 +41,7 @@ public class DrawSpin extends DrawBlock {
             timeSource = Building::totalProgress;
         }
         if(useSpinSprite) {
-            Drawf.spinSprite(region, build.x + x, build.y + y, timeSource.get(build) * rotateSpeed);
+            TantrosDraw.spinSprite(region, build.x + x, build.y + y, timeSource.get(build) * rotateSpeed, 180f);
         } else {
             Draw.rect(region, build.x + x, build.y + y, timeSource.get(build) * rotateSpeed);
         }

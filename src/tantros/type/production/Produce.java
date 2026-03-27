@@ -49,6 +49,8 @@ public abstract class Produce {
 
     public abstract void update(ProductionBlock.ProductionBuild build);
 
+    public void updateAlways(ProductionBlock.ProductionBuild build){}
+
     public abstract boolean canCraft(ProductionBlock.ProductionBuild build);
 
     public float progressLimit(ProductionBlock.ProductionBuild build) {

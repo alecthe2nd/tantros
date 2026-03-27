@@ -86,7 +86,7 @@ public class TantrosTechTree {
                 });
                 TechTree.node(TantrosProduction.combustionHeater, Seq.with(never), () -> {
                     TechTree.node(TantrosProduction.copperBoiler,() -> {
-                        TechTree.node(TantrosPower.steamTurbine, () -> {
+                        TechTree.node(TantrosPower.steamEngine, () -> {
                             TechTree.node(TantrosPower.steamDynamo, () -> {
 
                             });

@@ -42,6 +42,11 @@ public class ProducePower extends Produce{
 
     @Override
     public void update(ProductionBlock.ProductionBuild build) {
+
+    }
+
+    @Override
+    public void updateAlways(ProductionBlock.ProductionBuild build) {
         build.powerProductionEfficiency = build.efficiency;
     }
 

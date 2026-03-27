@@ -33,6 +33,7 @@ import tantros.type.blockUtil.OnDestroyExplosionContext;
 import tantros.type.buildConfig.BuildConfigurationUnit;
 import tantros.type.buildingState.BuildingState;
 import tantros.type.effect.BlockEffect;
+import tantros.world.blocks.production.ProductionBlock;
 import tantros.world.consumers.ExtendedConsume;
 import tantros.world.draw.extended.DrawBlockExtended;
 import tantros.world.draw.extended.DrawMultiExtended;
@@ -56,6 +57,7 @@ public class BlockExtended extends Block {
     public ObjectMap<Class<? extends BlockConfig>, ? super BlockConfig> blockConfigs = new ObjectMap<>();
     public Seq<ConfigApplier<?,?>> configAppliers = new Seq<>();
     public Seq<BuildingStateSource> stateSources = new Seq<>();
+    public ObjectMap<String, BuildingStateSource> namedSources = new ObjectMap<>();
 
     public Seq<BlockEffect> effects =  new Seq<>();
 
@@ -194,20 +196,37 @@ public class BlockExtended extends Block {
             String name = state.getName();
             int suffixNum = computeNumberOfIdenticalStateNames(name);
             name += "-" + suffixNum;
-            this.putState(state,name);
+            this.putState(state,name, true);
             return name;
         }
 
         /**
-         * Adds a state to this building with the given name.
+         * Adds a state to this building with the given name. If the name already exists, it gets overridden.
          */
         public void putState(BuildingState state, String name){
-            this.states.put(name, state);
+            this.putState(state, name, false);
+        }
+
+        /**
+         * Adds a state to this building with the given name. If the name already exists and generateFallbackName is true, a new name will be generated for it. If the name already exists but generateFallbackName is false, then the old name will be overridden with this state.
+         */
+        public void putState(BuildingState state, String name, boolean generateFallbackName){
+            if(generateFallbackName && this.states.containsKey(name)){
+                this.putState(state);
+            } else {
+                this.states.put(name, state);
+            }
         }
 
         @Override
         public void created() {
             super.created();
+
+            for(ObjectMap.Entry<String, BuildingStateSource> entry: namedSources){
+                BuildingState state = entry.value.get();
+                putState(state, entry.key, true);
+            }
+
             for(BuildingStateSource stateSource : stateSources){
                 BuildingState state = stateSource.get();
                 putState(state);
@@ -239,6 +258,10 @@ public class BlockExtended extends Block {
         @Override
         public void updateTile() {
             super.updateTile();
+
+            for(BuildingState state : this.states.values()){
+                state.update((ProductionBlock) this.block, this);
+            }
             if(efficiency > 0){
                 for(BlockEffect effect: effects){
                     effect.update(this);

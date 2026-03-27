@@ -137,7 +137,7 @@ public class TantrosDistribution {
         copperPipeline = new Pipeline("copper-pipeline"){{
             requirements(Category.liquid, with(Items.copper, 1, Items.metaglass, 1));
             health = 35;
-            speed = 10f;
+            speed = 80f;
             leaks = true;
             liquidCapacity = 10;
         }};
@@ -150,7 +150,7 @@ public class TantrosDistribution {
             researchCostMultiplier = 1;
             underBullets = true;
             health = 50;
-            speed = 10f;
+            speed = 80f;
 
             ((Pipeline)copperPipeline).rotBridgeReplacement = this;
         }};
@@ -158,7 +158,7 @@ public class TantrosDistribution {
         copperPipelineRouter = new PipelineRouter("copper-pipeline-router"){{
             requirements(Category.liquid, with(Items.copper, 3, Items.metaglass, 2));
             health = 50;
-            speed = 10f;
+            speed = 80f;
             liquidCapacity=copperPipeline.liquidCapacity;
             squareSprite = false;
         }};
@@ -166,7 +166,7 @@ public class TantrosDistribution {
         copperLiquidContainer = new PipelineTank("copper-liquid-container"){{
             requirements(Category.liquid, with(Items.copper, 30, Items.metaglass, 20));
             health = 45 * 4;
-            speed = 10f;
+            speed = 80f;
             liquidCapacity = copperPipeline.liquidCapacity*4*10;
             size = 2;
             squareSprite = false;
@@ -175,7 +175,7 @@ public class TantrosDistribution {
         copperLiquidTank = new PipelineTank("copper-liquid-tank"){{
             requirements(Category.liquid, with(Items.copper, 90, Items.metaglass, 70));
             health = 40 * 9;
-            speed = 10f;
+            speed = 80f;
             liquidCapacity = copperPipeline.liquidCapacity*9*15;
             size = 3;
             squareSprite = false;
@@ -184,7 +184,7 @@ public class TantrosDistribution {
         copperLiquidSilo = new PipelineTank("copper-liquid-silo"){{
             requirements(Category.liquid, with(Items.copper, 150, Items.metaglass, 90, Items.titanium, 60));
             health = 35 * 16;
-            speed = 10f;
+            speed = 80f;
             liquidCapacity = copperPipeline.liquidCapacity*16*20;
             size = 4;
             squareSprite = false;
@@ -193,7 +193,7 @@ public class TantrosDistribution {
         metaglassPipeline = new Pipeline("metaglass-pipeline"){{
             requirements(Category.liquid, with(Items.metaglass, 3, Items.graphite, 1));
             health = 70;
-            speed = 80f;
+            speed = 160f;
             leaks = false;
             liquidCapacity = 15;
         }};
@@ -206,7 +206,7 @@ public class TantrosDistribution {
             researchCostMultiplier = 1;
             underBullets = true;
             health = 85;
-            speed = 80f;
+            speed = 160f;
 
             ((Pipeline)metaglassPipeline).rotBridgeReplacement = this;
         }};
@@ -214,7 +214,7 @@ public class TantrosDistribution {
         metaglassPipelineRouter = new PipelineRouter("metaglass-pipeline-router"){{
             requirements(Category.liquid, with(Items.metaglass, 3, Items.graphite, 2));
             health = 85;
-            speed = 80f;
+            speed = 160f;
             liquidCapacity=metaglassPipeline.liquidCapacity;
             squareSprite = false;
         }};
@@ -222,7 +222,7 @@ public class TantrosDistribution {
         metaglassLiquidContainer = new PipelineTank("metaglass-liquid-container"){{
             requirements(Category.liquid, with(Items.metaglass, 30, Items.graphite, 20, Items.oxide, 16));
             health = 60 * 4;
-            speed = 80f;
+            speed = 160f;
             liquidCapacity = metaglassPipeline.liquidCapacity*4*10;
             size = 2;
             squareSprite = false;
@@ -231,7 +231,7 @@ public class TantrosDistribution {
         metaglassLiquidTank = new PipelineTank("metaglass-liquid-tank"){{
             requirements(Category.liquid, with(Items.metaglass, 90, Items.graphite, 70, Items.oxide, 36));
             health = 55 * 9;
-            speed = 80f;
+            speed = 160f;
             liquidCapacity = metaglassPipeline.liquidCapacity*9*15;
             size = 3;
             squareSprite = false;
@@ -240,7 +240,7 @@ public class TantrosDistribution {
         metaglassLiquidSilo = new PipelineTank("metaglass-liquid-silo"){{
             requirements(Category.liquid, with(Items.metaglass, 150, Items.graphite, 90, Items.titanium, 60, Items.oxide, 64));
             health = 50 * 16;
-            speed = 80f;
+            speed = 160f;
             liquidCapacity = metaglassPipeline.liquidCapacity*16*20;
             size = 4;
             squareSprite = false;
