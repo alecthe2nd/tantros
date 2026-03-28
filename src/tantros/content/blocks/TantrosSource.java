@@ -18,12 +18,12 @@ import mindustry.world.Block;
 import mindustry.world.blocks.production.GenericCrafter;
 import mindustry.world.blocks.production.Pump;
 import mindustry.world.draw.*;
-import mindustry.world.meta.BlockFlag;
-import mindustry.world.meta.BlockGroup;
-import mindustry.world.meta.BuildVisibility;
-import mindustry.world.meta.Env;
+import mindustry.world.meta.*;
 import tantros.content.recipes.TantrosRecipes;
+import tantros.content.world.TantrosLiquids;
 import tantros.type.Resource;
+import tantros.type.blockConfig.AttributeConfig;
+import tantros.type.effect.AttributePlacementRestriction;
 import tantros.type.effect.IsBuilding;
 import tantros.type.production.*;
 import tantros.world.blocks.BlockExtended;
@@ -32,8 +32,10 @@ import tantros.world.blocks.drill.CustomDrawerDrill;
 import tantros.world.blocks.production.ProductionBlock;
 import tantros.world.blocks.production.RecipeCrafter;
 import tantros.world.blocks.production.Sifter;
+import tantros.world.consumers.AttributeConsumer;
 import tantros.world.draw.*;
 import tantros.world.draw.DrawFade;
+import tantros.world.draw.extended.DrawAttributeEfficiency;
 import tantros.world.draw.extended.DrawMultiExtended;
 import tantros.world.draw.wallDrill.DrawBoreBit;
 import tantros.world.draw.wallDrill.DrawDrillBit;
@@ -58,7 +60,8 @@ public class TantrosSource {
             seawaterIntake,
             effervescenceCollector,
             effervescenceConcentrator,
-            atmosphereIntakeTower
+            atmosphereIntakeTower,
+            hydrothermalTap
     ;
 
     public static void load(){
@@ -73,16 +76,16 @@ public class TantrosSource {
             warmupEffectsProduction = true;
 
             drawer = new DrawMultiExtended(
-                    new DrawDefault(),
-                    new DrawBoreBit(),
-                    new DrawPlacementLines()
+                    new DrawDefault()
             );
-            consumePower(1f);
-            produce(new ProduceIfCooldown(
-                    new ProduceWallOre(5,10),
-                    240
-                    )
-            );
+
+            AttributeConfig attributeConfig = new AttributeConfig();
+            attributeConfig.attribute = Attribute.steam;
+            attributeConfig.minEfficiency = 4 - 0.0001f;
+            putBlockConfig(attributeConfig);
+            consume(new AttributeConsumer());
+            effects.add(new AttributePlacementRestriction());
+            produce(new ProduceLiquid(new LiquidStack(Liquids.water, 5f/60f)));
         }};
 
         testBlock = new RecipeCrafter("test-block"){{
@@ -162,6 +165,37 @@ public class TantrosSource {
 
             consume(new ConsumeEnv(LocalEnv.with(Liquids.water)));
             flags = EnumSet.of(BlockFlag.drill);
+        }};
+
+        hydrothermalTap = new ProductionBlock("hydrothermal-tap"){{
+            requirements(Category.production, with(Items.copper, 12, Items.metaglass, 25));
+            productionTime = 60;
+            size = 3;
+            squareSprite = false;
+
+            drawer = new DrawMultiExtended(
+                    new DrawLiquidTile(TantrosLiquids.steam, 4),
+                    new DrawDefault(),
+                    new DrawParticles(){{
+                        color = TantrosLiquids.steam.color;
+                        reverse = true;
+                        particleSize = 4f;
+                        particles = 20;
+                        particleRad = 8f;
+                        particleLife = 90f;
+                    }},
+                    new DrawRegion("-top"),
+                    new DrawAttributeEfficiency()
+            );
+
+            AttributeConfig attributeConfig = new AttributeConfig();
+            attributeConfig.attribute = Attribute.steam;
+            attributeConfig.minEfficiency = 9 - 0.0001f;
+            attributeConfig.displayEfficiencyScale = attributeConfig.efficiencyScale = 1f/9f;
+            putBlockConfig(attributeConfig);
+            consume(new AttributeConsumer());
+            effects.add(new AttributePlacementRestriction());
+            produce(new ProduceLiquid(new LiquidStack(TantrosLiquids.steam, 10f/60f)));
         }};
 
         deepBoreDrill = new ProductionBlock("deep-bore-drill"){{

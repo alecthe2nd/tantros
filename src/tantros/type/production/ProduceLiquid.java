@@ -1,5 +1,6 @@
 package tantros.type.production;
 
+import arc.math.Mathf;
 import arc.scene.ui.layout.Table;
 import mindustry.type.LiquidStack;
 import mindustry.world.meta.Stat;
@@ -72,6 +73,9 @@ public class ProduceLiquid extends Produce{
         }
 
         //limit progress increase by maximum amount of liquid it can produce
+        if(Mathf.equal(build.efficiency, 0)){
+            return 0;
+        }
         float scaling = 1f;
         float value = (build.block.liquidCapacity - build.liquids.get(output.liquid)) / (output.amount * build.edelta());
         scaling = Math.min(scaling, value);

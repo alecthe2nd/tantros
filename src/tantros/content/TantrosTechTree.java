@@ -53,6 +53,11 @@ public class TantrosTechTree {
                 });
             });
             TechTree.node(TantrosSource.copperBore, Seq.with(copper, embark), () -> {
+                TechTree.node(TantrosSource.deepBoreDrill, Seq.with(never), () -> {
+                    TechTree.node(TantrosSource.deepLaserDrill, Seq.with(never), () -> {
+
+                    });
+                });
                 TechTree.node(TantrosSource.effervescenceCollector, Seq.with(never), () -> {
                     TechTree.node(TantrosDistribution.copperPipeline, Seq.with(metaglass, never), () -> {
                         TechTree.node(TantrosDistribution.copperPipelineRouter, Seq.with(metaglass, never), () -> {
@@ -62,15 +67,24 @@ public class TantrosTechTree {
 
                                     });
                                 });
-                                TechTree.node(TantrosSource.deepBoreDrill, Seq.with(never), () -> {
-                                    TechTree.node(TantrosSource.deepLaserDrill, Seq.with(never), () -> {
-
-                                    });
-                                });
                             });
                         });
                         TechTree.node(TantrosDistribution.copperPipelineBridge, Seq.with(metaglass, never), () -> {
 
+                        });
+                        TechTree.node(TantrosDistribution.metaglassPipeline, Seq.with(metaglass, never), () -> {
+                            TechTree.node(TantrosDistribution.metaglassPipelineRouter, Seq.with(metaglass, never), () -> {
+                                TechTree.node(TantrosDistribution.metaglassLiquidContainer, Seq.with(metaglass, never), () -> {
+                                    TechTree.node(TantrosDistribution.metaglassLiquidTank, Seq.with(never), () -> {
+                                        TechTree.node(TantrosDistribution.metaglassLiquidSilo, Seq.with(never), () -> {
+
+                                        });
+                                    });
+                                });
+                            });
+                            TechTree.node(TantrosDistribution.metaglassPipelineBridge, Seq.with(metaglass, never), () -> {
+
+                            });
                         });
                     });
                 });
@@ -84,7 +98,7 @@ public class TantrosTechTree {
             TechTree.node(TantrosPower.tidalTurbine, Seq.with(shallows), () -> {
                 TechTree.node(TantrosPower.sealedBeamNode, Seq.with(shallows), () -> {
                 });
-                TechTree.node(TantrosProduction.combustionHeater, Seq.with(never), () -> {
+                TechTree.node(TantrosProduction.cystCombustionHeater, Seq.with(never), () -> {
                     TechTree.node(TantrosProduction.copperBoiler,() -> {
                         TechTree.node(TantrosPower.steamEngine, () -> {
                             TechTree.node(TantrosPower.steamDynamo, () -> {
@@ -203,21 +217,35 @@ public class TantrosTechTree {
                 TechTree.node(TantrosUnitTypes.delegate, Seq.with(never, silicon), ()->{
 
                 });
-                TechTree.node(TantrosUnitTypes.flak, Seq.with(never, silicon), ()->{
-                    TechTree.node(TantrosUnitTypes.sherd, Seq.with(never, silicon), ()->{
-                        TechTree.node(TantrosUnitTypes.fractoid, Seq.with(never, silicon), ()->{
 
+                TechTree.node(TantrosPayload.smallFrameFabricator, Seq.with(never, silicon), ()-> {
+                    TechTree.node(TantrosFrame.flakFrame, Seq.with(never, silicon), () -> {
+                        TechTree.node(TantrosUnitTypes.flak, Seq.with(never, silicon), () -> {
+                            TechTree.node(TantrosFrame.sherdFrame, Seq.with(never, silicon), () -> {
+                                TechTree.node(TantrosUnitTypes.sherd, Seq.with(never, silicon), () -> {
+                                    TechTree.node(TantrosFrame.fractoidFrame, Seq.with(never, silicon), () -> {
+                                        TechTree.node(TantrosUnitTypes.fractoid, Seq.with(never, silicon), () -> {
+
+                                        });
+                                    });
+                                });
+                            });
+                            TechTree.node(TantrosFrame.roachFrame, Seq.with(never, silicon), () -> {
+                                TechTree.node(TantrosUnitTypes.roach, Seq.with(never, silicon), () -> {
+                                    TechTree.node(TantrosFrame.infestFrame, Seq.with(never, silicon), () -> {
+                                        TechTree.node(TantrosUnitTypes.infest, Seq.with(never, silicon), () -> {
+                                            TechTree.node(TantrosFrame.invadeFrame, Seq.with(never, silicon), () -> {
+                                                TechTree.node(TantrosUnitTypes.invade, Seq.with(never, silicon), () -> {
+
+                                                });
+                                            });
+                                        });
+                                    });
+                                });
+                            });
                         });
                     });
                 });
-                TechTree.node(TantrosUnitTypes.roach, Seq.with(never, silicon), ()->{
-                    TechTree.node(TantrosUnitTypes.infest, Seq.with(never, silicon), ()->{
-                        TechTree.node(TantrosUnitTypes.invade, Seq.with(never, silicon), ()->{
-
-                        });
-                    });
-                });
-
             });
         });
     }

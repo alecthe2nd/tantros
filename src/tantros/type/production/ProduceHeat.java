@@ -21,7 +21,7 @@ public class ProduceHeat extends Produce{
     @Override
     public Resource output(ProductionBlock.ProductionBuild build) {
         cache.clear();
-        cache.withHeat(productionConfig.heatOutput);
+        cache.withHeat(productionConfig.heatOutput * build.efficiency);
         return cache;
     }
 
@@ -39,7 +39,7 @@ public class ProduceHeat extends Produce{
     @Override
     public void update(ProductionBlock.ProductionBuild build) {
         OutputHeatState outputHeat = build.getState(OutputHeatState.class);
-        outputHeat.heat = productionConfig.heatOutput;
+        outputHeat.heat = productionConfig.heatOutput * build.efficiency;
         for(int i = 0; i < 4; i++){
             outputHeat.sideHeat[i] = productionConfig.sideOutputs[i] * productionConfig.heatOutput;
         }

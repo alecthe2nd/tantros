@@ -9,6 +9,7 @@ import mindustry.entities.effect.MultiEffect;
 import mindustry.gen.Sounds;
 import mindustry.graphics.Pal;
 import mindustry.type.Category;
+import mindustry.type.ItemStack;
 import mindustry.type.LiquidStack;
 import mindustry.world.Block;
 import mindustry.world.blocks.heat.HeatProducer;
@@ -17,9 +18,12 @@ import mindustry.world.draw.*;
 import mindustry.world.meta.BlockGroup;
 import mindustry.world.meta.Env;
 import tantros.content.TantrosFx;
+import tantros.content.world.TantrosItems;
 import tantros.content.world.TantrosLiquids;
 import tantros.type.blockConfig.HeatConsumptionConfig;
+import tantros.type.blockConfig.HeatProductionConfig;
 import tantros.type.production.ProduceBoilerLiquid;
+import tantros.type.production.ProduceHeat;
 import tantros.world.blocks.production.Boiler;
 import tantros.world.blocks.production.ProductionBlock;
 import tantros.world.consumers.ConsumeHeat;
@@ -45,6 +49,7 @@ public class TantrosProduction {
             nanostructureWeaver,
             electrolysisChamber,
             combustionHeater,
+            cystCombustionHeater,
             hydrogenCatalysisHeater,
             sealedElectricHeater,
             oxidizationHeater,
@@ -135,6 +140,53 @@ public class TantrosProduction {
             ambientSoundVolume = 0.12f;
             researchCostMultiplier = 0.5f;
         }};
+
+        cystCombustionHeater = new ProductionBlock("cyst-combustion-heater"){
+            {
+                requirements(Category.crafting, with(Items.copper, 20, Items.oxide, 10, Items.metaglass, 30));
+                craftEffect = new MultiEffect(TantrosFx.parallaxBubble,TantrosFx.parallaxBubble,TantrosFx.parallaxBubble,TantrosFx.parallaxBubble);
+
+                //addRecipe(TantrosRecipes.hydrogenCombustion);
+                size = 2;
+                drawer = new DrawMultiExtended(
+                        new DrawRegion("-bottom"),
+                        new DrawWarmupRegion(){{
+                            color = Pal.darkFlame;
+                        }},
+                        new DrawParticles(){{
+                            color = Color.valueOf("ed8e38");
+                            reverse = true;
+                            particleSize = 2f;
+                            particles = 20;
+                            particleRad = 8f;
+                            particleLife = 60f;
+                        }},
+                        new DrawDefault(),
+                        new DrawHeatOutput(){{
+                            glowMult = 1.8f;
+                        }},
+                        new DrawLight()
+                );
+                itemCapacity = 10;
+                liquidCapacity = 10;
+                envDisabled |= Env.oxygen;
+
+                ambientSound = Sounds.loopFire;
+                emitLight = true;
+
+                consumeItems(ItemStack.with(TantrosItems.redcyst, 1));
+
+                HeatProductionConfig config = new HeatProductionConfig();
+                config.heatOutput = 5;
+                config.sideOutputs[0] = 1;
+                produce(new ProduceHeat(config));
+                productionTime = 60f;
+
+                rotate = true;
+                rotateDraw = false;
+                drawArrow = true;
+            }
+        };
 
         combustionHeater = new RecipeCrafter("combustion-heater"){
             {

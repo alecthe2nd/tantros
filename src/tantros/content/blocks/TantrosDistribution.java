@@ -151,6 +151,7 @@ public class TantrosDistribution {
             underBullets = true;
             health = 50;
             speed = 80f;
+            squareSprite = false;
 
             ((Pipeline)copperPipeline).rotBridgeReplacement = this;
         }};
@@ -207,7 +208,7 @@ public class TantrosDistribution {
             underBullets = true;
             health = 85;
             speed = 160f;
-
+            squareSprite = false;
             ((Pipeline)metaglassPipeline).rotBridgeReplacement = this;
         }};
 

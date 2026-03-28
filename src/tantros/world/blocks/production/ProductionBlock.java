@@ -15,6 +15,7 @@ import mindustry.type.Item;
 import mindustry.type.ItemStack;
 import mindustry.type.LiquidStack;
 import mindustry.world.Tile;
+import mindustry.world.blocks.heat.HeatBlock;
 import mindustry.world.meta.BlockFlag;
 import tantros.type.buildingState.BuildingState;
 import tantros.type.production.Produce;
@@ -25,10 +26,6 @@ public class ProductionBlock extends BlockExtended {
     public boolean rotatedOutput;
 
     public float productionTime = 1;
-
-    public boolean outputsHeat = false;
-
-    public boolean outputsPayload = false;
 
     public float warmupSpeed = 0.019f;
 
@@ -113,14 +110,14 @@ public class ProductionBlock extends BlockExtended {
 
     @Override
     public boolean canPlaceOn(Tile tile, Team team, int rotation){
-        boolean allowed = true;
+        boolean allowed = super.canPlaceOn(tile, team, rotation);;
         for(Produce producer : producers){
             allowed &= producer.placementAllowed(this, tile, team, rotation);
         }
         return allowed;
     }
 
-    public class ProductionBuild extends BuildExtended {
+    public class ProductionBuild extends BuildExtended implements HeatBlock {
 
         public float progress;
         public float totalProgress = 0;
@@ -329,6 +326,21 @@ public class ProductionBlock extends BlockExtended {
 
         public ProductionBlock getBlock(){
             return (ProductionBlock) block;
+        }
+
+        @Override
+        public float heat() {
+            if(!enabled) return 0f;
+            float heat = 0f;
+            for(Produce produce : producers){
+                heat += produce.output(this).heat;
+            }
+            return enabled ? heat : 0f;
+        }
+
+        @Override
+        public float heatFrac() {
+            return enabled && heat() > 0 ? Mathf.clamp(efficiency) : 0f;
         }
     }
 }

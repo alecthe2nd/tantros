@@ -15,6 +15,7 @@ import mindustry.content.Liquids;
 import mindustry.entities.Damage;
 import mindustry.entities.Effect;
 import mindustry.entities.units.BuildPlan;
+import mindustry.game.Team;
 import mindustry.gen.Building;
 import mindustry.gen.Unit;
 import mindustry.type.Item;
@@ -22,6 +23,7 @@ import mindustry.type.Liquid;
 import mindustry.type.LiquidStack;
 import mindustry.type.UnitType;
 import mindustry.world.Block;
+import mindustry.world.Tile;
 import mindustry.world.consumers.Consume;
 import mindustry.world.draw.DrawDefault;
 import tantros.net.TantrosCalls;
@@ -33,6 +35,7 @@ import tantros.type.blockUtil.OnDestroyExplosionContext;
 import tantros.type.buildConfig.BuildConfigurationUnit;
 import tantros.type.buildingState.BuildingState;
 import tantros.type.effect.BlockEffect;
+import tantros.type.production.Produce;
 import tantros.world.blocks.production.ProductionBlock;
 import tantros.world.consumers.ExtendedConsume;
 import tantros.world.draw.extended.DrawBlockExtended;
@@ -119,6 +122,15 @@ public class BlockExtended extends Block {
     @Override
     public void getRegionsToOutline(Seq<TextureRegion> out){
         drawer.getRegionsToOutline(this, out);
+    }
+
+    @Override
+    public boolean canPlaceOn(Tile tile, Team team, int rotation){
+        boolean allowed = super.canPlaceOn(tile, team, rotation);;
+        for(BlockEffect effect : effects){
+            allowed &= effect.placementAllowed(this, tile, team, rotation);
+        }
+        return allowed;
     }
 
     @SuppressWarnings("unchecked")
