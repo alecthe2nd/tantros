@@ -31,6 +31,6 @@ public class AttributePlacementRestriction implements BlockEffect{
 
     @Override
     public boolean placementAllowed(BlockExtended block, Tile tile, Team team, int rotation) {
-        return tile.getLinkedTilesAs(block, tempTiles).sumf(other -> other.floor().attributes.get(config.attribute)) > config.minEfficiency;
+        return tile.getLinkedTilesAs(block, tempTiles).sumf(other -> other.floor().attributes.get(config.attribute)) >= config.minEfficiency;
     }
 }

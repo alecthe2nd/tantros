@@ -1,5 +1,6 @@
 package tantros.type.buildingState;
 
+import arc.math.Mathf;
 import arc.scene.ui.layout.Table;
 import arc.util.io.Reads;
 import arc.util.io.Writes;
@@ -87,7 +88,7 @@ public class OutputHeatState implements BuildingState{
                 new Bar(
                     "bar.heat",
                     Pal.lightOrange,
-                    () -> this.heat / this.productionConfig.heatOutput
+                    () -> Mathf.clamp(this.heat / this.productionConfig.heatOutput)
                 )
         );
     }

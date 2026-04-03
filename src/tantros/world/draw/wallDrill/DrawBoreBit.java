@@ -105,24 +105,24 @@ public class DrawBoreBit extends DrawBlock {
             for(int j = 0; j < finCount; j++){
 
                 var finDir = Geometry.d4(build.rotation + 1);
-                float vx = Mathf.cosDeg(build.totalProgress()*productionTime * rotationSpeed + (360f/finCount)*j) * headWidth,
-                        vy = Mathf.sinDeg(build.totalProgress()*productionTime * rotationSpeed + (360f/finCount)*j) * headWidth;
+                float horizOffset = Mathf.cosDeg(build.totalProgress()*productionTime * rotationSpeed + (360f/finCount)*j) * headWidth,
+                        depthOffset = Mathf.sinDeg(build.totalProgress()*productionTime * rotationSpeed + (360f/finCount)*j) * headWidth;
                 float z2 = Draw.z();
-                if(vy < 0){
+                if(depthOffset < 0){
                     Draw.z(z2 - 0.1f);
                 }
-                Draw.rect(fin, targetx + (finDir.x)*vx, targety, build.rotdeg());
+                Draw.rect(fin, targetx + (finDir.x)*horizOffset, targety + (finDir.y)*horizOffset, build.rotdeg());
                 Draw.z(z2);
             }
             for(int k = 0; k < spikeCount; k++){
                 var finDir = Geometry.d4(build.rotation + 1);
-                float vx = Mathf.cosDeg(build.totalProgress()*productionTime * rotationSpeed + (360f/spikeCount)*k) * headWidth * spikeCircleFraction,
-                        vy = Mathf.sinDeg(build.totalProgress()*productionTime * rotationSpeed + (360f/spikeCount)*k) * headWidth * spikeCircleFraction;
+                float horizOffset = Mathf.cosDeg(build.totalProgress()*productionTime * rotationSpeed + (360f/spikeCount)*k) * headWidth * spikeCircleFraction,
+                        depthOffset = Mathf.sinDeg(build.totalProgress()*productionTime * rotationSpeed + (360f/spikeCount)*k) * headWidth * spikeCircleFraction;
                 float z2 = Draw.z();
-                if(vy < 0){
+                if(depthOffset < 0){
                     Draw.z(z2 - 0.1f);
                 }
-                Draw.rect(spike, targetx + (finDir.x)*vx + spikeYOffset*dir.x, targety + (finDir.y)*vx + spikeYOffset*dir.y, build.rotdeg());
+                Draw.rect(spike, targetx + (finDir.x)*horizOffset + spikeYOffset*dir.x, targety + (finDir.y)*horizOffset + spikeYOffset*dir.y, build.rotdeg());
                 Draw.z(z2);
             }
 

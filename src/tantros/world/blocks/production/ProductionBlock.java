@@ -81,6 +81,8 @@ public class ProductionBlock extends BlockExtended {
                             liquidBoostIntensity * liquidBoostIntensity, false, consBase::consumes)
             );
         }*/
+
+        stats.timePeriod = productionTime;
     }
 
     @Override

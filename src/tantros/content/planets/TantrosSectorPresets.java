@@ -1,5 +1,6 @@
 package tantros.content.planets;
 
+import mindustry.content.SectorPresets;
 import mindustry.type.SectorPreset;
 
 import static mindustry.content.Planets.tantros;
@@ -7,7 +8,8 @@ import static mindustry.content.Planets.tantros;
 public class TantrosSectorPresets {
     public static SectorPreset embark,
     shallows,
-    polarEdge;
+    polarEdge,
+    patrolOutpost;
 
     public static void load(){
         embark = new SectorPreset("embark", tantros, 10){{
@@ -25,6 +27,10 @@ public class TantrosSectorPresets {
         polarEdge = new SectorPreset("polar-edge", tantros, 19){{
             captureWave = 10;
             difficulty = 1;
+            overrideLaunchDefaults = true;
+        }};
+        patrolOutpost = new SectorPreset("patrol-outpost", tantros, 49){{
+            difficulty = 2;
             overrideLaunchDefaults = true;
         }};
     }

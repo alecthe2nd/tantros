@@ -20,6 +20,7 @@ import mindustry.graphics.*;
 import mindustry.type.*;
 import mindustry.type.ammo.ItemAmmoType;
 import mindustry.type.weapons.*;
+import mindustry.ui.dialogs.PlanetDialog;
 import mindustry.world.meta.*;
 import static tantros.ai.TantrosUnitCommands.*;
 
@@ -516,7 +517,6 @@ public class TantrosUnitTypes {
                 }};
             }});
         }};
-
         delegate = new UnitType("delegate"){{
             constructor = LegsUnit::create;
             defaultCommand = groundMineCommand;
@@ -575,8 +575,10 @@ public class TantrosUnitTypes {
             mineTier = 2;
             mineSpeed = 0.5f;
 
-            buildSpeed = 0.01f;
+            buildSpeed = 0.075f;
             buildRange = Vars.buildingRange * 0.25f;
+
+            buildBeamOffset = mineBeamOffset = 2.8f;
 
             abilities.add(new RepairFieldAbility(5f, 60f * 8, 50f));
 
@@ -586,7 +588,7 @@ public class TantrosUnitTypes {
                     widthSinMag = 0.11f;
                     reload = 20f;
                     x = 0f;
-                    y = 6f;
+                    y = 3f;
                     rotate = false;
                     shootY = 0f;
                     beamWidth = 0.3f;

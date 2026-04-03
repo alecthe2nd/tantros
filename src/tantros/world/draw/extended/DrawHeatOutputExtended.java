@@ -7,12 +7,15 @@ import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.TextureRegion;
 import arc.math.Mathf;
 import arc.util.Eachable;
+import arc.util.Tmp;
 import mindustry.entities.units.BuildPlan;
 import mindustry.gen.Building;
 import mindustry.graphics.Layer;
 import mindustry.world.Block;
 import mindustry.world.blocks.heat.HeatBlock;
 import mindustry.world.draw.DrawBlock;
+import tantros.type.buildingState.OutputHeatState;
+import tantros.world.blocks.BlockExtended;
 
 public class DrawHeatOutputExtended extends DrawBlockExtended {
     public TextureRegion heat, glow, top1, top2;
@@ -32,19 +35,51 @@ public class DrawHeatOutputExtended extends DrawBlockExtended {
 
     @Override
     public void draw(Building build){
-        float rotdeg = (build.rotation + rotOffset) * 90;
-        Draw.rect(Mathf.mod((build.rotation + rotOffset), 4) > 1 ? top2 : top1, build.x, build.y, rotdeg);
+        float z = Draw.z();
 
-        if(build instanceof HeatBlock heater && heater.heat() > 0){
+        if(build instanceof BlockExtended.BuildExtended extended){
+            OutputHeatState state = extended.getState(OutputHeatState.class);
+            if(state == null) return;
+            for(int i = 0; i < 4; i++){
+                if(state.productionConfig.sideOutputs[i] > 0) {
+                    drawOut(build.x, build.y, (build.rotation + rotOffset + i) * 90, Mathf.mod((build.rotation + rotOffset + i), 4) > 1, (state.productionConfig.heatOutput > 0) ? state.sideHeat[i] / state.productionConfig.heatOutput : 0);
+                }
+            }
+            drawGlow(build.x, build.y, (build.rotation + rotOffset) * 90, (state.productionConfig.heatOutput > 0)? state.heat / state.productionConfig.heatOutput: 0);
+        }
+
+        if(build instanceof HeatBlock heater){
+            drawOut(build.x, build.y, (build.rotation + rotOffset) * 90, Mathf.mod((build.rotation + rotOffset), 4) > 1, heater.heatFrac());
+            drawGlow(build.x, build.y, (build.rotation + rotOffset) * 90, heater.heatFrac());
+        }
+        Draw.z(z);
+    }
+
+    public void drawOut(float x, float y, float rotdeg, boolean useTop1, float heatFrac){
+        float z = Draw.z();
+        Draw.rect(useTop1 ? top2 : top1, x, y, rotdeg);
+        if(heatFrac > 0) {
             Draw.z(Layer.blockAdditive);
             Draw.blend(Blending.additive);
-            Draw.color(heatColor, heater.heatFrac() * (heatColor.a * (1f - heatPulse + Mathf.absin(heatPulseScl, heatPulse))));
-            if(heat.found()) Draw.rect(heat, build.x, build.y, rotdeg);
-            Draw.color(Draw.getColor().mul(glowMult));
-            if(drawGlow && glow.found()) Draw.rect(glow, build.x, build.y);
-            Draw.blend();
-            Draw.color();
+            Draw.color(heatColor, heatFrac * (heatColor.a * (1f - heatPulse + Mathf.absin(heatPulseScl, heatPulse))));
+            if (heat.found()) Draw.rect(heat, x, y, rotdeg);
         }
+        Draw.blend();
+        Draw.color();
+        Draw.z(z);
+    }
+
+    public void drawGlow(float x, float y, float rotdeg, float heatFrac){
+        float z = Draw.z();
+        if(heatFrac > 0) {
+            Draw.z(Layer.blockAdditive);
+            Draw.blend(Blending.additive);
+            Draw.color(Tmp.c1.set(heatColor).mul(glowMult), heatFrac * (heatColor.a * (1f - heatPulse + Mathf.absin(heatPulseScl, heatPulse))));
+            if (drawGlow && glow.found()) Draw.rect(glow, x, y, rotdeg);
+        }
+        Draw.blend();
+        Draw.color();
+        Draw.z(z);
     }
 
     @Override

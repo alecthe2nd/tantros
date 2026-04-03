@@ -25,10 +25,16 @@ public class InputHeatState implements BuildingState{
     @Nullable
     public HeatConsumptionConfig consumptionConfig;
 
+    /** The amount of heat received by this block this tick. Should always equal the sum of the sideHeat entries.*/
     public float heat = 0;
-    public float[] sideHeat = new float[4];
-    public IntSet cameFrom = null;
 
+    /** The amount of heat received this tick on each side of the block. 0 is the front of the block, 1 is the left side, 2 is behind, 3 is right. When querying, make sure to account for the block's rotation.*/
+    public float[] sideHeat = new float[4];
+
+    /** The ids of blocks this block is receiving heat from. Used to prevent infinite loops.*/
+    public IntSet cameFrom = new IntSet();
+
+    /** The id of the last update in which this state has updated its heat. Used to prevent excessive heat checks during heatUpdate propagation.*/
     public long lastHeatUpdate;
 
 
@@ -108,9 +114,9 @@ public class InputHeatState implements BuildingState{
         if(this.lastHeatUpdate == Vars.state.updateId) return;
         float add = 0f;
         this.lastHeatUpdate = Vars.state.updateId;
+        Arrays.fill(sideHeat, 0f);
+        if(cameFrom != null) cameFrom.clear();
         for(var build : owner.proximity) {
-            Arrays.fill(sideHeat, 0f);
-            if(cameFrom != null) cameFrom.clear();
 
             if(build instanceof BlockExtended.BuildExtended){
                 add += calculateHeat(owner, (BlockExtended.BuildExtended)build);
@@ -199,8 +205,8 @@ public class InputHeatState implements BuildingState{
                     break label70;
                 }
 
-                add = computeHeatContact(owner, build, otherHeatOutput.sideHeat[Mathf.mod(dir + 2, 4)]);
-                sideHeat[dir] += add;
+                add = computeHeatContact(owner, build, otherHeatOutput.sideHeat[Mathf.mod(dir - build.rotation + 2, 4)]);
+                sideHeat[Mathf.mod(dir + owner.rotation, 4)] += add;
                 heat += add;
             }
 

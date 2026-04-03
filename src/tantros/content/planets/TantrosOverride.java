@@ -24,6 +24,12 @@ public class TantrosOverride {
         Planets.tantros.allowLaunchToNumbered = false;
         Planets.tantros.updateLighting = true;
         Planets.tantros.clearSectorOnLose = true;
+
+
+        Planets.tantros.ruleSetter = r -> {
+            r.waveTeam = Team.blue;
+            r.coreDestroyClear = true;
+        };
         TantrosSectorPresets.load();
         TantrosTechTree.load();
         TantrosLoadouts.load();

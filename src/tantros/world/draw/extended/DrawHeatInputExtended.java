@@ -38,23 +38,24 @@ public class DrawHeatInputExtended extends DrawBlockExtended {
 
     @Override
     public void draw(Building build){
-
+        float z = Draw.z();
         Draw.z(Layer.blockAdditive);
         if(build instanceof BlockExtended.BuildExtended hc){
             InputHeatState heatState = hc.getState(InputHeatState.class);
+            if (heatState == null) return;
             float[] side = heatState.sideHeat;
             float threshold = (heatState.consumptionConfig == null)? heatGlowThreshold: heatState.consumptionConfig.heatPerEfficiency;
             for(int i = 0; i < 4; i++){
                 if(side[i] > 0){
                     Draw.blend(Blending.additive);
                     Draw.color(heatColor, side[i] / threshold * (heatColor.a * (1f - heatPulse + Mathf.absin(heatPulseScl, heatPulse))));
-                    Draw.rect(heat, build.x, build.y, i * 90f);
+                    Draw.rect(heat, build.x, build.y, (i + build.rotation) * 90f);
                     Draw.blend();
                     Draw.color();
                 }
             }
         }
-        Draw.z(Layer.block);
+        Draw.z(z);
     }
 
     @Override

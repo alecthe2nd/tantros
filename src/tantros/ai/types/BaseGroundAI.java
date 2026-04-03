@@ -47,6 +47,7 @@ public abstract class BaseGroundAI extends AIController {
                             unit.isGrounded() ? 0f :
                                     target != null ? engageRange : 0f,
                     unit.isFlying() ? 40f : 100f, false, null, true);
+            targetPos.set(vecOut);
         }
     }
 }

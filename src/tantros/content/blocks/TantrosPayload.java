@@ -1,16 +1,36 @@
 package tantros.content.blocks;
 
+import arc.Core;
+import arc.func.Cons;
+import arc.func.Prov;
+import arc.math.Mathf;
+import arc.scene.style.TextureRegionDrawable;
+import arc.scene.ui.ButtonGroup;
+import arc.scene.ui.ImageButton;
+import arc.scene.ui.ScrollPane;
+import arc.scene.ui.layout.Table;
 import arc.struct.Seq;
+import arc.util.Nullable;
 import mindustry.content.*;
+import mindustry.ctype.UnlockableContent;
+import mindustry.gen.Icon;
+import mindustry.gen.Tex;
 import mindustry.type.*;
+import mindustry.ui.Styles;
 import mindustry.world.*;
+import mindustry.world.blocks.ItemSelection;
 import mindustry.world.blocks.payloads.Constructor;
+import mindustry.world.blocks.payloads.PayloadConveyor;
 import mindustry.world.blocks.units.UnitAssembler;
+import mindustry.world.blocks.units.UnitAssemblerModule;
 import mindustry.world.blocks.units.UnitFactory;
 import tantros.content.world.TantrosUnitTypes;
+import tantros.world.blocks.distribution.payload.SealedPayloadConveyor;
+import tantros.world.blocks.payload.FrameConstructor;
 import tantros.world.blocks.units.unitAssembly.BranchableUnitAssembler;
 import tantros.world.blocks.units.unitAssembly.BranchedUnitAssemblerModule;
 
+import static mindustry.Vars.*;
 import static mindustry.type.ItemStack.*;
 
 public class TantrosPayload {
@@ -18,11 +38,11 @@ public class TantrosPayload {
     public static Block
             delegateFabricator,
             smallFrameFabricator,
-            smallUnitAssembler,
             smallMechAssemblyModule,
-            smallExplosiveAssemblyModule,
+            assemblyExpansionModule,
             smallBenthicAssembler,
-            smallSubBenthicAssembler
+            smallSubBenthicAssembler,
+            sealedPayloadConveyor
             ;
 
     public static BranchableUnitAssembler.BranchedAssemblerUnitPlan
@@ -69,7 +89,7 @@ public class TantrosPayload {
         }};*/
 
         delegateFabricator = new UnitFactory("delegate-fabricator"){{
-            requirements(Category.units, with(Items.silicon, 115, Items.lead, 90, Items.oxide, 100));
+            requirements(Category.units, with(Items.silicon, 55, Items.lead, 45, Items.oxide, 50));
             size = 3;
             configurable = false;
             plans.add(new UnitPlan(TantrosUnitTypes.delegate, 60f * 15f, with(Items.lead, 10, Items.silicon, 15)));
@@ -78,8 +98,8 @@ public class TantrosPayload {
             consumePower(.75f);
         }};
 
-        smallFrameFabricator = new Constructor("small-frame-fabricator"){{
-            requirements(Category.units, with(Items.silicon, 50, Items.beryllium, 75, Items.tungsten, 40));
+        smallFrameFabricator = new FrameConstructor("small-frame-fabricator"){{
+            requirements(Category.units, with(Items.metaglass, 40, Items.oxide, 35, Items.silicon, 55));
             regionSuffix = "-sealed";
             hasPower = true;
             buildSpeed = 0.1f;
@@ -112,7 +132,7 @@ public class TantrosPayload {
             areaSize = 5;
             //researchCostMultiplier = 0.4f;
 
-            consumePower(0.5f);
+            consumePower(1.5f);
         }};
 
         smallSubBenthicAssembler = new UnitAssembler("small-sub-benthic-assembler"){{
@@ -128,6 +148,22 @@ public class TantrosPayload {
             //researchCostMultiplier = 0.4f;
 
             consumePower(0.75f);
+        }};
+
+        assemblyExpansionModule = new UnitAssemblerModule("assembly-expansion-module"){{
+            requirements(Category.units, with(Items.oxide, 30, Items.metaglass, 10, Items.lead, 40));
+            regionSuffix = "-sealed";
+
+            size = 2;
+        }};
+
+        sealedPayloadConveyor = new SealedPayloadConveyor("sealed-payload-conveyor"){{
+            requirements(Category.units, with(Items.copper, 10, Items.metaglass, 25, Items.oxide, 15));
+            moveTime = 35f;
+            canOverdrive = false;
+            health = 800;
+            researchCostMultiplier = 4f;
+            underBullets = true;
         }};
 
     }

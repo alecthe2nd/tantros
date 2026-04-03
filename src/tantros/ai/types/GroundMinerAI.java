@@ -1,5 +1,6 @@
 package tantros.ai.types;
 
+import mindustry.Vars;
 import mindustry.ai.*;
 import mindustry.ai.types.*;
 import mindustry.gen.*;
@@ -40,7 +41,7 @@ public class GroundMinerAI extends BaseGroundAI{
     @Override
     public void updateTargeting() {
         super.updateTargeting();
-        unit.lookAt(vecOut);
+        unit.lookAt(targetPos);
     }
 
     @Override
@@ -86,6 +87,7 @@ public class GroundMinerAI extends BaseGroundAI{
                     if(unit.within(ore, unit.type.mineRange)) {
                         if (unit.validMine(ore)) {
                             unit.mineTile = ore;
+                            targetPos.set(ore);
                         }
                     } else {
                         pathTo(ore.x, ore.y);

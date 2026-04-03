@@ -32,7 +32,7 @@ import tantros.world.blocks.drill.CustomDrawerDrill;
 import tantros.world.blocks.production.ProductionBlock;
 import tantros.world.blocks.production.RecipeCrafter;
 import tantros.world.blocks.production.Sifter;
-import tantros.world.consumers.AttributeConsumer;
+import tantros.world.consumers.ConsumeAttributeTile;
 import tantros.world.draw.*;
 import tantros.world.draw.DrawFade;
 import tantros.world.draw.extended.DrawAttributeEfficiency;
@@ -83,7 +83,7 @@ public class TantrosSource {
             attributeConfig.attribute = Attribute.steam;
             attributeConfig.minEfficiency = 4 - 0.0001f;
             putBlockConfig(attributeConfig);
-            consume(new AttributeConsumer());
+            consume(new ConsumeAttributeTile());
             effects.add(new AttributePlacementRestriction());
             produce(new ProduceLiquid(new LiquidStack(Liquids.water, 5f/60f)));
         }};
@@ -190,10 +190,10 @@ public class TantrosSource {
 
             AttributeConfig attributeConfig = new AttributeConfig();
             attributeConfig.attribute = Attribute.steam;
-            attributeConfig.minEfficiency = 9 - 0.0001f;
+            attributeConfig.minEfficiency = 9;
             attributeConfig.displayEfficiencyScale = attributeConfig.efficiencyScale = 1f/9f;
             putBlockConfig(attributeConfig);
-            consume(new AttributeConsumer());
+            consume(new ConsumeAttributeTile());
             effects.add(new AttributePlacementRestriction());
             produce(new ProduceLiquid(new LiquidStack(TantrosLiquids.steam, 10f/60f)));
         }};

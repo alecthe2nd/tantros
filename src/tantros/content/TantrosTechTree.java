@@ -16,7 +16,7 @@ public class TantrosTechTree {
     public static Objectives.Objective
             copper, lead, steam, metaglass, silicon,
             titanium,
-            embark, shallows, polarEdge,
+            embark, shallows, polarEdge, patrolOutpost,
             never
             ;
 
@@ -30,12 +30,15 @@ public class TantrosTechTree {
         embark = new Objectives.OnSector(TantrosSectorPresets.embark);
         shallows = new Objectives.OnSector(TantrosSectorPresets.shallows);
         polarEdge = new Objectives.OnSector(TantrosSectorPresets.polarEdge);
+        patrolOutpost = new Objectives.OnSector(TantrosSectorPresets.patrolOutpost);
         never = new Objectives.Produce(Items.dormantCyst);
         Planets.tantros.techTree = TechTree.nodeRoot("tantros", TantrosBlocks.coreShell, true, () -> {
             TechTree.node(TantrosSectorPresets.embark, () -> {
                 TechTree.node(TantrosSectorPresets.shallows, Seq.with(new Objectives.SectorComplete(TantrosSectorPresets.embark)), () -> {
                     TechTree.node(TantrosSectorPresets.polarEdge, Seq.with(new Objectives.SectorComplete(TantrosSectorPresets.shallows)), () -> {
+                        TechTree.node(TantrosSectorPresets.patrolOutpost, Seq.with(new Objectives.SectorComplete(TantrosSectorPresets.polarEdge)), () -> {
 
+                        });
                     });
                 });
             });
@@ -213,30 +216,35 @@ public class TantrosTechTree {
             TechTree.node(TantrosEffect.deepSonar, Seq.with(polarEdge, silicon), ()->{
 
             });
-            TechTree.node(TantrosPayload.delegateFabricator, Seq.with(never, silicon), ()->{
-                TechTree.node(TantrosUnitTypes.delegate, Seq.with(never, silicon), ()->{
+            TechTree.node(TantrosPayload.delegateFabricator, Seq.with(patrolOutpost), ()->{
+                TechTree.node(TantrosUnitTypes.delegate, Seq.with(patrolOutpost), ()->{
 
                 });
 
-                TechTree.node(TantrosPayload.smallFrameFabricator, Seq.with(never, silicon), ()-> {
-                    TechTree.node(TantrosFrame.flakFrame, Seq.with(never, silicon), () -> {
-                        TechTree.node(TantrosUnitTypes.flak, Seq.with(never, silicon), () -> {
-                            TechTree.node(TantrosFrame.sherdFrame, Seq.with(never, silicon), () -> {
-                                TechTree.node(TantrosUnitTypes.sherd, Seq.with(never, silicon), () -> {
-                                    TechTree.node(TantrosFrame.fractoidFrame, Seq.with(never, silicon), () -> {
-                                        TechTree.node(TantrosUnitTypes.fractoid, Seq.with(never, silicon), () -> {
+                TechTree.node(TantrosPayload.smallFrameFabricator, Seq.with(patrolOutpost), ()-> {
+                    TechTree.node(TantrosPayload.sealedPayloadConveyor, Seq.with(patrolOutpost), ()-> {
 
+                    });
+                    TechTree.node(TantrosPayload.smallBenthicAssembler, Seq.with(patrolOutpost), ()-> {
+                        TechTree.node(TantrosFrame.flakFrame, Seq.with(patrolOutpost), () -> {
+                            TechTree.node(TantrosUnitTypes.flak, Seq.with(patrolOutpost), () -> {
+                                TechTree.node(TantrosFrame.sherdFrame, Seq.with(never, silicon), () -> {
+                                    TechTree.node(TantrosUnitTypes.sherd, Seq.with(never, silicon), () -> {
+                                        TechTree.node(TantrosFrame.fractoidFrame, Seq.with(never, silicon), () -> {
+                                            TechTree.node(TantrosUnitTypes.fractoid, Seq.with(never, silicon), () -> {
+
+                                            });
                                         });
                                     });
                                 });
-                            });
-                            TechTree.node(TantrosFrame.roachFrame, Seq.with(never, silicon), () -> {
-                                TechTree.node(TantrosUnitTypes.roach, Seq.with(never, silicon), () -> {
-                                    TechTree.node(TantrosFrame.infestFrame, Seq.with(never, silicon), () -> {
-                                        TechTree.node(TantrosUnitTypes.infest, Seq.with(never, silicon), () -> {
-                                            TechTree.node(TantrosFrame.invadeFrame, Seq.with(never, silicon), () -> {
-                                                TechTree.node(TantrosUnitTypes.invade, Seq.with(never, silicon), () -> {
+                                TechTree.node(TantrosFrame.roachFrame, Seq.with(never, silicon), () -> {
+                                    TechTree.node(TantrosUnitTypes.roach, Seq.with(never, silicon), () -> {
+                                        TechTree.node(TantrosFrame.infestFrame, Seq.with(never, silicon), () -> {
+                                            TechTree.node(TantrosUnitTypes.infest, Seq.with(never, silicon), () -> {
+                                                TechTree.node(TantrosFrame.invadeFrame, Seq.with(never, silicon), () -> {
+                                                    TechTree.node(TantrosUnitTypes.invade, Seq.with(never, silicon), () -> {
 
+                                                    });
                                                 });
                                             });
                                         });

@@ -3,9 +3,9 @@ package tantros.world.consumers;
 import arc.Core;
 import arc.math.Mathf;
 import arc.scene.ui.layout.Table;
+import mindustry.content.Blocks;
 import mindustry.graphics.Pal;
 import mindustry.ui.Bar;
-import mindustry.world.blocks.production.AttributeCrafter;
 import mindustry.world.meta.Stat;
 import mindustry.world.meta.Stats;
 import tantros.type.blockConfig.AttributeConfig;
@@ -13,7 +13,7 @@ import tantros.type.buildingState.AttributeState;
 import tantros.ui.UIUtil;
 import tantros.world.blocks.BlockExtended;
 
-public class AttributeConsumer extends ExtendedConsume{
+public class ConsumeAttributeTile extends ExtendedConsume{
 
     AttributeConfig config;
 
@@ -51,7 +51,7 @@ public class AttributeConsumer extends ExtendedConsume{
     @Override
     public float efficiency(BlockExtended.BuildExtended build) {
         AttributeState attributeState = build.getState(AttributeState.class);
-        return Mathf.clamp(attributeState.sum * config.efficiencyScale);
+        return (config.minEfficiency > attributeState.sum)? 0:1;
     }
 
     @Override

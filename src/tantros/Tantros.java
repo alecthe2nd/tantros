@@ -55,6 +55,7 @@ public class Tantros extends Mod{
         TantrosOverride.override();
         TantrosCalls.initPackets();
         ScriptInjector.load(TantrosVars.modWrapper, "packages.js");
+        ScriptInjector.load(TantrosVars.modWrapper, "defaults.js");
     }
 
     @Override

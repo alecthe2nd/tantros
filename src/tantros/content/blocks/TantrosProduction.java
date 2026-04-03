@@ -2,6 +2,7 @@ package tantros.content.blocks;
 
 import arc.graphics.Color;
 import arc.math.Interp;
+import mindustry.Vars;
 import mindustry.content.Fx;
 import mindustry.content.Items;
 import mindustry.content.Liquids;
@@ -15,21 +16,26 @@ import mindustry.world.Block;
 import mindustry.world.blocks.heat.HeatProducer;
 import mindustry.world.blocks.production.GenericCrafter;
 import mindustry.world.draw.*;
+import mindustry.world.meta.Attribute;
 import mindustry.world.meta.BlockGroup;
 import mindustry.world.meta.Env;
 import tantros.content.TantrosFx;
 import tantros.content.world.TantrosItems;
 import tantros.content.world.TantrosLiquids;
+import tantros.type.blockConfig.AttributeConfig;
 import tantros.type.blockConfig.HeatConsumptionConfig;
 import tantros.type.blockConfig.HeatProductionConfig;
 import tantros.type.production.ProduceBoilerLiquid;
 import tantros.type.production.ProduceHeat;
 import tantros.world.blocks.production.Boiler;
 import tantros.world.blocks.production.ProductionBlock;
+import tantros.world.consumers.ConsumeAttributeTile;
 import tantros.world.consumers.ConsumeHeat;
 import tantros.world.draw.DrawIconOverride;
 import tantros.world.draw.DrawLight;
+import tantros.world.draw.extended.DrawAttributeEfficiency;
 import tantros.world.draw.extended.DrawHeatInputExtended;
+import tantros.world.draw.extended.DrawHeatOutputExtended;
 import tantros.world.draw.extended.DrawMultiExtended;
 import tantros.world.draw.output.DrawLiquidOutputRegion;
 import tantros.world.draw.output.DrawMultiLiquidOutput;
@@ -50,6 +56,7 @@ public class TantrosProduction {
             electrolysisChamber,
             combustionHeater,
             cystCombustionHeater,
+            geothermalHeater,
             hydrogenCatalysisHeater,
             sealedElectricHeater,
             oxidizationHeater,
@@ -144,10 +151,10 @@ public class TantrosProduction {
         cystCombustionHeater = new ProductionBlock("cyst-combustion-heater"){
             {
                 requirements(Category.crafting, with(Items.copper, 20, Items.oxide, 10, Items.metaglass, 30));
-                craftEffect = new MultiEffect(TantrosFx.parallaxBubble,TantrosFx.parallaxBubble,TantrosFx.parallaxBubble,TantrosFx.parallaxBubble);
+                craftEffect = new MultiEffect(TantrosFx.parallaxBubble);
 
                 //addRecipe(TantrosRecipes.hydrogenCombustion);
-                size = 2;
+                size = 1;
                 drawer = new DrawMultiExtended(
                         new DrawRegion("-bottom"),
                         new DrawWarmupRegion(){{
@@ -158,7 +165,7 @@ public class TantrosProduction {
                             reverse = true;
                             particleSize = 2f;
                             particles = 20;
-                            particleRad = 8f;
+                            particleRad = 4f;
                             particleLife = 60f;
                         }},
                         new DrawDefault(),
@@ -188,40 +195,37 @@ public class TantrosProduction {
             }
         };
 
-        combustionHeater = new RecipeCrafter("combustion-heater"){
-            {
-                requirements(Category.crafting, with(Items.copper, 20, Items.oxide, 10, Items.metaglass, 30));
-                craftEffect = new MultiEffect(TantrosFx.parallaxBubble,TantrosFx.parallaxBubble,TantrosFx.parallaxBubble,TantrosFx.parallaxBubble);
+        geothermalHeater = new ProductionBlock("geothermal-heater"){{
+            requirements(Category.crafting, with(Items.oxide, 50, Items.copper, 15));
+            productionTime = 60;
+            size = 2;
+            squareSprite = false;
 
-                addRecipe(TantrosRecipes.hydrogenCombustion);
-                size = 2;
-                drawer = new DrawMulti(
-                        new DrawRegion("-bottom"),
-                        new DrawWarmupRegion(){{
-                            color = Pal.darkFlame;
-                        }},
-                        new DrawParticles(){{
-                            color = Color.valueOf("ed8e38");
-                            reverse = true;
-                            particleSize = 2f;
-                            particles = 20;
-                            particleRad = 8f;
-                            particleLife = 60f;
-                        }},
-                        new DrawDefault(),
-                        new DrawHeatOutput(){{
-                            glowMult = 1.8f;
-                        }},
-                        new DrawLight()
-                );
-                itemCapacity = 10;
-                liquidCapacity = 10;
-                envDisabled |= Env.oxygen;
+            drawer = new DrawMultiExtended(
+                    new DrawDefault(),
+                    new DrawHeatOutputExtended(),
+                    new DrawAttributeEfficiency()
+            );
 
-                ambientSound = Sounds.loopFire;
-                emitLight = true;
-            }
-        };
+            AttributeConfig attributeConfig = new AttributeConfig();
+            attributeConfig.attribute = Attribute.heat;
+            attributeConfig.displayEfficiencyScale = attributeConfig.efficiencyScale = 1/3f;
+
+            HeatProductionConfig heatProductionConfig = new HeatProductionConfig();
+            heatProductionConfig.heatOutput = 5f;
+            heatProductionConfig.sideOutputs[0] = 1f;
+
+            putBlockConfig(attributeConfig);
+            putBlockConfig(heatProductionConfig);
+            consume(new ConsumeAttributeTile());
+
+            produce(new ProduceHeat(heatProductionConfig));
+
+            rotate = true;
+            rotateDraw = false;
+            drawArrow = true;
+            floating = true;
+        }};
 
         hydrogenCatalysisHeater = new HeatProducer("hydrogen-catalysis-heater"){
             {
