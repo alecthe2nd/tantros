@@ -3,7 +3,7 @@ package tantros.world.draw.extended;
 import mindustry.gen.Building;
 import mindustry.graphics.Drawf;
 import mindustry.graphics.Pal;
-import tantros.type.blockConfig.RangeConfig;
+import tantros.type.effect.projector.range.RangeConfig;
 import tantros.type.buildingState.BuildingState;
 import tantros.type.buildingState.logic.Link;
 import tantros.type.buildingState.logic.Links;
@@ -25,7 +25,7 @@ public class DrawLinkConfigureRange<E extends Links & BuildingState> extends Dra
         RangeConfig range = build.getBlock().getBlockConfig(RangeConfig.class);
         if(range == null) return;
         if(!build.block.privileged){
-            Drawf.circles(build.x, build.y, range.range);
+            Drawf.circles(build.x, build.y, range.maxScale);
         }
 
         Links links = build.getState(linksType);

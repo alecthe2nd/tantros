@@ -9,8 +9,10 @@ import arc.math.Mathf;
 import arc.math.geom.Geometry;
 import arc.math.geom.Point2;
 import arc.struct.Seq;
+import arc.util.Log;
 import arc.util.Nullable;
 import arc.util.Tmp;
+import mindustry.Vars;
 import mindustry.content.Blocks;
 import mindustry.entities.TargetPriority;
 import mindustry.entities.units.BuildPlan;
@@ -42,7 +44,6 @@ public class Pipeline extends PipelineBlock implements Autotiler {
 
     public TextureRegion[] topRegions = new TextureRegion[5];
     public TextureRegion[] botRegions = new TextureRegion[5];
-    public TextureRegion capRegion;
 
     /** indices: [rotation] [fluid type] [frame] */
     public TextureRegion[][][] rotateRegions;
@@ -95,12 +96,7 @@ public class Pipeline extends PipelineBlock implements Autotiler {
 
     @Override
     public boolean blends(Tile tile, int rotation, int otherx, int othery, int otherrot, Block otherblock) {
-        //if(!armored){
-            return (otherblock.outputsLiquid || (lookingAt(tile, rotation, otherx, othery, otherblock) && otherblock.hasLiquids))
-                    && lookingAtEither(tile, rotation, otherx, othery, otherrot, otherblock);
-        //}else{
-        //    return (otherblock.outputsItems() && blendsArmored(tile, rotation, otherx, othery, otherrot, otherblock)) || (lookingAt(tile, rotation, otherx, othery, otherblock) && otherblock.hasItems);
-        //}
+        return otherblock.hasLiquids && (otherblock.outputsLiquid || (lookingAt(tile, rotation, otherx, othery, otherblock))) && lookingAtEither(tile, rotation, otherx, othery, otherrot, otherblock);
     }
 
     @Override
@@ -110,6 +106,7 @@ public class Pipeline extends PipelineBlock implements Autotiler {
             topRegions[i] = Core.atlas.find(name + "-top-" + i);
             botRegions[i] = Core.atlas.find(name + "-bottom-" + i);
         }
+        Log.info("Pipeline '" + this.name + "' has loaded its standard region from " + region.texture);
 
         rotateRegions = new TextureRegion[4][2][animationFrames];
 
@@ -142,6 +139,10 @@ public class Pipeline extends PipelineBlock implements Autotiler {
                     }
                 }
             }
+
+            Log.info("Pipeline '" + this.name + "' has loaded liquid regions from " + rotateRegions[0][0][0].texture);
+            Log.info("Pipeline '" + this.name + "' has loaded renderer liquid regions from " + renderer.fluidFrames[0][0].texture);
+            Log.info("Liquid texture == Main Region texture: " +  (rotateRegions[0][0][0].texture == topRegions[0].texture));
         }
     }
 
@@ -165,20 +166,23 @@ public class Pipeline extends PipelineBlock implements Autotiler {
         public void draw(){
             int r = this.rotation;
 
+            float z = Draw.z();
+            Draw.z(Layer.blockUnder);
             //draw extra ducts facing this one for tiling purposes
             for(int i = 0; i < 4; i++){
                 if((blending & (1 << i)) != 0){
                     int dir = r - i;
-                    float rot = i == 0 ? rotation : (dir)*90;
                     drawAt(x + Geometry.d4x(dir) * tilesize*0.75f, y + Geometry.d4y(dir) * tilesize*0.75f, 0,  i == 0 ? r : dir, i != 0 ? Autotiler.SliceMode.bottom : Autotiler.SliceMode.top);
                 }
             }
+            Draw.z(Layer.block);
 
             Draw.scl(xscl, yscl);
             drawAt(x, y, blendbits, rotation, Autotiler.SliceMode.none);
             Draw.reset();
 
             drawCaps();
+            Draw.z(z);
         }
 
         @Override
@@ -189,7 +193,6 @@ public class Pipeline extends PipelineBlock implements Autotiler {
         protected void drawAt(float x, float y, int bits, int rotation, Autotiler.SliceMode slice){
             float angle = rotation * 90f;
 
-            Draw.z(Layer.blockUnder);
             Draw.rect(sliced(botRegions[bits], slice), x, y, angle);
 
             int offset = yscl == -1 ? 3 : 0;
@@ -205,18 +208,17 @@ public class Pipeline extends PipelineBlock implements Autotiler {
                 oy = rotateOffsets[wrapRot][1];
             }
 
-            //the drawing state machine sure was a great design choice with no downsides or hidden behavior!!!
             float xscl = Draw.xscl, yscl = Draw.yscl;
+
+            float z = Draw.z();
+            Draw.z(z + 0.001f);
             Draw.scl(1f, 1f);
             Drawf.liquid(sliced(liquidr, slice), x + ox, y + oy, smoothLiquid, liquids.current().color.write(Tmp.c1).a(1f));
             Draw.scl(xscl, yscl);
-
-
-            Draw.z(Layer.blockUnder + 0.2f);
-            Draw.color(transparentColor);
-            Draw.rect(sliced(botRegions[bits], slice), x, y, angle);
-            Draw.color();
+            Draw.z(z + 0.002f);
             Draw.rect(sliced(topRegions[bits], slice), x, y, angle);
+            Draw.z(z);
+
         }
 
         @Override

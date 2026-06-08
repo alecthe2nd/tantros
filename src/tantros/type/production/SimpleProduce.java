@@ -1,6 +1,8 @@
 package tantros.type.production;
 
 import arc.scene.ui.layout.Table;
+import mindustry.world.meta.Stat;
+import mindustry.world.meta.StatUnit;
 import mindustry.world.meta.Stats;
 import tantros.type.Resource;
 import tantros.world.blocks.production.ProductionBlock;
@@ -123,6 +125,8 @@ public class SimpleProduce extends Produce {
 
     @Override
     public void display(Stats stats, ProductionBlock block) {
-
+        if(!output.items.isEmpty()){
+            stats.add(Stat.productionTime, block.productionTime / 60f, StatUnit.seconds);
+        }
     }
 }

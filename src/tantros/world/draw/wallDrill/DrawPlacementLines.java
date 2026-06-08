@@ -20,7 +20,6 @@ public class DrawPlacementLines extends DrawBlockExtended {
 
     @Override
     public void drawPlace(int x, int y, int rotation, boolean valid, BlockExtended block) {
-        if(!(block instanceof ProductionBlock)) return;
         BoreDrillConfig boreState = block.getBlockConfig(BoreDrillConfig.class);
 
         for(int i = 0; i < block.size; i++) {

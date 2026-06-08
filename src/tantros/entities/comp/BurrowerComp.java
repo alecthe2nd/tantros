@@ -1,6 +1,8 @@
 package tantros.entities.comp;
 
+import arc.util.Log;
 import ent.anno.Annotations.*;
+import mindustry.Vars;
 import mindustry.game.Team;
 import mindustry.gen.*;
 import tantros.TantrosVars;
@@ -14,7 +16,7 @@ abstract public class BurrowerComp implements Legsc {
 
     public boolean burrowed = false;
 
-    public int burrowCooldown;
+    public int burrowCooldown = 0;
 
     public void burrowed(boolean burrow){
         if(burrowCooldown <= 0){
@@ -23,7 +25,7 @@ abstract public class BurrowerComp implements Legsc {
     }
 
     public void triggerCooldown(){
-        triggerCooldown(60);
+        triggerCooldown(burrowCooldown);
     }
 
     public void triggerCooldown(int cooldown){
@@ -44,5 +46,11 @@ abstract public class BurrowerComp implements Legsc {
     @Override
     public boolean collides(Hitboxc other) {
         return hittable() && (!burrowed || (other instanceof Burrowerc burrower && burrower.burrowed()) || ((other instanceof Bullet bullet) && (canDislodge(bullet) || TantrosVars.sonarTracking.get(bullet.team, this.x(), this.y()))));
+    }
+
+    @Replace(1)
+    @Override
+    public boolean checkTarget( boolean targetAir, boolean targetGround) {
+        return ((isGrounded() && targetGround) || (isFlying() && targetAir)) && (!burrowed || (TantrosVars.sonarTracking.get((this.team() == Vars.player.team())? Vars.state.rules.waveTeam :Vars.player.team(), this.x(), this.y())));
     }
 }

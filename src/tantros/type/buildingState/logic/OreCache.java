@@ -3,7 +3,7 @@ package tantros.type.buildingState.logic;
 import arc.func.Boolf2;
 import arc.struct.Seq;
 import mindustry.world.Tile;
-import tantros.type.blockConfig.RangeConfig;
+import tantros.type.effect.projector.range.RangeConfig;
 import tantros.type.buildingState.BuildingState;
 import tantros.world.blocks.BlockExtended;
 
@@ -31,7 +31,7 @@ public class OreCache implements BuildingState {
         RangeConfig rangeConfig = ownerType.getBlockConfig(RangeConfig.class);
         float range = -1;
         if(rangeConfig != null) {
-            range = rangeConfig.range;
+            range = rangeConfig.maxScale;
         }
 
     }

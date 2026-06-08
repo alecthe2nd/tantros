@@ -1,14 +1,20 @@
 package tantros.world.meta;
 
 import arc.Core;
+import arc.func.Boolf;
+import arc.func.Floatf;
 import arc.scene.ui.Image;
 import arc.scene.ui.Label;
 import arc.scene.ui.layout.Stack;
 import arc.scene.ui.layout.Table;
+import arc.struct.ObjectFloatMap;
 import arc.struct.Seq;
+import arc.util.Nullable;
 import arc.util.Scaling;
+import arc.util.Strings;
 import mindustry.gen.Icon;
 import mindustry.graphics.Pal;
+import mindustry.type.Item;
 import mindustry.type.ItemStack;
 import mindustry.type.Liquid;
 import mindustry.type.LiquidStack;
@@ -18,8 +24,9 @@ import tantros.type.Recipe;
 import tantros.type.Resource;
 import tantros.world.environment.LocalEnv;
 
-import static mindustry.Vars.iconMed;
+import static mindustry.Vars.*;
 import static mindustry.world.meta.StatValues.displayItem;
+import static mindustry.world.meta.StatValues.fixValue;
 import static mindustry.world.meta.StatValues.withTooltip;
 
 public class TantrosStats {
@@ -116,22 +123,16 @@ public class TantrosStats {
         if(recipe.overheat > 0) {
             t.row();
             recipe.displayOverheat(t);
-            /*t.table((t_extra) -> {
-                t_extra.table(Styles.grayPanel, (t_overheat) -> {
-                    t_overheat.add(Core.bundle.get("recipe.generic.overheat.title")).left();
-                    t_overheat.row();
-                    StatValues.number(recipe.overheat, StatUnit.heatUnits, true).display(t_overheat);
-                }).left().padRight(15);
-                t_extra.table(Styles.grayPanel, (t_eboost) -> {
-                    t_eboost.add(Core.bundle.get("recipe.generic.efficiency-boost.title")).left();
-                    t_eboost.row();
-                    t_eboost.add(
-                            Core.bundle.get("recipe.generic.efficiency-boost.format").replace("{0}", StatValues.fixValue(recipe.overheatScale * 100))
-                                    + Core.bundle.get("recipe.generic.max-efficiency.format").replace("{0}", StatValues.fixValue(recipe.maxEfficiency * 100))
-                    ).left();
-                }).left();
-            }).left();*/
         }
+        t.row();
+
+        t.add(
+                Core.bundle.get("recipe.generic.production-time.format")
+                        .replace("{0}", fixValue(recipe.craftTime /60))
+                        .replace("{1}", StatUnit.seconds.localized())
+        ).left();
+
+
     }
 
     public static Table displayRecipe(Recipe recipe){
@@ -181,5 +182,18 @@ public class TantrosStats {
                 StatValues.number(resource.power * 60, StatUnit.powerSecond).display(energy);
             }
         });
+    }
+
+
+
+    public static StatValue withEfficiencyMultiplier(float efficiencyMultiplier, StatValue value){
+        return table -> {
+            if(table.getCells().size > 0) table.getCells().peek().growX(); //Expand the spacer on the row above to push everything to the left
+            table.row();
+            table.table(Styles.grayPanel,c -> {
+                value.display(c);
+                c.add(Core.bundle.format("stat.efficiency", fixValue(efficiencyMultiplier * 100f))).right().pad(10f).padRight(15f);
+            }).growX().colspan(table.getColumns()).row();
+        };
     }
 }

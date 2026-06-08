@@ -1,11 +1,19 @@
 package tantros.graphics;
 
+import arc.graphics.Color;
 import arc.graphics.g2d.Draw;
+import arc.graphics.g2d.Fill;
+import arc.graphics.g2d.Lines;
 import arc.graphics.g2d.TextureRegion;
 import arc.math.Mathf;
+import arc.math.geom.Position;
+import arc.math.geom.Vec2;
+import arc.struct.FloatSeq;
+import arc.struct.Seq;
+import mindustry.graphics.Drawf;
 
 import static arc.graphics.g2d.Draw.rect;
-import static arc.math.Angles.randLenVectors;
+import static arc.graphics.g2d.Draw.vert;
 import static mindustry.Vars.renderer;
 
 public class TantrosDraw {
@@ -22,5 +30,33 @@ public class TantrosDraw {
 
     public static void bubble(float x, float y, float lifetime){
         rect(renderer.bubbles[Math.min((int)(renderer.bubbles.length * Mathf.curveMargin(lifetime, 0.11f, 0.06f)), renderer.bubbles.length - 1)], DrawPsuedoParrallax.xHeight(x, lifetime * 20), DrawPsuedoParrallax.yHeight(y, lifetime * 20));
+    }
+
+    public static FloatSeq tmpVertices = new FloatSeq();
+
+    public static void poly(Seq<? extends Position> vertices){
+        tmpVertices.clear();
+        for(Position vertex: vertices){
+            tmpVertices.add(vertex.getX(), vertex.getY());
+        }
+        Fill.poly(tmpVertices);
+    }
+
+    public static void poly(Seq<? extends Position> vertices, float offsetx, float offsety, float scl){
+        for(int i = 0; i < vertices.size; i++){
+            Position current = vertices.get(i);
+            Position next = i == vertices.size - 1 ? vertices.get(0) : vertices.get(i + 1);
+            Lines.line(current.getX() * scl + offsetx, current.getY() * scl + offsety, next.getX() * scl + offsetx, next.getY() * scl + offsety);
+        }
+    }
+
+    public static void dashPoly(Seq<? extends Position> vertices, float offsetx, float offsety, float scl){
+        for(int i = 0; i < vertices.size; i++){
+            Position current = vertices.get(i);
+            Position next = i == vertices.size - 1 ? vertices.get(0) : vertices.get(i + 1);
+            Color c = Draw.getColor();
+            Drawf.dashLine(c, current.getX() * scl + offsetx, current.getY() * scl + offsety, next.getX() * scl + offsetx, next.getY() * scl + offsety);
+            Draw.color(c);
+        }
     }
 }

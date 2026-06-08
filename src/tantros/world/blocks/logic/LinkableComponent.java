@@ -8,7 +8,7 @@ import mindustry.graphics.Pal;
 import mindustry.logic.Ranged;
 import mindustry.world.blocks.ConstructBlock;
 import mindustry.world.meta.BlockGroup;
-import tantros.type.blockConfig.RangeConfig;
+import tantros.type.effect.projector.range.RangeConfig;
 import tantros.world.blocks.BlockExtended;
 
 import static mindustry.Vars.tilesize;
@@ -53,12 +53,12 @@ public class LinkableComponent extends BlockExtended {
         public Seq<Link> links = new Seq<>();
 
         public boolean validLink(Building other){
-            return other != null && other.isValid() && (privileged || (!other.block.privileged && other.team == team && other.within(this, range.range + other.block.size*tilesize/2f))) && !(other instanceof ConstructBlock.ConstructBuild);
+            return other != null && other.isValid() && (privileged || (!other.block.privileged && other.team == team && other.within(this, range.maxScale + other.block.size*tilesize/2f))) && !(other instanceof ConstructBlock.ConstructBuild);
         }
 
         @Override
         public float range() {
-            return range.range;
+            return range.maxScale;
         }
 
         @Override
@@ -66,7 +66,7 @@ public class LinkableComponent extends BlockExtended {
             super.drawConfigure();
 
             if(!privileged){
-                Drawf.circles(x, y, range.range);
+                Drawf.circles(x, y, range.maxScale);
             }
 
             for(Link l : links){

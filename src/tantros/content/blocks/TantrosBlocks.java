@@ -2,14 +2,12 @@ package tantros.content.blocks;
 
 import mindustry.content.*;
 import mindustry.type.Category;
-import mindustry.type.ItemStack;
 import mindustry.world.Block;
-import mindustry.world.blocks.defense.Wall;
 import mindustry.world.blocks.environment.OreBlock;
 import mindustry.world.blocks.power.PowerNode;
 import mindustry.world.meta.BuildVisibility;
-import mindustry.world.meta.Env;
 import tantros.content.world.TantrosUnitTypes;
+import tantros.type.effect.projector.range.RangeShape;
 import tantros.world.blocks.environment.DeepOreBlock;
 import tantros.world.blocks.storage.CustomCoreBlock;
 
@@ -38,7 +36,11 @@ public class TantrosBlocks {
                     ;
     public static void load(){
 
-        //endregion
+        //load Block prequisites
+
+        RangeShape.load();
+
+        //Load the blocks
 
         //region ore
         deepOreCopper = new DeepOreBlock(Items.copper);
@@ -65,9 +67,6 @@ public class TantrosBlocks {
             wallOre = true;
         }};
         //endregion
-
-        //region distribution
-        //endregion
         //region storage
 
         coreShell = new CustomCoreBlock("core-shell"){{
@@ -76,7 +75,7 @@ public class TantrosBlocks {
             squareSprite = false;
             isFirstTier = true;
             unitType = TantrosUnitTypes.enact;
-            health = 1100;
+            health = 4000;
             hasItems = true;
             itemCapacity = 2000;
             size = 4;
@@ -95,11 +94,6 @@ public class TantrosBlocks {
             buildCostMultiplier = 2.5f;
         }};
         //endregion
-
-        //region crafters
-
-        //endregion
-
 
         TantrosDefense.load();
         TantrosEnvironment.load();

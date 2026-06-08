@@ -406,6 +406,7 @@ public class TantrosTurret {
                         collidesTiles = false;
                         splashDamageRadius = 25f * 0.75f;
                         splashDamage = 33f;
+                        scaledSplashDamage = true;
 
                         hitColor = backColor = trailColor = Pal.graphiteAmmoBack;
                         frontColor = Pal.graphiteAmmoFront;
@@ -418,6 +419,8 @@ public class TantrosTurret {
                         collidesTiles = false;
                         splashDamageRadius = 25f * 0.75f;
                         splashDamage = 33f;
+                        scaledSplashDamage = true;
+
                         reloadMultiplier = 1.2f;
                         ammoMultiplier = 3f;
                         homingPower = 0.08f;
@@ -438,6 +441,8 @@ public class TantrosTurret {
                         collidesTiles = false;
                         splashDamageRadius = 25f * 0.75f;
                         splashDamage = 45f;
+                        scaledSplashDamage = true;
+
                         status = StatusEffects.burning;
                         statusDuration = 60f * 12f;
                         frontColor = trailColor = hitColor = Pal.lightishOrange;
@@ -455,6 +460,8 @@ public class TantrosTurret {
                         collidesTiles = false;
                         splashDamageRadius = 25f * 0.75f;
                         splashDamage = 65f;
+                        scaledSplashDamage = true;
+
                         status = StatusEffects.blasted;
                         statusDuration = 60f * 12f;
                         frontColor = trailColor = hitColor = Pal.blastAmmoFront;
@@ -467,6 +474,7 @@ public class TantrosTurret {
 
             drawer = new DrawTurret("sealed-");
 
+            targetGround = true;
             targetAir = false;
             reload = 80f;
             recoil = 5f;

@@ -2,11 +2,15 @@ package tantros.ai.types;
 
 import arc.util.Nullable;
 import arc.util.Time;
+import mindustry.ai.UnitCommand;
+import mindustry.ai.UnitStance;
+import mindustry.ai.types.CommandAI;
 import mindustry.entities.Units;
 import mindustry.gen.Building;
 import mindustry.ai.types.RepairAI;
 import mindustry.gen.Teamc;
 import mindustry.world.blocks.ConstructBlock.*;
+import tantros.ai.TantrosUnitStances;
 
 public class GroundRepairAI extends BaseGroundAI {
 
@@ -19,6 +23,15 @@ public class GroundRepairAI extends BaseGroundAI {
     Teamc avoid;
     float retreatTimer;
     Building damagedTarget;
+
+    @Override
+    public void updateUnit() {
+        if(unit.controller() instanceof CommandAI ai && ai.hasStance(TantrosUnitStances.repairSentry)){
+            ai.defaultBehavior();
+        }else{
+            super.updateUnit();
+        }
+    }
 
     @Override
     public void updateMovement(){
@@ -35,9 +48,15 @@ public class GroundRepairAI extends BaseGroundAI {
             unit.controlWeapons(false);
         }
 
+        boolean hold = hasStance(UnitStance.holdPosition);
+
         if(target != null && target instanceof Building b && b.team == unit.team){
-            if(!target.within(unit, unit.type.range * 0.65f)){
-                pathTo(target.tileX(), target.tileY());
+            if(!hold){
+                if(unit.type.circleTarget){
+                    circleAttack(unit.type.circleTargetRadius);
+                }else if(!target.within(unit, unit.type.range * 0.65f)){
+                    moveTo(target, unit.type.range * 0.65f);
+                }
             }
 
             if(!unit.type.circleTarget){
@@ -46,7 +65,7 @@ public class GroundRepairAI extends BaseGroundAI {
         }
 
         //not repairing
-        if(!(target instanceof Building)){
+        if(!(target instanceof Building) && !hold){
             if(timer.get(timerTarget4, 40)){
                 avoid = target(unit.x, unit.y, fleeRange, true, true);
             }

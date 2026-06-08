@@ -5,7 +5,7 @@ import arc.struct.Seq;
 import mindustry.Vars;
 import mindustry.gen.Building;
 import mindustry.world.blocks.ConstructBlock;
-import tantros.type.blockConfig.RangeConfig;
+import tantros.type.effect.projector.range.RangeConfig;
 import tantros.type.buildingState.BuildingState;
 import tantros.world.blocks.BlockExtended;
 
@@ -83,7 +83,7 @@ public class OneLink implements BuildingState, Links {
 
     @Override
     public boolean validLink(BlockExtended.BuildExtended owner, Building other){
-        return other != null && other.isValid() && buildingCondition.get(other) && (owner.block.privileged || (!other.block.privileged && other.team == owner.team && other.within(owner, range.range + other.block.size*tilesize/2f))) && !(other instanceof ConstructBlock.ConstructBuild);
+        return other != null && other.isValid() && buildingCondition.get(other) && (owner.block.privileged || (!other.block.privileged && other.team == owner.team && other.within(owner, range.maxScale + other.block.size*tilesize/2f))) && !(other instanceof ConstructBlock.ConstructBuild);
     }
 
     @Override

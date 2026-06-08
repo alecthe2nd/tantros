@@ -7,6 +7,7 @@ import mindustry.world.consumers.Consume;
 import tantros.world.blocks.BlockExtended;
 
 public class ExtendedConsume extends Consume {
+
     @Override
     public float efficiencyMultiplier(Building build) {
         if(build instanceof BlockExtended.BuildExtended ext) {

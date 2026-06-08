@@ -84,4 +84,13 @@ public class DrawMultiExtended extends DrawBlockExtended{
             }
         }
     }
+
+    @Override
+    public void drawSelect(BlockExtended.BuildExtended build) {
+        for(var draw : drawers){
+            if(draw instanceof DrawBlockExtended extendedDraw){
+                extendedDraw.drawSelect(build);
+            }
+        }
+    }
 }

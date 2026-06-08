@@ -30,7 +30,7 @@ public class TantrosSectorPresets {
             overrideLaunchDefaults = true;
         }};
         patrolOutpost = new SectorPreset("patrol-outpost", tantros, 49){{
-            difficulty = 2;
+            difficulty = 5;
             overrideLaunchDefaults = true;
         }};
     }

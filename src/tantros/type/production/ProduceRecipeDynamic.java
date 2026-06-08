@@ -7,6 +7,8 @@ import arc.struct.Seq;
 import mindustry.type.ItemStack;
 import mindustry.type.LiquidStack;
 import mindustry.ui.Bar;
+import mindustry.world.meta.Stat;
+import mindustry.world.meta.StatUnit;
 import mindustry.world.meta.Stats;
 import tantros.type.Recipe;
 import tantros.type.Resource;
@@ -141,7 +143,6 @@ public class ProduceRecipeDynamic extends Produce{
 
     @Override
     public void display(Stats stats, ProductionBlock block) {
-
     }
 
     @Override

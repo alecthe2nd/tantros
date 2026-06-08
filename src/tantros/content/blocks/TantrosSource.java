@@ -38,6 +38,7 @@ import tantros.world.draw.DrawFade;
 import tantros.world.draw.extended.DrawAttributeEfficiency;
 import tantros.world.draw.extended.DrawMultiExtended;
 import tantros.world.draw.wallDrill.DrawBoreBit;
+import tantros.world.draw.wallDrill.DrawBoreEfficiency;
 import tantros.world.draw.wallDrill.DrawDrillBit;
 import tantros.world.consumers.ConsumeEnv;
 import tantros.world.draw.wallDrill.DrawPlacementLines;
@@ -138,7 +139,8 @@ public class TantrosSource {
             drawer = new DrawMultiExtended(
                     new DrawDefault(),
                     new DrawBoreBit(),
-                    new DrawPlacementLines()
+                    new DrawPlacementLines(),
+                    new DrawBoreEfficiency()
             );
             produce(new ProduceIfCooldown(
                             new ProduceWallOre(2,2),
@@ -168,7 +170,7 @@ public class TantrosSource {
         }};
 
         hydrothermalTap = new ProductionBlock("hydrothermal-tap"){{
-            requirements(Category.production, with(Items.copper, 12, Items.metaglass, 25));
+            requirements(Category.liquid, with(Items.copper, 12, Items.metaglass, 25));
             productionTime = 60;
             size = 3;
             squareSprite = false;
@@ -317,7 +319,7 @@ public class TantrosSource {
         }};
 
         seawaterIntake = new GenericCrafter("seawater-intake"){{
-            requirements(Category.production, with(Items.metaglass, 15, Items.graphite, 5, Items.copper, 10));
+            requirements(Category.liquid, with(Items.metaglass, 15, Items.graphite, 5, Items.copper, 10));
             size = 1;
             envEnabled |= Env.underwater;
 
@@ -343,7 +345,7 @@ public class TantrosSource {
         }};
 
         effervescenceCollector = new Pump("effervescence-collector"){{
-            requirements(Category.production, with(Items.metaglass, 15, Items.graphite, 5, Items.copper, 10));
+            requirements(Category.liquid, with(Items.metaglass, 15, Items.graphite, 5, Items.copper, 10));
             size = 3;
             envEnabled |= Env.underwater;
             //customShadow = true;
@@ -381,7 +383,7 @@ public class TantrosSource {
         }};
 
         effervescenceConcentrator = new ProductionBlock("effervescence-concentrator"){{
-            requirements(Category.production, with(Items.metaglass, 15, Items.graphite, 5, Items.copper, 10));
+            requirements(Category.liquid, with(Items.metaglass, 15, Items.graphite, 5, Items.copper, 10));
             size = 3;
             envEnabled |= Env.underwater;
             //customShadow = true;
@@ -423,7 +425,7 @@ public class TantrosSource {
         }};
 
         atmosphereIntakeTower = new GenericCrafter("atmosphere-intake"){{
-            requirements(Category.production, with(Items.copper, 40, Items.titanium, 15, Items.metaglass, 50, Items.graphite, 30));
+            requirements(Category.liquid, with(Items.copper, 40, Items.titanium, 15, Items.metaglass, 50, Items.graphite, 30));
             craftEffect = Fx.none;
             outputLiquids = LiquidStack.with(
                     Liquids.ozone, 2f / 60f,

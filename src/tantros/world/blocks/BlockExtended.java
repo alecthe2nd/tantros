@@ -1,5 +1,7 @@
 package tantros.world.blocks;
 
+import arc.func.Floatf;
+import arc.func.Floatp;
 import arc.func.Prov;
 import arc.graphics.g2d.TextureRegion;
 import arc.math.Mathf;
@@ -34,9 +36,8 @@ import tantros.type.blockInput.util.InputListener;
 import tantros.type.blockUtil.OnDestroyExplosionContext;
 import tantros.type.buildConfig.BuildConfigurationUnit;
 import tantros.type.buildingState.BuildingState;
+import tantros.type.buildingState.WarmupState;
 import tantros.type.effect.BlockEffect;
-import tantros.type.production.Produce;
-import tantros.world.blocks.production.ProductionBlock;
 import tantros.world.consumers.ExtendedConsume;
 import tantros.world.draw.extended.DrawBlockExtended;
 import tantros.world.draw.extended.DrawMultiExtended;
@@ -63,6 +64,12 @@ public class BlockExtended extends Block {
     public ObjectMap<String, BuildingStateSource> namedSources = new ObjectMap<>();
 
     public Seq<BlockEffect> effects =  new Seq<>();
+
+    public Floatf<BuildExtended> warmupSource = (b)->0.0f;
+
+    public Floatf<BuildExtended> progressSource = (b)->0.0f;
+
+    public Floatf<BuildExtended> totalProgressSource = (b)->0.0f;
 
     public Seq<BlockInput> inputs = new Seq<>();
 
@@ -149,6 +156,7 @@ public class BlockExtended extends Block {
         public Seq<InputListener<?>> listeners = new Seq<>();
 
         public boolean initializedStates = false;
+        public boolean inOptionalSection = false;
 
 
         @Override
@@ -167,6 +175,13 @@ public class BlockExtended extends Block {
             super.drawConfigure();
 
             drawer.drawConfigure(this);
+        }
+
+        @Override
+        public void drawSelect() {
+            super.drawSelect();
+
+            drawer.drawSelect(this);
         }
 
         public <state extends BuildingState> state getState(Class<state> type, String name){
@@ -214,15 +229,19 @@ public class BlockExtended extends Block {
 
         /**
          * Adds a state to this building with the given name. If the name already exists, it gets overridden.
+         * The true name applied will be "state name-supplied suffix"
+         * @return The full name for later reference.
          */
-        public void putState(BuildingState state, String name){
-            this.putState(state, name, false);
+        public String putState(BuildingState state, String suffix){
+            String trueName = state.getName() + "-" + suffix;
+            this.putState(state, trueName, false);
+            return trueName;
         }
 
         /**
          * Adds a state to this building with the given name. If the name already exists and generateFallbackName is true, a new name will be generated for it. If the name already exists but generateFallbackName is false, then the old name will be overridden with this state.
          */
-        public void putState(BuildingState state, String name, boolean generateFallbackName){
+        private void putState(BuildingState state, String name, boolean generateFallbackName){
             if(generateFallbackName && this.states.containsKey(name)){
                 this.putState(state);
             } else {
@@ -233,6 +252,10 @@ public class BlockExtended extends Block {
         @Override
         public void created() {
             super.created();
+
+            for(BlockEffect effect: effects){
+                effect.initBuildStates(this);
+            }
 
             for(ObjectMap.Entry<String, BuildingStateSource> entry: namedSources){
                 BuildingState state = entry.value.get();
@@ -272,7 +295,7 @@ public class BlockExtended extends Block {
             super.updateTile();
 
             for(BuildingState state : this.states.values()){
-                state.update((ProductionBlock) this.block, this);
+                state.update((BlockExtended) this.block, this);
             }
             if(efficiency > 0){
                 for(BlockEffect effect: effects){
@@ -451,11 +474,12 @@ public class BlockExtended extends Block {
                 BuildingState state = getState(name);
 
                 if(state != null && state.getVersion() == version){
-                    //state is valid, should be safe to read it
+                    //state looks valid, should be safe to read it
                     state.read(read);
                 } else {
                     //state is missing or wrong version, all bytes that
                     //   make up its data should be read and dumped
+                    Log.warn("Dumped potentially invalid state with name " + name + " and version " + version);
                     read.b(size);
                 }
             }
@@ -497,11 +521,37 @@ public class BlockExtended extends Block {
 
         @Override
         public float efficiencyScale() {
+            if(inOptionalSection) return 1f;
+            inOptionalSection = true;
             float scale = 1f;
             for(Consume consume: consumers){
                 scale *= consume.efficiencyMultiplier(this);
             }
+            inOptionalSection = false;
             return scale;
+        }
+
+        @Override
+        public float edelta() {
+            if(inOptionalSection){
+                return (efficiency < 0.0001f)?0:(super.edelta() / efficiency) * potentialEfficiency;
+            }
+            return super.edelta();
+        }
+
+        @Override
+        public float warmup() {
+            return warmupSource.get(this);
+        }
+
+        @Override
+        public float progress() {
+            return progressSource.get(this);
+        }
+
+        @Override
+        public float totalProgress() {
+            return totalProgressSource.get(this);
         }
     }
 

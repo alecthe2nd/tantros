@@ -1,6 +1,8 @@
 package tantros.ai;
 
+import arc.struct.Seq;
 import mindustry.ai.UnitCommand;
+import mindustry.ai.UnitStance;
 import mindustry.ai.types.BuilderAI;
 import mindustry.input.Binding;
 import tantros.ai.types.BurrowAI;
@@ -32,6 +34,7 @@ public class TantrosUnitCommands {
             switchToMove = true;
             drawTarget = false;
             resetTarget = false;
+
         }};
 
         groundMineCommand = new UnitCommand("groundMineCommand", "production", null, u -> new GroundMinerAI()) {{
@@ -45,5 +48,8 @@ public class TantrosUnitCommands {
             ai.onlyAssist = true;
             return ai;
         });
+
+        Seq.with(groundRepairCommand, groundRebuildCommand, groundAssistCommand)
+                .each(c -> c.extraStances.add(UnitStance.holdPosition));
     }
 }

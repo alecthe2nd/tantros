@@ -3,6 +3,7 @@ package tantros.ai.types;
 import arc.struct.Queue;
 import arc.util.Nullable;
 import arc.util.Time;
+import mindustry.ai.UnitStance;
 import mindustry.ai.types.FlyingAI;
 import mindustry.ai.types.GroundAI;
 import mindustry.ai.types.PrebuildAI;
@@ -67,6 +68,7 @@ public class GroundBuilderAI extends BaseGroundAI {
         }
 
         boolean moving = false;
+        boolean hold = hasStance(UnitStance.holdPosition);
 
         if(following != null){
             retreatTimer = 0f;
@@ -83,7 +85,7 @@ public class GroundBuilderAI extends BaseGroundAI {
             unit.plans.clear();
             unit.plans.addFirst(following.buildPlan());
             lastPlan = null;
-        }else if(unit.buildPlan() == null || alwaysFlee){
+        }else if((unit.buildPlan() == null || alwaysFlee) && !hold){
             //not following anyone or building
             if(timer.get(timerTarget4, 40)){
                 enemy = target(unit.x, unit.y, fleeRange, true, true);
@@ -128,13 +130,19 @@ public class GroundBuilderAI extends BaseGroundAI {
                                             Build.validPlace(req.block, unit.team(), req.x, req.y, req.rotation)));
 
             if(valid){
-                float range = Math.min(unit.type.buildRange - 20f, 100f);
-                //move toward the plan
-                //moveTo(req.tile(), range - 10f, 20f);
-                if(!unit.within(req.tile(), range)){
-                    pathTo(req.x, req.y);
+                if(!hold){
+                    float range = Math.min(unit.type.buildRange - 20f, 100f);
+                    //move toward the plan
+                    //moveTo(req.tile(), range - 10f, 20f);
+                    if(!unit.within(req.tile(), range)){
+                        pathTo(req.x, req.y);
+                    }
+                    moving = !unit.within(req.tile(), range);
+                }else if(!unit.within(req, unit.type.buildRange - tilesize) && !state.rules.infiniteResources){
+                    //discard the plan, it's too far away to reach while holding position. try the next one
+                    unit.plans.removeFirst();
+                    lastPlan = null;
                 }
-                moving = !unit.within(req.tile(), range);
             }else{
                 //discard invalid plan
                 unit.plans.removeFirst();
@@ -142,7 +150,7 @@ public class GroundBuilderAI extends BaseGroundAI {
             }
         }else{
 
-            if(assistFollowing != null){
+            if(assistFollowing != null && !hold){
                 if(!unit.within(assistFollowing, assistFollowing.type.hitSize + unit.type.hitSize/2f + 65f)){
                     pathTo(assistFollowing.tileX(), assistFollowing.tileY());
                 }
@@ -192,21 +200,43 @@ public class GroundBuilderAI extends BaseGroundAI {
 
             //find new plan
             if(!onlyAssist && !unit.team.data().plans.isEmpty() && following == null && timer.get(timerTarget3, rebuildPeriod)){
-                Queue<Teams.BlockPlan> blocks = unit.team.data().plans;
-                Teams.BlockPlan block = blocks.first();
+                var blocks = unit.team.data().plans;
 
-                //check if it's already been placed
-                if(world.tile(block.x, block.y) != null && world.tile(block.x, block.y).block() == block.block){
-                    blocks.removeFirst();
-                }else if(Build.validPlace(block.block, unit.team(), block.x, block.y, block.rotation) && (!alwaysFlee || !nearEnemy(block.x, block.y))){ //it's valid
-                    lastPlan = block;
-                    //add build plan
-                    unit.addBuild(new BuildPlan(block.x, block.y, block.rotation, block.block, block.config));
-                    //shift build plan to tail so next unit builds something else
-                    blocks.addLast(blocks.removeFirst());
+
+                if(hold){
+                    //essentially build turret behavior (find first plan in range)
+                    for(int i = 0; i < blocks.size; i++){
+                        var block = blocks.get(i);
+                        if(state.rules.infiniteResources || unit.within(block.x * tilesize, block.y * tilesize, unit.type.buildRange)){
+                            var btype = block.block;
+
+                            if(Build.validPlace(btype, unit.team(), block.x, block.y, block.rotation)){
+                                unit.addBuild(new BuildPlan(block.x, block.y, block.rotation, block.block, block.config));
+                                //shift build plan to tail so next unit builds something else
+                                blocks.addLast(blocks.removeIndex(i));
+                                lastPlan = block;
+                                break;
+                            }
+                        }
+                    }
                 }else{
-                    //shift head of queue to tail, try something else next time
-                    blocks.addLast(blocks.removeFirst());
+                    Teams.BlockPlan block = blocks.first();
+
+                    //check if it's already been placed
+                    if(world.tile(block.x, block.y) != null && world.tile(block.x, block.y).block() == block.block){
+                        blocks.removeFirst();
+                    }else if(Build.validPlace(block.block, unit.team(), block.x, block.y, block.rotation)
+                            && (!alwaysFlee || !nearEnemy(block.x, block.y))){ //check if it's valid
+
+                        lastPlan = block;
+                        //add build plan
+                        unit.addBuild(new BuildPlan(block.x, block.y, block.rotation, block.block, block.config));
+                        //shift build plan to tail so next unit builds something else
+                        blocks.addLast(blocks.removeFirst());
+                    }else{
+                        //shift head of queue to tail, try something else next time
+                        blocks.addLast(blocks.removeFirst());
+                    }
                 }
             }
         }

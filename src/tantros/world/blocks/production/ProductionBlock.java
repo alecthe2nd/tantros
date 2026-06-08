@@ -16,10 +16,17 @@ import mindustry.type.ItemStack;
 import mindustry.type.LiquidStack;
 import mindustry.world.Tile;
 import mindustry.world.blocks.heat.HeatBlock;
+import mindustry.world.blocks.production.GenericCrafter;
+import mindustry.world.consumers.ConsumeItems;
 import mindustry.world.meta.BlockFlag;
+import mindustry.world.meta.Stat;
+import mindustry.world.meta.StatUnit;
+import mindustry.world.modules.ItemModule;
 import tantros.type.buildingState.BuildingState;
 import tantros.type.production.Produce;
 import tantros.world.blocks.BlockExtended;
+
+import java.util.Arrays;
 
 public class ProductionBlock extends BlockExtended {
 
@@ -42,7 +49,6 @@ public class ProductionBlock extends BlockExtended {
         update = true;
         solid = true;
         sync = true;
-        hasItems = true;
         ambientSound = Sounds.loopMachine;
         ambientSoundVolume = 0.03f;
         flags = EnumSet.of(BlockFlag.factory);
@@ -83,6 +89,9 @@ public class ProductionBlock extends BlockExtended {
         }*/
 
         stats.timePeriod = productionTime;
+        if((hasItems && itemCapacity > 0)){
+            stats.add(Stat.productionTime, productionTime / 60f, StatUnit.seconds);
+        }
     }
 
     @Override
@@ -181,7 +190,7 @@ public class ProductionBlock extends BlockExtended {
             progressThisTick = getProgressIncrease(currentProductionTime);
             if(efficiency > 0){
 
-                warmup = Mathf.approachDelta(warmup, 1f/*warmupTarget()*/, warmupSpeed);
+                warmup = Mathf.approachDelta(warmup, 1f, warmupSpeed);
 
                 progress += progressThisTick;
 

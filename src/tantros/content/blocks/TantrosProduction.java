@@ -2,7 +2,6 @@ package tantros.content.blocks;
 
 import arc.graphics.Color;
 import arc.math.Interp;
-import mindustry.Vars;
 import mindustry.content.Fx;
 import mindustry.content.Items;
 import mindustry.content.Liquids;
@@ -15,6 +14,7 @@ import mindustry.type.LiquidStack;
 import mindustry.world.Block;
 import mindustry.world.blocks.heat.HeatProducer;
 import mindustry.world.blocks.production.GenericCrafter;
+import mindustry.world.consumers.ConsumeLiquid;
 import mindustry.world.draw.*;
 import mindustry.world.meta.Attribute;
 import mindustry.world.meta.BlockGroup;
@@ -25,18 +25,17 @@ import tantros.content.world.TantrosLiquids;
 import tantros.type.blockConfig.AttributeConfig;
 import tantros.type.blockConfig.HeatConsumptionConfig;
 import tantros.type.blockConfig.HeatProductionConfig;
+import tantros.type.effect.PressureExplosionOnDestruction;
 import tantros.type.production.ProduceBoilerLiquid;
 import tantros.type.production.ProduceHeat;
 import tantros.world.blocks.production.Boiler;
 import tantros.world.blocks.production.ProductionBlock;
 import tantros.world.consumers.ConsumeAttributeTile;
+import tantros.world.consumers.ConsumeBoostWrapper;
 import tantros.world.consumers.ConsumeHeat;
 import tantros.world.draw.DrawIconOverride;
 import tantros.world.draw.DrawLight;
-import tantros.world.draw.extended.DrawAttributeEfficiency;
-import tantros.world.draw.extended.DrawHeatInputExtended;
-import tantros.world.draw.extended.DrawHeatOutputExtended;
-import tantros.world.draw.extended.DrawMultiExtended;
+import tantros.world.draw.extended.*;
 import tantros.world.draw.output.DrawLiquidOutputRegion;
 import tantros.world.draw.output.DrawMultiLiquidOutput;
 import tantros.world.draw.output.DrawOutputLiquid;
@@ -201,6 +200,8 @@ public class TantrosProduction {
             size = 2;
             squareSprite = false;
 
+            hasLiquids = true;
+
             drawer = new DrawMultiExtended(
                     new DrawDefault(),
                     new DrawHeatOutputExtended(),
@@ -218,6 +219,8 @@ public class TantrosProduction {
             putBlockConfig(attributeConfig);
             putBlockConfig(heatProductionConfig);
             consume(new ConsumeAttributeTile());
+
+            consume(new ConsumeBoostWrapper(new ConsumeLiquid(Liquids.slag, 10f/60f), 2.5f));
 
             produce(new ProduceHeat(heatProductionConfig));
 
@@ -365,7 +368,8 @@ public class TantrosProduction {
                     }},
                     new DrawDefault(),
                     //new DrawWarmupRegion(),
-                    new DrawHeatInputExtended()
+                    new DrawHeatInputExtended(),
+                    new DrawPressureWarning()
             );
             squareSprite = false;
 
@@ -375,7 +379,10 @@ public class TantrosProduction {
                new HeatConsumptionConfig(5, 6)
             ));
             consumeLiquids(LiquidStack.with(Liquids.water, 5f/60f));
-            produce(new ProduceBoilerLiquid(new LiquidStack(TantrosLiquids.steam, 10f/60f)));
+            ProduceBoilerLiquid p = new ProduceBoilerLiquid(new LiquidStack(TantrosLiquids.steam, 10f/60f));
+            p.config.pressureCapacity = 30;
+            produce(p);
+            effects.add(new PressureExplosionOnDestruction(10));
         }};
 
         electrolysisChamber = new GenericCrafter("electrolysis-chamber"){{

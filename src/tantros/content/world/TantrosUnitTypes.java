@@ -27,6 +27,7 @@ import static tantros.ai.TantrosUnitCommands.*;
 import tantros.content.TantrosFx;
 import tantros.entities.abilities.burrow.BurrowAbility;
 import tantros.gen.*;
+import tantros.graphics.TantrosPal;
 import tantros.type.units.*;
 
 public class TantrosUnitTypes {
@@ -114,7 +115,6 @@ public class TantrosUnitTypes {
             speed = 1.9f;
             hitSize = 7f;
             health = 150;
-            maxRange = 35;
 
             weapons.add(new Weapon("tantros-flak-weapon"){{
                 reload = 15f;
@@ -126,9 +126,11 @@ public class TantrosUnitTypes {
                 bullet = new BasicBulletType(3f, 9){{
                     width = 7f;
                     height = 9f;
-                    lifetime = 60f;
+                    maxRange = 76f;
+                    lifetime = maxRange/speed;
 
                     trailChance = 0.05f;
+                    this.keepVelocity = false;
                 }};
             }});
 
@@ -155,7 +157,8 @@ public class TantrosUnitTypes {
                 bullet = new BasicBulletType(3f, 15){{
                     width = 7f;
                     height = 9f;
-                    lifetime = 60f;
+                    maxRange = 76f;
+                    lifetime = (maxRange)/speed;
 
                     drag = 0.01f;
 
@@ -202,6 +205,7 @@ public class TantrosUnitTypes {
 
             shadowElevation = 0.2f;
             groundLayer = Layer.legUnit - 1f;
+            range = 80;
 
             weapons.add(new Weapon("tantros-fractoid-weapon"){{
                 top = false;
@@ -341,7 +345,7 @@ public class TantrosUnitTypes {
             weapons.add(new Weapon("infest-weapon"){{
                             mirror = false;
                             top = false;
-                            shake = 4f;
+                            //shake = 4f;
                             shootY = 7f;
                             x = y = 0f;
 
@@ -365,8 +369,6 @@ public class TantrosUnitTypes {
                                 smokeEffect = Fx.none;
                                 drawFlare = false;
                                 maxRange = length + 10;
-
-                                collidesTeam = true;
 
                                 colors = new Color[]{Pal.sapBullet.cpy().a(.2f), Pal.sapBullet.cpy().a(.5f), Pal.sapBullet.cpy().mul(1.2f), Color.white};
                             }};
@@ -510,7 +512,7 @@ public class TantrosUnitTypes {
                 autoTarget = false;
                 controllable = true;
                 laserColor = Pal.accent;
-                healColor = Pal.accent;
+                healColor = TantrosPal.mendLight;
 
                 bullet = new BulletType(){{
                     maxRange = 60f;
@@ -520,8 +522,6 @@ public class TantrosUnitTypes {
         delegate = new UnitType("delegate"){{
             constructor = LegsUnit::create;
             defaultCommand = groundMineCommand;
-
-            drawBuildBeam = true;
 
             commands.add(
                         Seq.with(
@@ -575,6 +575,8 @@ public class TantrosUnitTypes {
             mineTier = 2;
             mineSpeed = 0.5f;
 
+            drawBuildBeam = true;
+
             buildSpeed = 0.075f;
             buildRange = Vars.buildingRange * 0.25f;
 
@@ -603,7 +605,7 @@ public class TantrosUnitTypes {
                     autoTarget = false;
                     controllable = true;
                     laserColor = Pal.accent;
-                    healColor = Pal.accent;
+                    healColor = TantrosPal.mendLight;
 
                     bullet = new BulletType(){{
                         maxRange = 60f;
@@ -626,7 +628,7 @@ public class TantrosUnitTypes {
                         }
                     }
                 }else{
-                    out.addAll(stances);
+                    super.getUnitStances(unit, out);
                 }
             }
         };

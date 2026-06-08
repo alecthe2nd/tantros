@@ -15,7 +15,7 @@ import tantros.world.blocks.BlockExtended;
 
 public class ConsumeAttributeTile extends ExtendedConsume{
 
-    AttributeConfig config;
+    public AttributeConfig config;
 
     @Override
     public void apply(BlockExtended block) {

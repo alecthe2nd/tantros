@@ -71,4 +71,8 @@ public class CooldownState implements BuildingState{
         cooldown = 0;
         Log.warn("Resetting cooldown");
     }
+
+    public boolean elapsed(){
+        return Mathf.equal(this.cooldown, 1);
+    }
 }

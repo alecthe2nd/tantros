@@ -9,7 +9,7 @@ import mindustry.type.Category;
 import mindustry.world.Block;
 import mindustry.world.draw.DrawDefault;
 import mindustry.world.draw.DrawRegion;
-import tantros.type.blockConfig.RangeConfig;
+import tantros.type.effect.projector.range.RangeConfig;
 import tantros.type.buildConfig.AddUnitConfig;
 import tantros.type.buildingState.logic.OneLink;
 import tantros.type.effect.IsBuilding;

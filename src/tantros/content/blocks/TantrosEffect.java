@@ -3,15 +3,30 @@ package tantros.content.blocks;
 import arc.graphics.Color;
 import arc.struct.Seq;
 import mindustry.Vars;
+import mindustry.content.Bullets;
 import mindustry.content.Items;
 import mindustry.content.Liquids;
+import mindustry.content.UnitTypes;
+import mindustry.entities.bullet.LiquidBulletType;
+import mindustry.graphics.Layer;
 import mindustry.type.Category;
 import mindustry.world.Block;
 import mindustry.world.consumers.ConsumeLiquidFilter;
+import mindustry.world.draw.DrawDefault;
 import mindustry.world.draw.DrawMulti;
+import mindustry.world.draw.DrawPulseShape;
 import mindustry.world.draw.DrawRegion;
 import mindustry.world.meta.Env;
 import tantros.graphics.TantrosPal;
+import tantros.type.buildConfig.ProgressTimerConfig;
+import tantros.type.effect.IsBuilding;
+import tantros.type.effect.projector.mend.HealsInRangeContinuously;
+import tantros.type.effect.projector.mend.HealsInRangeWithPulses;
+import tantros.type.effect.projector.mend.MendConfig;
+import tantros.type.effect.projector.range.HasRange;
+import tantros.type.effect.projector.range.RangeConfig;
+import tantros.type.production.ProduceBulletSpray;
+import tantros.world.blocks.BlockExtended;
 import tantros.world.blocks.effect.FacingPressureBooster;
 import tantros.world.blocks.effect.GenericProjector;
 import tantros.world.blocks.effect.GroundPenetratingRadar;
@@ -20,6 +35,10 @@ import tantros.world.blocks.effect.projector.draw.DrawCircleEmitterRange;
 import tantros.world.blocks.effect.projector.draw.DrawEnvIconEmitter;
 import tantros.world.blocks.effect.projector.draw.DrawFieldArea;
 import tantros.world.blocks.effect.projector.draw.DrawMultiEmitter;
+import tantros.world.blocks.production.ProductionBlock;
+import tantros.world.consumers.ConsumeNearbyDamagedBuilding;
+import tantros.world.draw.extended.DrawMultiExtended;
+import tantros.world.draw.extended.DrawPlacementRange;
 import tantros.world.environment.LocalEnv;
 
 import static mindustry.type.ItemStack.with;
@@ -32,7 +51,9 @@ public class TantrosEffect {
     pneumaticPump,
     hydrogenProjector,
     waterProjector,
-    atmosphereProjector
+    atmosphereProjector,
+    mendDispenser,
+    mendEmitter
     ;
 
     public static void load(){
@@ -111,7 +132,6 @@ public class TantrosEffect {
             emitters = Seq.with(
                     new EnvEmitter(){
                         {
-                            //
                             range = 14.1421f * Vars.tilesize;
                             fieldRotation = 45f;
                             drawer = new DrawMultiEmitter<>() {{
@@ -127,5 +147,34 @@ public class TantrosEffect {
 
         }};
 
+        mendEmitter = new BlockExtended("mend-emitter"){{
+            requirements(Category.effect, with(Items.copper, 10, Items.oxide, 20, Items.silicon, 25));
+            size = 1;
+
+            drawer = new DrawMultiExtended(
+                    new DrawDefault(),
+                    new DrawPulseShape(false){{
+                        layer = Layer.effect;
+                        color = TantrosPal.mendLight;
+                        timeScl = 100;
+                    }},
+                    new DrawPlacementRange(){{
+                        dashed = true;
+                    }}
+            );
+
+            effects.add(
+                    new IsBuilding(),
+                    new HealsInRangeContinuously(
+                            new MendConfig(1f / 60, MendConfig.MendType.ABSOLUTE),
+                            new RangeConfig(40f)
+                    ),
+                    new HealsInRangeWithPulses(
+                            new MendConfig(50, MendConfig.MendType.RELATIVE),
+                            new RangeConfig(40f),
+                            new ProgressTimerConfig(10 * 60)
+                    ).asProgressSource(this)
+            );
+        }};
     }
 }

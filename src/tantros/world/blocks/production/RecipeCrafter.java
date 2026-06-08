@@ -42,6 +42,7 @@ import mindustry.world.blocks.liquid.Conduit;
 import mindustry.world.draw.DrawBlock;
 import mindustry.world.draw.DrawDefault;
 import mindustry.world.meta.BlockFlag;
+import mindustry.world.meta.Stat;
 import tantros.content.recipes.TantrosRecipes;
 import tantros.type.Recipe;
 import tantros.type.production.ProduceRecipeDynamic;
@@ -163,6 +164,12 @@ public class RecipeCrafter extends ProductionBlock {
         }
 
         return true;
+    }
+
+    @Override
+    public void setStats() {
+        super.setStats();
+        stats.remove(Stat.productionTime);
     }
 
     @Override

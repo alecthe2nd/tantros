@@ -13,4 +13,8 @@ public class DrawBlockExtended extends DrawBlock {
 
     }
 
+    public void drawSelect(BlockExtended.BuildExtended build){
+
+    }
+
 }

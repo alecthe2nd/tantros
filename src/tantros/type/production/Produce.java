@@ -11,6 +11,8 @@ import tantros.world.blocks.production.ProductionBlock;
 
 public abstract class Produce {
 
+    private static final Resource outputCache = new Resource();
+
     public boolean ignoreLiquidFullness;
 
     public boolean dumpExcessItems = false;
@@ -39,7 +41,9 @@ public abstract class Produce {
         return false;
     }
 
-    public abstract Resource output(ProductionBlock.ProductionBuild build);
+    public Resource output(ProductionBlock.ProductionBuild build){
+        return outputCache;
+    }
 
     public abstract void apply(ProductionBlock block);
 

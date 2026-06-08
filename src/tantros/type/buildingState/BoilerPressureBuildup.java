@@ -54,9 +54,13 @@ public class BoilerPressureBuildup implements BuildingState{
     @Override
     public void onOverflow(Object resource) {
         if(resource instanceof LiquidStack liquidOverflow){
-            pressure += liquidOverflow.amount;
+            pressure = Math.min(pressure + liquidOverflow.amount, boilerConfig.pressureCapacity);
             overflow += liquidOverflow.amount;
         }
+    }
+
+    public float pressureFrac(){
+        return this.pressure / boilerConfig.pressureCapacity;
     }
 
     @Override

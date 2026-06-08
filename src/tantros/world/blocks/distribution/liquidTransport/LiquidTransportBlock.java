@@ -1,6 +1,7 @@
 package tantros.world.blocks.distribution.liquidTransport;
 
 import arc.graphics.g2d.Draw;
+import arc.graphics.g2d.TextureRegion;
 import arc.math.Mathf;
 import arc.struct.FloatSeq;
 import mindustry.Vars;
@@ -12,8 +13,31 @@ import mindustry.type.Liquid;
 import mindustry.world.Tile;
 import mindustry.world.blocks.liquid.LiquidBlock;
 
+import static arc.Core.atlas;
+
 public abstract class LiquidTransportBlock extends LiquidBlock {
 
+    public static TextureRegion[][] fluidFrames;
+
+    public static TextureRegion[][] getFluidFrames(){
+        if(fluidFrames == null || fluidFrames[0][0].texture.isDisposed()){
+            loadFluidFrames();
+        }
+        return fluidFrames;
+    }
+
+    public static void loadFluidFrames(){
+        fluidFrames = new TextureRegion[2][Liquid.animationFrames];
+
+        String[] fluidTypes = {"liquid", "gas"};
+
+        for(int i = 0; i < fluidTypes.length; i++){
+
+            for(int j = 0; j < Liquid.animationFrames; j++){
+                fluidFrames[i][j] = atlas.find("fluid-" + fluidTypes[i] + "-" + j);
+            }
+        }
+    }
 
     /** In game Liquid units transported per second.*/
     public float speed = 20;
