@@ -51,9 +51,9 @@ public class DrawUnit extends DrawBlockExtended{
         }
         if(color != null) Draw.color(color);
         if(spinSprite){
-            Drawf.spinSprite(region, build.x + x, build.y + y, build.totalProgress() * rotateSpeed + rotation + (buildingRotate ? build.rotdeg() : 0) + build.payloadRotation);
+            Drawf.spinSprite(region, build.x + x, build.y + y, build.totalProgress() * rotateSpeed + rotation + (buildingRotate ? build.rotdeg() : 0));
         }else{
-            Draw.rect(region, build.x + x, build.y + y, build.totalProgress() * rotateSpeed + rotation + (buildingRotate ? build.rotdeg() : 0) + build.payloadRotation);
+            Draw.rect(region, build.x + x, build.y + y, build.totalProgress() * rotateSpeed + rotation + (buildingRotate ? build.rotdeg() : 0));
         }
         if(color != null) Draw.color();
         //Log.info("Drew unit: " + Draw.z() + " | " + z + ";");

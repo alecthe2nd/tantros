@@ -28,7 +28,7 @@ public class DrawWeapon extends DrawBlockExtended{
         }
         //Log.info("Drew: " + Draw.z() + " | " + z + ";");
         float
-                rotation = build.rotdeg() -90  + build.payloadRotation,
+                rotation = build.rotdeg() - 90,
                 weaponRotation  = rotation + weapon.baseRotation,
                 wx = build.x + Angles.trnsx(rotation, weapon.x, weapon.y),
                 wy = build.y + Angles.trnsy(rotation, weapon.x, weapon.y);

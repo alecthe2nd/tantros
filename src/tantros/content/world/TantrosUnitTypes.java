@@ -18,14 +18,11 @@ import mindustry.entities.effect.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.type.*;
-import mindustry.type.ammo.ItemAmmoType;
 import mindustry.type.weapons.*;
-import mindustry.ui.dialogs.PlanetDialog;
 import mindustry.world.meta.*;
 import static tantros.ai.TantrosUnitCommands.*;
 
 import tantros.content.TantrosFx;
-import tantros.entities.abilities.burrow.BurrowAbility;
 import tantros.gen.*;
 import tantros.graphics.TantrosPal;
 import tantros.type.units.*;
