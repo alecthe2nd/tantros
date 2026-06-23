@@ -1,25 +1,33 @@
 package tantros.type.effect.projector.mend;
 
 import arc.math.Mathf;
+import arc.scene.ui.layout.Table;
 import arc.struct.IntFloatMap;
 import arc.struct.ObjectFloatMap;
 import arc.util.Log;
 import arc.util.Reflect;
+import arc.util.Tmp;
 import mindustry.content.Fx;
 import mindustry.world.blocks.defense.RegenProjector;
+import mindustry.world.meta.Stat;
+import mindustry.world.meta.StatUnit;
+import mindustry.world.meta.StatValues;
+import mindustry.world.meta.Stats;
 import tantros.TantrosVars;
 import tantros.type.buildConfig.ProgressTimerConfig;
 import tantros.type.buildingState.ProgressTimerState;
 import tantros.type.effect.BlockEffect;
+import tantros.type.effect.StatDisplayEffect;
 import tantros.type.effect.projector.range.RangeConfig;
 import tantros.type.effect.projector.range.RangeState;
 import tantros.world.blocks.BlockExtended;
+import tantros.world.meta.TantrosStats;
 
 import static mindustry.Vars.*;
 import static mindustry.Vars.state;
 import static mindustry.Vars.world;
 
-public class HealsInRangeContinuously implements BlockEffect {
+public class HealsInRangeContinuously extends StatDisplayEffect implements BlockEffect {
 
     RangeConfig rangeConfig;
     MendConfig mendConfig;
@@ -29,6 +37,7 @@ public class HealsInRangeContinuously implements BlockEffect {
     public boolean any = false;
 
     public HealsInRangeContinuously(MendConfig mendConfig, RangeConfig rangeConfig){
+        super();
         this.rangeConfig = rangeConfig;
         this.mendConfig = mendConfig;
     }
@@ -47,6 +56,26 @@ public class HealsInRangeContinuously implements BlockEffect {
     }
 
     @Override
+    public void addStats(Table t) {
+        super.addStats(t);
+
+        if(mendConfig.mendType == MendConfig.MendType.ABSOLUTE) {
+            TantrosStats.displayStat(t, Stat.repairSpeed,
+                    StatValues.number(
+                            (int)(mendConfig.heal * 60), StatUnit.perSecond
+                    )
+            );
+        } else {
+            TantrosStats.displayStat(t, Stat.repairTime,
+                    StatValues.number(
+                            (int)(1f / (mendConfig.heal / 100f) / 60f), StatUnit.seconds
+                    )
+            );
+        }
+        TantrosStats.displayStat(t, Stat.range, rangeConfig.maxScale, StatUnit.blocks);
+    }
+
+    @Override
     public void update(BlockExtended.BuildExtended build) {
 
         RangeState rangeState = build.getState(RangeState.class,rangeName);
@@ -57,7 +86,7 @@ public class HealsInRangeContinuously implements BlockEffect {
 
                 any = false;
 
-                indexer.eachBlock(build, rangeState.range(), b -> b.damaged() && !b.isHealSuppressed(), other -> {
+                indexer.eachBlock(build.team, Tmp.r1.setCentered(build.x, build.y, rangeState.range() * tilesize), b -> b.damaged() && !b.isHealSuppressed() && rangeState.inRange(build, b), other -> {
                     int pos = other.pos();
                     float value = TantrosVars.healMap.mendMap.get(pos);
                     float healAmount =Math.min(

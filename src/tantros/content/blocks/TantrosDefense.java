@@ -22,6 +22,7 @@ public class TantrosDefense {
 
             //defense
             copperBulkhead, largeCopperBulkhead,
+            leadBulkhead, largeLeadBulkhead,
             metaglassBulkhead, largeMetaglassBulkhead,
             largeMetaglassBulkheadDoor
             ;
@@ -40,6 +41,21 @@ public class TantrosDefense {
             requirements(Category.defense, ItemStack.mult(copperBulkhead.requirements, 4));
             health = copperBulkhead.health * 4;
             damageModifiers.add(new DamageModifer(DamageTypes.energy, 1.5f));
+            size = 2;
+            envEnabled |= Env.underwater;
+        }};
+
+        leadBulkhead = new WallExtended("lead-bulkhead"){{
+            requirements(Category.defense, with(Items.lead, 8));
+            health = 90 * wallHealthMultiplier;
+            buildCostMultiplier *= 2f;
+            envEnabled |= Env.underwater;
+        }};
+
+        largeLeadBulkhead = new WallExtended("lead-bulkhead-large"){{
+            requirements(Category.defense, ItemStack.mult(leadBulkhead.requirements, 4));
+            health = leadBulkhead.health * 4;
+            buildCostMultiplier = leadBulkhead.buildCostMultiplier;
             size = 2;
             envEnabled |= Env.underwater;
         }};

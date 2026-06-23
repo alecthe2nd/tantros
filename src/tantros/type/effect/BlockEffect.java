@@ -16,6 +16,11 @@ public interface BlockEffect {
 
     }
 
+    /**Ideal timing for setting stats*/
+    default void setStats(BlockExtended block){
+
+    }
+
     default void initBuildStates(BlockExtended.BuildExtended build){
 
     }

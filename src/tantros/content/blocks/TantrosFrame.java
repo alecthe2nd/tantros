@@ -35,6 +35,9 @@ public class TantrosFrame {
     roachFrame,
     infestFrame,
     invadeFrame,
+    skimFrame,
+    //skiffFrame,
+    //fleetFrame,
     delegateFrame
             ;
 
@@ -51,6 +54,8 @@ public class TantrosFrame {
         infestFrame = buildFrame(TantrosUnitTypes.infest, with(Items.lead, 40, TantrosItems.redcyst, 25));
 
         invadeFrame = buildFrame(TantrosUnitTypes.invade, with(Items.lead, 60, Items.tungsten, 30, Items.silicon, 20));
+
+        skimFrame = buildFrame(TantrosUnitTypes.skim, with(Items.metaglass, 15, Items.silicon, 5));
 
         delegateFrame = buildFrame(TantrosUnitTypes.delegate, with(Items.silicon, 10, Items.lead, 5));
 
@@ -79,7 +84,7 @@ public class TantrosFrame {
                     for (Weapon weapon : unitType.weapons) {
                         drawers.add(new DrawWeapon(weapon));
                     }
-                    multi.drawers = drawers.toArray();
+                    multi.drawers = drawers.toArray(DrawBlock.class);
                 }
             });
         }};

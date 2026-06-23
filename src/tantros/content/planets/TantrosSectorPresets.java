@@ -1,7 +1,10 @@
 package tantros.content.planets;
 
+import mindustry.Vars;
 import mindustry.content.SectorPresets;
+import mindustry.mod.Mods;
 import mindustry.type.SectorPreset;
+import tantros.TantrosVars;
 
 import static mindustry.content.Planets.tantros;
 
@@ -18,6 +21,7 @@ public class TantrosSectorPresets {
             captureWave = 10;
             difficulty = 1;
             overrideLaunchDefaults = true;
+
         }};
         shallows = new SectorPreset("shallows", tantros, 83){{
             captureWave = 10;
@@ -33,5 +37,10 @@ public class TantrosSectorPresets {
             difficulty = 5;
             overrideLaunchDefaults = true;
         }};
+
+        Vars.maps.all().each((m)->m.mod == TantrosVars.modWrapper && Vars.content.planet("tantros").sectors.contains(
+                (s)->{
+            return s.preset != null && s.preset.generator != null && s.preset.generator.map != null && s.preset.generator.map.name().equals(m.name());
+        }), (m)->m.mod = null);
     }
 }

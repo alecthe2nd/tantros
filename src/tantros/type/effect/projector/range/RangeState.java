@@ -1,5 +1,6 @@
 package tantros.type.effect.projector.range;
 
+import arc.math.geom.Position;
 import tantros.type.buildingState.BuildingState;
 import tantros.world.blocks.BlockExtended;
 
@@ -47,5 +48,9 @@ public class RangeState implements BuildingState {
 
     public float range(){
         return this.fracOfMax * config.maxScale;
+    }
+
+    public Boolean inRange(BlockExtended.BuildExtended build, Position posToCheck) {
+        return (config.shape.optimizedCheck != null)? config.shape.optimizedCheck.get(build, posToCheck, range()): false;
     }
 }

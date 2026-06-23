@@ -28,6 +28,7 @@ import mindustry.gen.Player;
 import mindustry.gen.Sounds;
 import mindustry.graphics.Pal;
 import mindustry.logic.LAccess;
+import mindustry.type.Item;
 import mindustry.type.ItemStack;
 import mindustry.type.LiquidStack;
 import mindustry.type.PayloadStack;
@@ -265,6 +266,11 @@ public class RecipeCrafter extends ProductionBlock {
         public void drawLight(){
             super.drawLight();
             drawer.drawLight(this);
+        }
+
+        @Override
+        public boolean acceptItem(Building source, Item item) {
+            return super.acceptItem(source, item) && this.currentRecipe().cost.items.contains((s)->s.item == item);
         }
 
         @Override

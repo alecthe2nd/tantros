@@ -128,6 +128,21 @@ public class TantrosTechTree {
                 });
             });
             TechTree.node(TantrosDefense.copperBulkhead, Seq.with(copper, embark), () -> {
+                TechTree.node(TantrosDefense.leadBulkhead, Seq.with(lead, shallows), () -> {
+                    TechTree.node(TantrosDefense.metaglassBulkhead, Seq.with(metaglass, never), () -> {
+                        TechTree.node(TantrosDefense.largeMetaglassBulkhead, Seq.with(metaglass, never), () -> {
+                            TechTree.node(TantrosDefense.largeMetaglassBulkheadDoor, () -> {
+
+                            });
+                        });
+                    });
+                    TechTree.node(TantrosEffect.mendEmitter, Seq.with(silicon, polarEdge), () -> {
+
+                    });
+                    TechTree.node(TantrosDefense.largeLeadBulkhead, Seq.with(lead, shallows), () -> {
+
+                    });
+                });
                 TechTree.node(TantrosTurret.bident, Seq.with(copper, embark), () -> {
                     TechTree.node(TantrosTurret.puncture, Seq.with(
                             shallows

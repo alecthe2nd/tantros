@@ -19,7 +19,7 @@ public class TantrosFx {
     public static Effect
 
 
-            parallaxBubble = new Effect(100f, e -> randLenVectors(e.id, 1, e.fin() * 12f, (x, y) -> rect(renderer.bubbles[Math.min((int)(renderer.bubbles.length * Mathf.curveMargin(e.fin(), 0.11f, 0.06f)), renderer.bubbles.length - 1)], DrawPsuedoParrallax.xHeight(e.x + x, e.fin() * 20), DrawPsuedoParrallax.yHeight(e.y + y, e.fin() * 20)))).layer(Layer.flyingUnitLow + 1),
+            parallaxBubble = new Effect(100f, e -> randLenVectors(e.id, 1, e.fin() * 12f, (x, y) -> rect(renderer.bubbles[Math.min((int)(renderer.bubbles.length * Mathf.curveMargin(e.fin(), 0.11f, 0.06f)), renderer.bubbles.length - 1)], DrawPsuedoParrallax.xHeight(e.x + x, e.fin() * 20), DrawPsuedoParrallax.yHeight(e.y + y, e.fin() * 20)))).layer(Layer.flyingUnitLow - 1),
 
             fourBubbles = new RadialEffect(100f, (e-> parallaxBubble.renderer.get(e))){{
                 radius = 10f;

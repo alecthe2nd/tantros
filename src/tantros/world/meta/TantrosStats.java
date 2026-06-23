@@ -1,20 +1,15 @@
 package tantros.world.meta;
 
 import arc.Core;
-import arc.func.Boolf;
-import arc.func.Floatf;
 import arc.scene.ui.Image;
 import arc.scene.ui.Label;
+import arc.scene.ui.layout.Cell;
 import arc.scene.ui.layout.Stack;
 import arc.scene.ui.layout.Table;
-import arc.struct.ObjectFloatMap;
 import arc.struct.Seq;
-import arc.util.Nullable;
 import arc.util.Scaling;
-import arc.util.Strings;
 import mindustry.gen.Icon;
 import mindustry.graphics.Pal;
-import mindustry.type.Item;
 import mindustry.type.ItemStack;
 import mindustry.type.Liquid;
 import mindustry.type.LiquidStack;
@@ -23,6 +18,8 @@ import mindustry.world.meta.*;
 import tantros.type.Recipe;
 import tantros.type.Resource;
 import tantros.world.environment.LocalEnv;
+
+import java.util.Locale;
 
 import static mindustry.Vars.*;
 import static mindustry.world.meta.StatValues.displayItem;
@@ -195,5 +192,24 @@ public class TantrosStats {
                 c.add(Core.bundle.format("stat.efficiency", fixValue(efficiencyMultiplier * 100f))).right().pad(10f).padRight(15f);
             }).growX().colspan(table.getColumns()).row();
         };
+    }
+
+    public static void displayStat(Table table, Stat stat, float value, StatUnit unit){
+        displayStat(table, stat, StatValues.number(value, unit));
+    }
+
+    public static void displayStat(Table table, Stat stat, StatValue value){
+        table.table(inset -> {
+            inset.left();
+            Cell<Label> cell = inset.add("[lightgray]" + stat.localized() + ":[] ").left().top();
+            if(cell != null) {
+                String key = "stat." + stat.name.toLowerCase(Locale.ROOT);
+                if (Core.bundle.has(key + ".info")) {
+                    cell.tooltip("@" + key + ".info");
+                }
+            }
+            value.display(inset);
+            inset.add().size(10f);
+        }).fillX().padLeft(10).row();
     }
 }

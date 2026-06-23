@@ -166,15 +166,17 @@ public class TantrosEffect {
             effects.add(
                     new IsBuilding(),
                     new HealsInRangeContinuously(
-                            new MendConfig(1f / 60, MendConfig.MendType.ABSOLUTE),
+                            new MendConfig(20f / 60f, MendConfig.MendType.ABSOLUTE),
                             new RangeConfig(40f)
                     ),
                     new HealsInRangeWithPulses(
-                            new MendConfig(50, MendConfig.MendType.RELATIVE),
+                            new MendConfig(20, MendConfig.MendType.RELATIVE),
                             new RangeConfig(40f),
                             new ProgressTimerConfig(10 * 60)
                     ).asProgressSource(this)
             );
+
+            consumePower(20f/60f);
         }};
     }
 }

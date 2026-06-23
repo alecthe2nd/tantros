@@ -1,20 +1,28 @@
 package tantros.content.world;
 
 import arc.graphics.Color;
+import arc.graphics.g2d.Draw;
+import arc.math.Mathf;
 import arc.struct.ObjectSet;
 import arc.struct.Seq;
 
 import static mindustry.Vars.indexer;
 import static mindustry.ai.UnitCommand.*;
 
+import arc.util.Time;
 import mindustry.Vars;
 import mindustry.ai.ItemUnitStance;
+import mindustry.ai.UnitCommand;
 import mindustry.ai.UnitStance;
 import mindustry.ai.types.*;
 import mindustry.content.*;
 import mindustry.entities.abilities.*;
 import mindustry.entities.bullet.*;
 import mindustry.entities.effect.*;
+import mindustry.entities.part.DrawPart;
+import mindustry.entities.part.FlarePart;
+import mindustry.entities.part.RegionPart;
+import mindustry.entities.part.ShapePart;
 import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.type.*;
@@ -36,9 +44,19 @@ public class TantrosUnitTypes {
     flak,
     sherd,
     fractoid,
+    //tier 4 mech
+    //tier 5 mech
     roach,
     infest,
     invade,
+    //tier 4 burrow
+    //tier 5 burrow
+
+    skim,
+    //tier 2 sub
+    //tier 3 sub
+    //tier 4 sub
+    //tier 5 sub
     enact,
     delegate,
     largeFisk
@@ -452,6 +470,57 @@ public class TantrosUnitTypes {
             );
             //abilities.add(new BurrowAbility());
         }});
+
+        skim = new UnitType("skim"){{
+            constructor = UnitEntity::create;
+
+            flying = true;
+            drag = 0.06f;
+            accel = 0.12f;
+            speed = 2.5f;
+            health = 100;
+            engineSize = 1.8f;
+            engineOffset = 5.7f;
+            range = Vars.tilesize * 4;
+            lowAltitude = true;
+
+            targetFlags = new BlockFlag[]{BlockFlag.generator, null};
+            faceTarget = true;
+            rotateSpeed = 3f;
+
+            targetAir = false;
+            targetGround = true;
+
+            weapons.add(
+                    new Weapon(){{
+                        x = 0f;
+                        y = 1f;
+                        mirror = false;
+
+                        bullet = new PointLaserBulletType(){{
+                            sprite = "tantros-skim-point-laser";
+                            damage = 3f;
+                            hitColor = Color.valueOf("3ec29a");
+                            oscMag = 0.3f;
+                            maxRange = Vars.tilesize * 4;
+                            hitSound = Sounds.shootEnergyField;
+                            hitSoundVolume = 0.1f;
+                        }};
+
+                        alwaysContinuous = true;
+                        shootSound = Sounds.none;
+                        activeSoundVolume = 1f;
+                        activeSound = Sounds.loopMineBeam;
+
+                        shootStatus = StatusEffects.slow;
+                        shootStatusDuration = bullet.lifetime + shoot.firstShotDelay;
+                    }}
+            );
+
+            abilities = Seq.with(
+                    new MoveEffectAbility(0,-4,Liquids.water.color, new MultiEffect(TantrosFx.parallaxBubble), 10)
+            );
+        }};
 
         enact = new UnitType("enact"){{
             coreUnitDock = true;

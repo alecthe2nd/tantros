@@ -42,6 +42,7 @@ public class TantrosPayload {
             assemblyExpansionModule,
             smallBenthicAssembler,
             smallSubBenthicAssembler,
+            smallSubmarineAssembler,
             sealedPayloadConveyor
             ;
 
@@ -111,8 +112,8 @@ public class TantrosPayload {
                     TantrosFrame.fractoidFrame,
                     TantrosFrame.roachFrame,
                     TantrosFrame.infestFrame,
-                    TantrosFrame.invadeFrame
-                    //skim
+                    TantrosFrame.invadeFrame,
+                    TantrosFrame.skimFrame
                     //skiff
                     //fleet
             );
@@ -143,6 +144,19 @@ public class TantrosPayload {
                     new UnitAssembler.AssemblerUnitPlan(TantrosUnitTypes.roach, 60f * 15f, PayloadStack.list(TantrosUnitTypes.delegate, 1, TantrosFrame.roachFrame, 1)),
                     new UnitAssembler.AssemblerUnitPlan(TantrosUnitTypes.infest,  60f * 55f, PayloadStack.list(TantrosUnitTypes.delegate, 2, TantrosFrame.infestFrame, 1)),
                     new UnitAssembler.AssemblerUnitPlan(TantrosUnitTypes.invade,  60f * 60 * 2f, PayloadStack.list(TantrosUnitTypes.delegate, 4, TantrosFrame.invadeFrame, 1))
+            );
+            areaSize = 5;
+            //researchCostMultiplier = 0.4f;
+
+            consumePower(0.75f);
+        }};
+
+        smallSubmarineAssembler = new UnitAssembler("small-submarine-assembler"){{
+            requirements(Category.units, with(Items.oxide, 40, Items.copper, 30, Items.metaglass, 45, Items.silicon, 65));
+            regionSuffix = "-sealed";
+            size = 3;
+            plans.add(
+                    new UnitAssembler.AssemblerUnitPlan(TantrosUnitTypes.skim, 60f * 20f, PayloadStack.list(TantrosUnitTypes.delegate, 1, TantrosFrame.skimFrame, 1))
             );
             areaSize = 5;
             //researchCostMultiplier = 0.4f;

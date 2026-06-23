@@ -4,14 +4,13 @@ import arc.func.Prov;
 import mindustry.Vars;
 import mindustry.content.Planets;
 import mindustry.game.Team;
-import mindustry.ui.Fonts;
+import mindustry.mod.Mods;
 import mindustry.world.blocks.defense.turrets.Turret;
 import tantros.content.TantrosLoadouts;
 import tantros.content.TantrosTechTree;
 import tantros.content.blocks.TantrosBlocks;
 import tantros.entities.abilities.burrow.NonBurrowedFilter;
 import tantros.maps.planet.TantrosPlanetGenerator;
-import tantros.type.units.BurrowerUnitType;
 import tantros.world.meta.UnitFilter;
 
 public class TantrosOverride {

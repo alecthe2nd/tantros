@@ -1,7 +1,6 @@
 package tantros.world.blocks;
 
 import arc.func.Floatf;
-import arc.func.Floatp;
 import arc.func.Prov;
 import arc.graphics.g2d.TextureRegion;
 import arc.math.Mathf;
@@ -36,7 +35,6 @@ import tantros.type.blockInput.util.InputListener;
 import tantros.type.blockUtil.OnDestroyExplosionContext;
 import tantros.type.buildConfig.BuildConfigurationUnit;
 import tantros.type.buildingState.BuildingState;
-import tantros.type.buildingState.WarmupState;
 import tantros.type.effect.BlockEffect;
 import tantros.world.consumers.ExtendedConsume;
 import tantros.world.draw.extended.DrawBlockExtended;
@@ -117,6 +115,14 @@ public class BlockExtended extends Block {
             applier.apply(this);
         }
         super.postInit();
+    }
+
+    @Override
+    public void setStats(){
+        super.setStats();
+        for(BlockEffect effect: effects){
+            effect.setStats(this);
+        }
     }
 
     @Override
