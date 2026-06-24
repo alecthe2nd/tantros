@@ -54,11 +54,17 @@ public class TantrosPower {
         tidalTurbine = new ConsumeGenerator("tidal-turbine"){{
             requirements(Category.power, with(Items.copper, 50, Items.oxide, 40, Items.lead, 30));
             powerProduction = 1f/2f;
-            //customShadow = true;
+            customShadow = true;
 
             buildCostMultiplier = 3;
 
             drawer = new DrawMulti(
+                    new DrawRegion("-shadow-rotator", 0.6f, true){{
+                        x = -1;
+                        y = -1;
+                        spinSprite = false;
+                    }},
+                    new DrawRegion("-crossbar"),
                     new DrawRegion("-rotator", 0.6f, true),
                     new DrawDefault());
             size = 6;

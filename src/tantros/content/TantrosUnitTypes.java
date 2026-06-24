@@ -1,28 +1,19 @@
-package tantros.content.world;
+package tantros.content;
 
 import arc.graphics.Color;
-import arc.graphics.g2d.Draw;
-import arc.math.Mathf;
-import arc.struct.ObjectSet;
 import arc.struct.Seq;
 
 import static mindustry.Vars.indexer;
 import static mindustry.ai.UnitCommand.*;
 
-import arc.util.Time;
 import mindustry.Vars;
 import mindustry.ai.ItemUnitStance;
-import mindustry.ai.UnitCommand;
 import mindustry.ai.UnitStance;
 import mindustry.ai.types.*;
 import mindustry.content.*;
 import mindustry.entities.abilities.*;
 import mindustry.entities.bullet.*;
 import mindustry.entities.effect.*;
-import mindustry.entities.part.DrawPart;
-import mindustry.entities.part.FlarePart;
-import mindustry.entities.part.RegionPart;
-import mindustry.entities.part.ShapePart;
 import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.type.*;
@@ -30,7 +21,6 @@ import mindustry.type.weapons.*;
 import mindustry.world.meta.*;
 import static tantros.ai.TantrosUnitCommands.*;
 
-import tantros.content.TantrosFx;
 import tantros.gen.*;
 import tantros.graphics.TantrosPal;
 import tantros.type.units.*;
@@ -98,29 +88,6 @@ public class TantrosUnitTypes {
                     ammoMultiplier = 2;
                 }};
                 shootSound = Sounds.shoot;
-            }});
-        }};
-
-        aquas = new UnitType("aquas"){{
-            constructor = MechUnit::create;
-            researchCostMultiplier = 0.5f;
-            speed = 0.5f;
-            hitSize = 8f;
-            health = 150;
-            weapons.add(new Weapon("tantros-aquas-weapon"){{
-                reload = 13f;
-                x = 3f;
-                y = 1f;
-                top = false;
-                ejectEffect = Fx.casing1;
-                bullet = new BasicBulletType(2.5f, 9){{
-                    width = 7f;
-                    height = 9f;
-                    lifetime = 60f;
-
-                    trailEffect = TantrosFx.parallaxBubble;
-                    trailChance = 0.05f;
-                }};
             }});
         }};
 

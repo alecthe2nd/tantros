@@ -2,13 +2,12 @@ package tantros.content.blocks;
 
 import mindustry.content.Blocks;
 import mindustry.content.Items;
-import mindustry.content.Liquids;
 import mindustry.game.SpawnGroup;
 import mindustry.game.Team;
 import mindustry.world.Block;
 import mindustry.world.blocks.environment.StaticWall;
 import tantros.content.world.TantrosItems;
-import tantros.content.world.TantrosUnitTypes;
+import tantros.content.TantrosUnitTypes;
 import tantros.world.blocks.environment.AmbientSpawn;
 import tantros.world.blocks.environment.TallSeaBush;
 import tantros.world.blocks.environment.TallSeaBushMindusty;

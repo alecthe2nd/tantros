@@ -9,7 +9,6 @@ import tantros.content.planets.TantrosSectorPresets;
 import tantros.content.recipes.TantrosRecipes;
 import tantros.content.world.TantrosItems;
 import tantros.content.world.TantrosLiquids;
-import tantros.content.world.TantrosUnitTypes;
 
 public class TantrosTechTree {
 

@@ -1,36 +1,17 @@
 package tantros.content.blocks;
 
-import arc.Core;
-import arc.func.Cons;
-import arc.func.Prov;
-import arc.math.Mathf;
-import arc.scene.style.TextureRegionDrawable;
-import arc.scene.ui.ButtonGroup;
-import arc.scene.ui.ImageButton;
-import arc.scene.ui.ScrollPane;
-import arc.scene.ui.layout.Table;
 import arc.struct.Seq;
-import arc.util.Nullable;
 import mindustry.content.*;
-import mindustry.ctype.UnlockableContent;
-import mindustry.gen.Icon;
-import mindustry.gen.Tex;
 import mindustry.type.*;
-import mindustry.ui.Styles;
 import mindustry.world.*;
-import mindustry.world.blocks.ItemSelection;
-import mindustry.world.blocks.payloads.Constructor;
-import mindustry.world.blocks.payloads.PayloadConveyor;
 import mindustry.world.blocks.units.UnitAssembler;
 import mindustry.world.blocks.units.UnitAssemblerModule;
 import mindustry.world.blocks.units.UnitFactory;
-import tantros.content.world.TantrosUnitTypes;
+import tantros.content.TantrosUnitTypes;
 import tantros.world.blocks.distribution.payload.SealedPayloadConveyor;
 import tantros.world.blocks.payload.FrameConstructor;
 import tantros.world.blocks.units.unitAssembly.BranchableUnitAssembler;
-import tantros.world.blocks.units.unitAssembly.BranchedUnitAssemblerModule;
 
-import static mindustry.Vars.*;
 import static mindustry.type.ItemStack.*;
 
 public class TantrosPayload {

@@ -6,7 +6,7 @@ import mindustry.world.Block;
 import mindustry.world.blocks.environment.OreBlock;
 import mindustry.world.blocks.power.PowerNode;
 import mindustry.world.meta.BuildVisibility;
-import tantros.content.world.TantrosUnitTypes;
+import tantros.content.TantrosUnitTypes;
 import tantros.type.effect.projector.range.RangeShape;
 import tantros.world.blocks.environment.DeepOreBlock;
 import tantros.world.blocks.storage.CustomCoreBlock;
