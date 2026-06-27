@@ -9,7 +9,7 @@ import static arc.Core.camera;
 public class DrawPsuedoParrallax {
 
     // Imaginary height the camera is above the ground.
-    // Effects how quickly the parallax effects the apparent langth
+    // Effects how quickly the parallax effects the apparent length
     public static final float CAMERA_HEIGHT = 500;
 
     public static float xHeight(float x, float height){

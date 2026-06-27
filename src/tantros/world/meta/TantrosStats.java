@@ -1,6 +1,7 @@
 package tantros.world.meta;
 
 import arc.Core;
+import arc.scene.Element;
 import arc.scene.ui.Image;
 import arc.scene.ui.Label;
 import arc.scene.ui.layout.Cell;
@@ -89,15 +90,16 @@ public class TantrosStats {
     public static StatValue recipes(Seq<Recipe> recipes){
         return table -> {
             Table stack = new Table();
+
             for(Recipe recipe : recipes){
                 if(recipe.unlockedNow()) {
-                    stack.add(displayNamedRecipe(recipe));
-                    stack.row();
+                    stack.add(displayNamedRecipe(recipe)).left().fill().pad(5).margin(5);
                 } else{
                     stack.image(Icon.lock).color(Pal.darkerGray).size(40);
                 }
+                stack.row();
             }
-            table.add(stack);
+            table.add(stack).width(600f);
         };
     }
 
@@ -109,14 +111,25 @@ public class TantrosStats {
 
     public static void addRecipeTable(Table t, Recipe recipe){
         t.table((t_in)-> {
-            t_in.add(Core.bundle.get("recipe.generic.cost.title")).left();
+            t_in.image().pad(5).padLeft(0).padRight(0).height(3).color(Pal.darkerGray).growX();
+            t_in.image().pad(5).padLeft(0).padRight(0).height(3).color(Pal.darkerGray).growX();
+            t_in.row();
+
+            t_in.add(Core.bundle.get("recipe.generic.cost.title")).left().fill().padLeft(5);
             displayResource(t_in, recipe.cost, recipe.craftTime);
-        }).left();
-        t.row();
-        t.table((t_out)-> {
-            t_out.add(Core.bundle.get("recipe.generic.output.title")).left();
-            displayResource(t_out, recipe.output, recipe.craftTime);
-        }).left();
+            t_in.row();
+
+            t_in.image().pad(5).padLeft(0).padRight(0).height(3).color(Pal.darkerGray).growX();
+            t_in.image().pad(5).padLeft(0).padRight(0).height(3).color(Pal.darkerGray).growX();
+            t_in.row();
+
+            t_in.add(Core.bundle.get("recipe.generic.output.title")).left().padLeft(5);
+            displayResource(t_in, recipe.output, recipe.craftTime);
+            t_in.row();
+
+            t_in.image().pad(5).padLeft(0).padRight(0).height(3).color(Pal.darkerGray).growX();
+            t_in.image().pad(5).padLeft(0).padRight(0).height(3).color(Pal.darkerGray).growX();
+        }).left().growX();
         if(recipe.overheat > 0) {
             t.row();
             recipe.displayOverheat(t);
@@ -141,7 +154,9 @@ public class TantrosStats {
     public static Table displayNamedRecipe(Recipe recipe){
         Table t = new Table(Styles.grayPanel);
         Label name = new Label(recipe.localizedName);
-        t.add(name);
+        t.table((ta)->{
+            ta.add(name);
+        });
         withTooltip(name, recipe, true);
         t.row();
         addRecipeTable(t, recipe);
@@ -149,36 +164,37 @@ public class TantrosStats {
     }
 
     public static void displayResource(Table t, Resource resource, float craftTime){
-
-        t.table((matter)-> {
-            int count = 0;
-            for(ItemStack stack : resource.items){
-                matter.add(displayItem(stack.item, stack.amount, craftTime, true)).padRight(5);
-                if(count % 3 == 2){
-                    matter.row();
+        t.table((all)->{
+            all.table((matter)-> {
+                int count = 0;
+                for(ItemStack stack : resource.items){
+                    matter.add(displayItem(stack.item, stack.amount, craftTime, true)).padRight(5).left();
+                    if(count % 2 == 1){
+                        matter.row();
+                    }
+                    count++;
                 }
-                count++;
-            }
-            matter.row();
-            count = 0;
-            for(LiquidStack stack: resource.liquids){
-                matter.add(StatValues.displayLiquid(stack.liquid, stack.amount * 60, true));
-                if(count % 3 == 2){
-                    matter.row();
+                matter.row();
+                count = 0;
+                for(LiquidStack stack: resource.liquids){
+                    matter.add(StatValues.displayLiquid(stack.liquid, stack.amount * 60, true)).padRight(5).left();
+                    if(count % 2 == 1){
+                        matter.row();
+                    }
+                    count++;
                 }
-                count++;
-            }
-        });
+            });
 
-        t.table((energy)-> {
-            if(resource.heat > 0) {
-                StatValues.number(resource.heat, StatUnit.heatUnits).display(energy);
-            }
-            energy.row();
-            if(resource.power > 0) {
-                StatValues.number(resource.power * 60, StatUnit.powerSecond).display(energy);
-            }
-        });
+            all.table((energy)-> {
+                if(resource.heat > 0) {
+                    StatValues.number(resource.heat, StatUnit.heatUnits).display(energy);
+                }
+                energy.row();
+                if(resource.power > 0) {
+                    StatValues.number(resource.power * 60, StatUnit.powerUnits).display(energy);
+                }
+            });
+        }).growX().padTop(5).padBottom(5);
     }
 
 

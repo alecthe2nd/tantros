@@ -155,7 +155,10 @@ public class ConsumeRecipesDynamic extends ExtendedConsume {
 
     @Override
     public void display(Stats stats){
-        stats.add(booster ? Stat.booster : TantrosStats.recipes, recipes(recipes.get()));
+        stats.add(booster ? Stat.booster : TantrosStats.recipes, (table)->{
+            table.row();
+            recipes(recipes.get()).display(table);
+        });
     }
 
     @Override

@@ -30,7 +30,7 @@ public class ClearPlanetsDialog extends BaseDialog {
             t.button(
                     "Test Button",
                     ()->{
-                        Log.info(universe.getLaunchResources());
+                        Log.info("I test nothing :D");
                     }
             );
         });
@@ -59,7 +59,7 @@ public class ClearPlanetsDialog extends BaseDialog {
                         }
                         //universe.clearLoadoutInfo();
 
-                        planet.techTree.each(TechTree.TechNode::reset);
+                        if(planet.techTree != null) planet.techTree.each(TechTree.TechNode::reset);
                         content.each(c -> {
                             if(c instanceof UnlockableContent u && u.isOnPlanet(planet)){
                                 u.clearUnlock();

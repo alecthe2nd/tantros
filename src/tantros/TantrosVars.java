@@ -42,16 +42,6 @@ public class TantrosVars {
 
     public static HealMap healMap;
 
-    public static ObjectMap<Team, RangeIndexer> sonarAreas = new ObjectMap<>();
-    public static Func<Team, RangeIndexer> fetchSonarIndexer = (team)->{
-        if(!sonarAreas.containsKey(team)){
-            sonarAreas.put(team, new RangeIndexer());
-        }
-        return sonarAreas.get(team);
-    };
-
-    public static final ObjectMap<String, TextureRegion> teamTex = new ObjectMap<>();
-
     public static void load(Tantros mod){
         thisMod = mod;
         modWrapper = Vars.mods.getMod(mod.getClass());

@@ -1,6 +1,8 @@
 package tantros;
 
+import arc.Core;
 import arc.Events;
+import arc.struct.ObjectMap;
 import arc.util.Log;
 import mindustry.Vars;
 import mindustry.game.EventType;
@@ -38,6 +40,15 @@ public class Tantros extends Mod{
         Events.on(EventType.ClientLoadEvent.class, e -> {
             TantrosFonts.loadFonts();
             Team.blue.emoji = Fonts.getUnicodeStr("archae");
+
+            ObjectMap<String, String> properties = Core.bundle.getProperties();
+            properties.each(
+                    (key, value)->{
+                        if(key.endsWith(".description")){
+
+                        }
+                    }
+            );
         });
     }
 
