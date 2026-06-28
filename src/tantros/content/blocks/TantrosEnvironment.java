@@ -5,6 +5,7 @@ import mindustry.content.Items;
 import mindustry.game.SpawnGroup;
 import mindustry.game.Team;
 import mindustry.world.Block;
+import mindustry.world.blocks.environment.Floor;
 import mindustry.world.blocks.environment.StaticWall;
 import tantros.content.world.TantrosItems;
 import tantros.content.TantrosUnitTypes;
@@ -19,11 +20,13 @@ public class TantrosEnvironment {
     public static Block
 
             testBoatSpawn,
+            bleachmat,
             redmatWall,
             bluematWall,
+            bleachmatWall,
             kelp,
             kelp_mindusty,
-            kelp_parrallax,
+            beryllicSand,
             oxideWall
     ;
 
@@ -36,12 +39,21 @@ public class TantrosEnvironment {
 
         Blocks.redmat.asFloor().itemDrop = TantrosItems.redcyst;
         Blocks.bluemat.asFloor().itemDrop = TantrosItems.bluecyst;
+        bleachmat = new Floor("bleachmat"){{
+            variants = 3;
+        }};
 
         redmatWall = new StaticWall("redmat-wall"){{
             Blocks.redmat.asFloor().wall = this;
+            variants = 3;
         }};
         bluematWall = new StaticWall("bluemat-wall"){{
             Blocks.bluemat.asFloor().wall = this;
+            variants = 3;
+        }};
+        bleachmatWall = new StaticWall("bleachmat-wall"){{
+            bleachmat.asFloor().wall = this;
+            variants = 3;
         }};
 
 
@@ -60,6 +72,10 @@ public class TantrosEnvironment {
             lobesMax = 6;
             levelsMin = 5;
             levelsMax = 5;
+        }};
+
+        beryllicSand = new Floor("beryllic-sand"){{
+            variants = 3;
         }};
 
         oxideWall = new StaticWall("oxide-wall"){{
