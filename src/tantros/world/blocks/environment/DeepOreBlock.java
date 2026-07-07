@@ -1,7 +1,11 @@
 package tantros.world.blocks.environment;
 
+import arc.graphics.Color;
 import arc.graphics.g2d.Draw;
+import arc.graphics.g2d.Fill;
+import arc.util.Tmp;
 import mindustry.Vars;
+import mindustry.editor.EditorTile;
 import mindustry.graphics.Layer;
 import mindustry.type.Item;
 import mindustry.type.Liquid;
@@ -55,12 +59,17 @@ public class DeepOreBlock extends OverlayFloor {
 
     @Override
     public void drawBase(Tile tile) {
-        //if(tile instanceof EditorTile){
-        boolean revealed = TantrosVars.sonarTracking.get(Vars.player.team(), tile.worldx(), tile.worldy());
-        if(revealed){
+        if(tile instanceof EditorTile) {
+            Draw.color(Color.darkGray);
+            Fill.rect(tile.getHitbox(Tmp.r1));
+            Draw.color();
             super.drawBase(tile);
+        }else{
+            boolean revealed = TantrosVars.sonarTracking.get(Vars.player.team(), tile.worldx(), tile.worldy());
+            if(revealed){
+                super.drawBase(tile);
+            }
         }
-        //}
     }
 
     public void drawDeep(Tile tile){

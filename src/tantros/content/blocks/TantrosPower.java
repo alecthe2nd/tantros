@@ -47,7 +47,6 @@ public class TantrosPower {
             health = 90;
             range = 8;
             buildCostMultiplier = 2.5f;
-
             consumePowerBuffered(1000f);
         }};
 
@@ -57,8 +56,9 @@ public class TantrosPower {
             customShadow = true;
 
             buildCostMultiplier = 3;
+            researchCostMultiplier = 0.5f;
 
-            drawer = new DrawMulti(
+                    drawer = new DrawMulti(
                     new DrawRegion("-shadow-rotator", 0.6f, true){{
                         x = -1;
                         y = -1;

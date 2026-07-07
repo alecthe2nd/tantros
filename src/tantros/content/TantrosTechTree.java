@@ -194,7 +194,7 @@ public class TantrosTechTree {
                             new Objectives.Research(TantrosProduction.siliconPressureSmelter)
                     ), () -> {
                         TechTree.nodeProduce(Items.silicon, () -> {
-                            TechTree.node(TantrosRecipes.surgeAnnealing, Seq.with(titanium), () -> {
+                            TechTree.node(TantrosRecipes.surgeAnnealing, Seq.with(titanium,never), () -> {
                                 TechTree.nodeProduce(Items.surgeAlloy, () -> {
                                 });
                             });

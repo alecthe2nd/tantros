@@ -5,6 +5,7 @@ import arc.graphics.g2d.Draw;
 import arc.math.Angles;
 import arc.math.Mathf;
 import arc.math.Rand;
+import arc.math.geom.Rect;
 import arc.math.geom.Vec2;
 import arc.util.Time;
 import mindustry.Vars;
@@ -12,6 +13,9 @@ import mindustry.graphics.Layer;
 import mindustry.world.Tile;
 import mindustry.world.blocks.environment.SeaBush;
 import tantros.graphics.DrawPsuedoParrallax;
+
+import static mindustry.Vars.state;
+import static mindustry.Vars.world;
 
 public class TallSeaBush extends SeaBush {
 
@@ -45,7 +49,8 @@ public class TallSeaBush extends SeaBush {
         float stemX = DrawPsuedoParrallax.xHeight(tile.getX(), level * Vars.tilesize);
         float stemY = DrawPsuedoParrallax.yHeight(tile.getY(),level * Vars.tilesize);
 
-
+        Tile apparentTile = Vars.world.tileWorld(stemX,stemY);
+        if(state.rules.limitMapArea && !Rect.contains(state.rules.limitX, state.rules.limitY, state.rules.limitWidth - 1, state.rules.limitHeight - 1, apparentTile.x, apparentTile.y)) return;
 
         int lobes = rand.random(lobesMin, lobesMax);
         for(int i = 0; i < lobes; i++){
@@ -75,9 +80,9 @@ public class TallSeaBush extends SeaBush {
 
         for(int i = 0; i < levels; i++){
             if(i >= tallestLevels){
-                Draw.z(Layer.flyingUnit + 1f);
+                Draw.z(Layer.flyingUnit + 0.5f);
             } else if(i >= aboveBridges) {
-                Draw.z(Layer.power + 0.1f);
+                Draw.z(Layer.flyingUnitLow + 0.5f);
             } else {
                 Draw.z(layer);
             }
