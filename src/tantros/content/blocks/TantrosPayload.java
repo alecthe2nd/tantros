@@ -26,49 +26,8 @@ public class TantrosPayload {
             smallSubmarineAssembler,
             sealedPayloadConveyor
             ;
-
-    public static BranchableUnitAssembler.BranchedAssemblerUnitPlan
-            tantrosUnitTree,
-            flakPlan,
-            roachPlan;
-
+    
     public static void load(){
-
-        tantrosUnitTree = new BranchableUnitAssembler.BranchedAssemblerUnitPlan(TantrosUnitTypes.delegate,60f * 10f, PayloadStack.list()){{
-            itemReq = with(Items.lead, 15, Items.silicon, 20);
-        }}.addChild(
-                flakPlan =  new BranchableUnitAssembler.BranchedAssemblerUnitPlan(TantrosUnitTypes.flak,60f * 20f, PayloadStack.list(TantrosUnitTypes.delegate, 1)){{
-                    itemReq = with(Items.metaglass, 30);
-                }}
-        ).addChild(
-                roachPlan = new BranchableUnitAssembler.BranchedAssemblerUnitPlan(TantrosUnitTypes.roach,60f * 20f, PayloadStack.list(TantrosUnitTypes.delegate, 1)){{
-                    itemReq = with(Items.coal, 20, Items.graphite, 10);
-                    liquidReq = LiquidStack.with(Liquids.ozone, 3f/60f);
-                }}
-        );
-
-        /*smallMechAssemblyModule = new BranchedUnitAssemblerModule("small-mech-assembly-module"){{
-            requirements(Category.units, with(Items.copper, 20, Items.metaglass, 35, Items.silicon, 20));
-            tier = 1;
-            plan = flakPlan;
-        }};
-
-        smallExplosiveAssemblyModule = new BranchedUnitAssemblerModule("small-explosive-assembly-module"){{
-            requirements(Category.units, with(Items.lead, 20, Items.graphite, 35, Items.silicon, 20));
-            tier = 1;
-            plan = roachPlan;
-        }};
-
-        smallUnitAssembler = new BranchableUnitAssembler("small-unit-assembler"){{
-            requirements(Category.units, with(Items.copper, 50, Items.lead, 50));
-            //regionSuffix = "-dark";
-            size = 3;
-            planTree = tantrosUnitTree;
-            areaSize = 3;
-            researchCostMultiplier = 0.4f;
-
-            consumePower(60f/60f);
-        }};*/
 
         delegateFabricator = new UnitFactory("delegate-fabricator"){{
             requirements(Category.units, with(Items.silicon, 55, Items.lead, 45, Items.oxide, 50));

@@ -201,7 +201,7 @@ public class TantrosSource {
         }};
 
         deepBoreDrill = new ProductionBlock("deep-bore-drill"){{
-            requirements(Category.production, with(Items.copper, 12, Items.metaglass, 30, Items.graphite, 25, Items.silicon, 10));
+            requirements(Category.production, with(Items.copper, 12, Items.metaglass, 30, Items.silicon, 10));
             productionTime = 60;
             size = 3;
             squareSprite = false;
@@ -319,7 +319,7 @@ public class TantrosSource {
         }};
 
         seawaterIntake = new GenericCrafter("seawater-intake"){{
-            requirements(Category.liquid, with(Items.metaglass, 15, Items.graphite, 5, Items.copper, 10));
+            requirements(Category.liquid, with(Items.metaglass, 15, Items.copper, 10));
             size = 1;
             envEnabled |= Env.underwater;
 

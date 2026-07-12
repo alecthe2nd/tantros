@@ -100,7 +100,7 @@ public class TantrosDistribution {
         }};
 
         copperDuctUnloader = new DirectionalUnloader("copper-duct-unloader") {{
-            requirements(Category.distribution, with(Items.copper, 30, Items.oxide, 20, Items.graphite, 10));
+            requirements(Category.distribution, with(Items.copper, 30, Items.oxide, 20));
             health = 120;
             speed = 10f;
             solid = false;

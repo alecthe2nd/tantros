@@ -67,7 +67,7 @@ public class TantrosEffect {
         }};
 
         pneumaticPump = new FacingPressureBooster("pneumatic-pump"){{
-            requirements(Category.effect, with(Items.copper, 5, Items.metaglass, 10, Items.graphite, 7));
+            requirements(Category.effect, with(Items.copper, 5, Items.metaglass, 10, Items.oxide, 7));
             boost = 1.5f;
             pressure_range = 20;
             squareSprite = false;
