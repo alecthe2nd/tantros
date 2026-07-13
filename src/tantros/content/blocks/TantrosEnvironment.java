@@ -112,6 +112,7 @@ public class TantrosEnvironment {
 
         beryllicSand = new Floor("beryllic-sand"){{
             variants = 3;
+            itemDrop = Items.sand;
         }};
 
         oxideWall = new StaticWall("oxide-wall"){{

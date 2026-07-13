@@ -12,7 +12,8 @@ public class TantrosSectorPresets {
     public static SectorPreset embark,
     shallows,
     polarEdge,
-    patrolOutpost;
+    patrolOutpost,
+    deepChannels;
 
     public static void load(){
         embark = new SectorPreset("embark", tantros, 10){{
@@ -36,6 +37,11 @@ public class TantrosSectorPresets {
         patrolOutpost = new SectorPreset("patrol-outpost", tantros, 49){{
             difficulty = 5;
             overrideLaunchDefaults = true;
+        }};
+        deepChannels = new SectorPreset("deep-channels", tantros, 3){{
+            difficulty = 3;
+            overrideLaunchDefaults = true;
+            captureWave = 20;
         }};
 
         Vars.maps.all().each((m)->m.mod == TantrosVars.modWrapper && Vars.content.planet("tantros").sectors.contains(

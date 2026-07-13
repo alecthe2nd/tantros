@@ -1,8 +1,6 @@
 package tantros;
 
-import arc.Core;
 import arc.Events;
-import arc.struct.ObjectMap;
 import arc.util.Log;
 import mindustry.Vars;
 import mindustry.game.EventType;
@@ -11,6 +9,7 @@ import mindustry.gen.Tex;
 import mindustry.mod.*;
 import mindustry.ui.Fonts;
 import mindustry.ui.dialogs.BaseDialog;
+import mindustry.ui.dialogs.PlanetDialog;
 import mindustry.ui.dialogs.SettingsMenuDialog;
 import tantros.ai.TantrosUnitCommands;
 import tantros.content.TantrosUnitTypes;
@@ -40,15 +39,6 @@ public class Tantros extends Mod{
         Events.on(EventType.ClientLoadEvent.class, e -> {
             TantrosFonts.loadFonts();
             Team.blue.emoji = Fonts.getUnicodeStr("archae");
-
-            ObjectMap<String, String> properties = Core.bundle.getProperties();
-            properties.each(
-                    (key, value)->{
-                        if(key.endsWith(".description")){
-
-                        }
-                    }
-            );
         });
     }
 
@@ -75,7 +65,16 @@ public class Tantros extends Mod{
 
         ui.settings.graphics.checkPref("fast-parallax", Vars.mobile);
         ui.settings.graphics.checkPref("drill-assist-indicators", false);
-        ui.settings.graphics.checkPref("debug-sonar-renderer", false);
+        ui.settings.dev.checkPref("debug-sonar-renderer", false);
+        ui.settings.dev.checkPref("planet-dialog.debug-select", PlanetDialog.debugSelect,(b)->{
+            PlanetDialog.debugSelect = b;
+        });
+        ui.settings.dev.checkPref("planet-dialog.debug-sector-attack-edit", PlanetDialog.debugSectorAttackEdit,(b)->{
+            PlanetDialog.debugSectorAttackEdit = b;
+        });
+        ui.settings.dev.checkPref("planet-dialog.show-sector-numbers", PlanetDialog.debugShowNumbers,(b)->{
+            PlanetDialog.debugShowNumbers = b;
+        });
 
         TantrosShaders.init();
 

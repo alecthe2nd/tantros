@@ -383,6 +383,8 @@ public class TantrosProduction {
             p.config.pressureCapacity = 30;
             produce(p);
             effects.add(new PressureExplosionOnDestruction(10));
+
+            schematicPriority = -5;
         }};
 
         electrolysisChamber = new GenericCrafter("electrolysis-chamber"){{

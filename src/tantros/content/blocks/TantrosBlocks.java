@@ -82,6 +82,8 @@ public class TantrosBlocks {
             buildCostMultiplier = 2f;
 
             unitCapModifier = 8;
+
+            incinerateNonBuildable = true;
         }};
 
         //endregion

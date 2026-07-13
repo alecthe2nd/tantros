@@ -325,7 +325,10 @@ public class TantrosSource {
 
             hasLiquids = true;
 
-            drawer = new DrawMulti(new DrawRegion("-bottom"), new DrawLiquidTile(Liquids.water, 4.1f), new DrawDefault(),
+            drawer = new DrawMulti(
+                    new DrawRegion("-bottom"),
+                    new DrawLiquidTile(Liquids.water, 4.1f),
+                    new DrawDefault(),
                     new DrawParticles(){{
                         color = Liquids.water.color;
                         alpha = 0.4f;
