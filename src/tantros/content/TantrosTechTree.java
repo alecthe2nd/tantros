@@ -38,7 +38,7 @@ public class TantrosTechTree {
                 TechTree.node(TantrosSectorPresets.shallows, Seq.with(new Objectives.SectorComplete(TantrosSectorPresets.embark)), () -> {
                     TechTree.node(TantrosSectorPresets.polarEdge, Seq.with(new Objectives.SectorComplete(TantrosSectorPresets.shallows)), () -> {
                         TechTree.node(TantrosSectorPresets.patrolOutpost, Seq.with(new Objectives.SectorComplete(TantrosSectorPresets.polarEdge)), () -> {
-                            TechTree.node(TantrosSectorPresets.deepChannels, Seq.with(new Objectives.SectorComplete(TantrosSectorPresets.deepChannels)), () -> {
+                            TechTree.node(TantrosSectorPresets.deepChannels, Seq.with(new Objectives.SectorComplete(TantrosSectorPresets.patrolOutpost)), () -> {
 
                             });
                         });
