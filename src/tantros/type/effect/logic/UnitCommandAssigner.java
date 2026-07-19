@@ -42,8 +42,8 @@ public class UnitCommandAssigner implements BlockEffect {
     public void apply(BlockExtended block) {
         updateTimer = block.timers++;
 
-        block.stateSources.add(UnitLinks::new);
-        block.stateSources.add(UnitCommandQueueState::new);
+        block.postStateRequest(UnitLinks::new);
+        block.postStateRequest(UnitCommandQueueState::new);
         block.configAppliers.add(new ConfigApplier<>(UnitLinks.class, AddUnitConfig.class));
         block.configAppliers.add(new ConfigApplier<>(UnitLinks.class, ClearUnitsConfig.class));
         block.configAppliers.add(new ConfigApplier<>(UnitCommandQueueState.class, Integer.class));

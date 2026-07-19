@@ -8,6 +8,7 @@ import arc.util.Log;
 import mindustry.gen.Building;
 import mindustry.graphics.Layer;
 import mindustry.type.Weapon;
+import tantros.world.blocks.BlockExtended;
 
 public class DrawWeapon extends DrawBlockExtended{
 
@@ -18,7 +19,7 @@ public class DrawWeapon extends DrawBlockExtended{
     }
 
     @Override
-    public void draw(Building build) {
+    public void draw(BlockExtended.BuildExtended build) {
         float z = Draw.z();
 
         if(z >= Layer.blockOver){

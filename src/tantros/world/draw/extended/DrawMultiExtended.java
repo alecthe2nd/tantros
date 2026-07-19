@@ -31,7 +31,7 @@ public class DrawMultiExtended extends DrawBlockExtended{
     }
 
     @Override
-    public void draw(Building build){
+    public void draw(BlockExtended.BuildExtended build){
         for(var draw : drawers){
             draw.draw(build);
         }

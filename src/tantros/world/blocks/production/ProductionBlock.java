@@ -16,17 +16,12 @@ import mindustry.type.ItemStack;
 import mindustry.type.LiquidStack;
 import mindustry.world.Tile;
 import mindustry.world.blocks.heat.HeatBlock;
-import mindustry.world.blocks.production.GenericCrafter;
-import mindustry.world.consumers.ConsumeItems;
 import mindustry.world.meta.BlockFlag;
 import mindustry.world.meta.Stat;
 import mindustry.world.meta.StatUnit;
-import mindustry.world.modules.ItemModule;
 import tantros.type.buildingState.BuildingState;
 import tantros.type.production.Produce;
 import tantros.world.blocks.BlockExtended;
-
-import java.util.Arrays;
 
 public class ProductionBlock extends BlockExtended {
 
@@ -36,6 +31,10 @@ public class ProductionBlock extends BlockExtended {
 
     public float warmupSpeed = 0.019f;
 
+    /** Whether warmup is applied to total progress i.e. to visuals.*/
+    public boolean warmupEnabled = false;
+
+    /** Whether warmup is applied to production times as a limiter.*/
     public boolean warmupEffectsProduction = false;
 
     public Seq<Produce> producers = new Seq<>();
@@ -79,15 +78,6 @@ public class ProductionBlock extends BlockExtended {
             producer.display(stats, this);
         }
 
-        /*if(liquidBoostIntensity != 1 && findConsumer(f -> f instanceof ConsumeLiquidBase && f.booster) instanceof ConsumeLiquidBase consBase){
-            stats.remove(Stat.booster);
-            stats.add(Stat.booster,
-                    StatValues.speedBoosters("{0}" + StatUnit.timesSpeed.localized(),
-                            consBase.amount,
-                            liquidBoostIntensity * liquidBoostIntensity, false, consBase::consumes)
-            );
-        }*/
-
         stats.timePeriod = productionTime;
         if((hasItems && itemCapacity > 0)){
             stats.add(Stat.productionTime, productionTime / 60f, StatUnit.seconds);
@@ -121,7 +111,7 @@ public class ProductionBlock extends BlockExtended {
 
     @Override
     public boolean canPlaceOn(Tile tile, Team team, int rotation){
-        boolean allowed = super.canPlaceOn(tile, team, rotation);;
+        boolean allowed = super.canPlaceOn(tile, team, rotation);
         for(Produce producer : producers){
             allowed &= producer.placementAllowed(this, tile, team, rotation);
         }
@@ -132,6 +122,9 @@ public class ProductionBlock extends BlockExtended {
 
         public float progress;
         public float totalProgress = 0;
+
+        public float lastProgressLimit = 1f;
+
         public float warmup;
         public float currentProductionTime = productionTime;
         public float progressThisTick = 0;
@@ -158,7 +151,7 @@ public class ProductionBlock extends BlockExtended {
         public void onProximityUpdate() {
             super.onProximityUpdate();
 
-            for(BuildingState state : this.states.values()){
+            for(BuildingState state : this.statesAsSerialized.values()){
                 state.onProximity((ProductionBlock) this.block, this);
             }
         }
@@ -175,11 +168,11 @@ public class ProductionBlock extends BlockExtended {
         }
 
         public void updateProductionTime(){
-            float mult = 1f;
+            float multiplier = 1f;
             for(Produce producer: producers){
-                mult = mult * producer.productionTimeMultiplier(this);
+                multiplier = multiplier * producer.productionTimeMultiplier(this);
             }
-            currentProductionTime = productionTime * mult;
+            currentProductionTime = productionTime * multiplier;
         }
 
         @Override
@@ -188,19 +181,16 @@ public class ProductionBlock extends BlockExtended {
             updateProductionTime();
 
             progressThisTick = getProgressIncrease(currentProductionTime);
+
+
             if(efficiency > 0){
 
                 warmup = Mathf.approachDelta(warmup, 1f, warmupSpeed);
-
                 progress += progressThisTick;
 
                 for(Produce producer: producers){
                     producer.update(this);
                 }
-
-                //if(wasVisible && Mathf.chanceDelta(updateEffectChance)){
-                //    updateEffect.at(x + Mathf.range(size * updateEffectSpread), y + Mathf.range(size * updateEffectSpread));
-                //}
             }else{
                 warmup = Mathf.approachDelta(warmup, 0f, warmupSpeed);
             }
@@ -209,8 +199,7 @@ public class ProductionBlock extends BlockExtended {
                 producer.updateAlways(this);
             }
 
-            //TODO may look bad, revert to edelta() if so
-            totalProgress += progressThisTick;
+            totalProgress += (warmupEnabled)? (warmup * delta()) : progressThisTick;
 
             if(progress >= 1f){
                 craft();
@@ -230,9 +219,9 @@ public class ProductionBlock extends BlockExtended {
 
         @Override
         public float getProgressIncrease(float baseTime){
-
+            lastProgressLimit = getProgressIncreaseLimit();
             //when dumping excess take the maximum value instead of the minimum.
-            return super.getProgressIncrease(baseTime) * getProgressIncreaseLimit();
+            return super.getProgressIncrease(baseTime) * lastProgressLimit;
 
         }
 

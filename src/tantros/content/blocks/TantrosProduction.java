@@ -216,9 +216,8 @@ public class TantrosProduction {
             heatProductionConfig.heatOutput = 5f;
             heatProductionConfig.sideOutputs[0] = 1f;
 
-            putBlockConfig(attributeConfig);
             putBlockConfig(heatProductionConfig);
-            consume(new ConsumeAttributeTile());
+            consume(new ConsumeAttributeTile(attributeConfig));
 
             consume(new ConsumeBoostWrapper(new ConsumeLiquid(Liquids.slag, 10f/60f), 2.5f));
 
@@ -306,47 +305,6 @@ public class TantrosProduction {
                 ambientSound = Sounds.loopExtract;
                 ambientSoundVolume = 0.08f;
                 emitLight = true;
-            }
-        };
-
-        copperBoiler = new Boiler("copper-boiler"){
-            {
-                requirements(Category.crafting, with(Items.copper, 30, Items.oxide, 20));
-                craftEffect = Fx.none;
-
-                size = 2;
-                drawer = new DrawMulti(
-                        new DrawRegion("-bottom"),
-                        new DrawLiquidTile(Liquids.water, 2f),
-                        new DrawBubbles(),
-                        new DrawParticles(){{
-                            color = TantrosLiquids.steam.color;
-                            reverse = true;
-                            particleSize = 2f;
-                            particles = 20;
-                            particleRad = 8f;
-                            particleLife = 60f;
-                        }},
-                        new DrawDefault(),
-                        //new DrawWarmupRegion(),
-                        new DrawHeatInput()
-                );
-                squareSprite = false;
-                stressExplosiveness = 10;
-
-                craftTime = 60f;
-
-                hasLiquids = true;
-                liquidCapacity = 40;
-                consumeLiquids(LiquidStack.with(Liquids.water, 5f/60f));
-
-                heatRequirement = 5f;
-
-                overheatScale = 1.0f;
-
-                maxEfficiency = 6f;
-
-                outputLiquids = LiquidStack.with(TantrosLiquids.steam, 10f/60f);
             }
         };
 

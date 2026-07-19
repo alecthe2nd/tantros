@@ -1,6 +1,5 @@
 package tantros.type.production;
 
-import mindustry.Vars;
 import mindustry.world.meta.Stat;
 import mindustry.world.meta.StatUnit;
 import mindustry.world.meta.Stats;
@@ -31,7 +30,7 @@ public class ProduceHeat extends Produce{
     @Override
     public void apply(ProductionBlock block) {
         block.putBlockConfig(productionConfig);
-        block.stateSources.add(OutputHeatState::new);
+        block.postStateRequest(OutputHeatState::new);
     }
 
     @Override

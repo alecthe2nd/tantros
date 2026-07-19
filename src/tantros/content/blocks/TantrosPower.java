@@ -120,16 +120,15 @@ public class TantrosPower {
         steamEngine = new ProductionBlock("steam-engine"){{
             requirements(Category.power, with(Items.copper, 40, Items.oxide, 40, Items.lead, 60));
             FlywheelConfig f = new FlywheelConfig();
-            putBlockConfig(f);
             f.maxSpeed = 3;
-            produce(new ProducePowerFlywheel(100f/60f));
+            produce(new ProducePowerFlywheel(100f/60f, f));
             consumeLiquids(LiquidStack.with(TantrosLiquids.steam, 10f / 60f));
             size = 3;
             drawer = new DrawMultiExtended(
                     new DrawRegion("-bottom"),
                     new DrawSpin("-flywheel", 3f,(b)-> {
                         FlywheelProgressState state;
-                        if(b instanceof BuildExtended ex && (state = ex.getState(FlywheelProgressState.class)) != null){
+                        if(b instanceof BuildExtended ex && (state = ex.getState(FlywheelProgressState.class, f.flywheelStateName)) != null){
                             return state.progress;
                         }else{
                             return b.totalProgress();
@@ -149,6 +148,7 @@ public class TantrosPower {
 
             ambientSound = Sounds.loopSmelter;
             ambientSoundVolume = 0.06f;
+            warmupEnabled = true;
             warmupEffectsProduction = true;
             warmupSpeed = 0.0005f;
 

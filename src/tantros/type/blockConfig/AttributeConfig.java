@@ -15,6 +15,8 @@ public class AttributeConfig implements BlockConfig{
     public int size = 1;
     public boolean floating = false;
 
+    public String attributeStateName;
+
     @Override
     public void apply(BlockExtended block) {
         this.size = block.size;

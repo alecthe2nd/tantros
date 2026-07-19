@@ -1,21 +1,13 @@
 package tantros.type.production;
 
-import arc.scene.ui.layout.Table;
-import arc.struct.Seq;
-import mindustry.Vars;
 import mindustry.game.Team;
-import mindustry.type.LiquidStack;
 import mindustry.world.Tile;
-import mindustry.world.blocks.production.Pump;
 import mindustry.world.meta.Stat;
 import mindustry.world.meta.StatUnit;
 import mindustry.world.meta.Stats;
-import tantros.TantrosVars;
 import tantros.type.Resource;
 import tantros.type.blockConfig.PumpConfig;
 import tantros.type.buildingState.PumpState;
-import tantros.world.blocks.effect.GroundPenetratingRadar;
-import tantros.world.blocks.environment.DeepOreBlock;
 import tantros.world.blocks.production.ProductionBlock;
 
 public class ProducePumpedLiquid extends Produce{
@@ -34,7 +26,7 @@ public class ProducePumpedLiquid extends Produce{
     public void apply(ProductionBlock block) {
         pumpConfig = new PumpConfig();
         block.putBlockConfig(pumpConfig);
-        block.stateSources.add(PumpState::new);
+        block.postStateRequest(PumpState::new);
         block.hasLiquids = true;
         block.outputsLiquid = true;
     }

@@ -10,6 +10,7 @@ import mindustry.entities.units.BuildPlan;
 import mindustry.gen.Building;
 import mindustry.graphics.Drawf;
 import mindustry.world.Block;
+import tantros.world.blocks.BlockExtended;
 
 public class DrawRegionFlipped extends DrawBlockExtended{
     public TextureRegion region;
@@ -43,7 +44,7 @@ public class DrawRegionFlipped extends DrawBlockExtended{
     }
 
     @Override
-    public void draw(Building build){
+    public void draw(BlockExtended.BuildExtended build){
         float z = Draw.z();
         if(layer > 0) Draw.z(layer);
         if(color != null) Draw.color(color);

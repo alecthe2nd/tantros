@@ -9,7 +9,6 @@ import arc.math.Angles;
 import arc.math.Mathf;
 import arc.math.geom.Geometry;
 import arc.math.geom.Point2;
-import arc.util.Time;
 import arc.util.Tmp;
 import mindustry.gen.Building;
 import mindustry.graphics.Layer;
@@ -18,7 +17,7 @@ import mindustry.world.Block;
 import mindustry.world.Tile;
 import mindustry.world.draw.DrawBlock;
 import tantros.type.buildingState.CooldownState;
-import tantros.type.buildingState.LaserState;
+import tantros.type.buildingState.drills.LaserState;
 import tantros.world.blocks.production.ProductionBlock;
 
 import static mindustry.Vars.tilesize;

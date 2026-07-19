@@ -34,19 +34,18 @@ public class DrawHeatOutputExtended extends DrawBlockExtended {
     }
 
     @Override
-    public void draw(Building build){
+    public void draw(BlockExtended.BuildExtended build){
         float z = Draw.z();
 
-        if(build instanceof BlockExtended.BuildExtended extended){
-            OutputHeatState state = extended.getState(OutputHeatState.class);
-            if(state == null) return;
-            for(int i = 0; i < 4; i++){
-                if(state.productionConfig.sideOutputs[i] > 0) {
-                    drawOut(build.x, build.y, (build.rotation + rotOffset + i) * 90, Mathf.mod((build.rotation + rotOffset + i), 4) > 1, (state.productionConfig.heatOutput > 0) ? state.sideHeat[i] / state.productionConfig.heatOutput : 0);
-                }
+        OutputHeatState state = build.getState(OutputHeatState.class);
+        if(state == null) return;
+        for(int i = 0; i < 4; i++){
+            if(state.productionConfig.sideOutputs[i] > 0) {
+                drawOut(build.x, build.y, (build.rotation + rotOffset + i) * 90, Mathf.mod((build.rotation + rotOffset + i), 4) > 1, (state.productionConfig.heatOutput > 0) ? state.sideHeat[i] / state.productionConfig.heatOutput : 0);
             }
-            drawGlow(build.x, build.y, (build.rotation + rotOffset) * 90, (state.productionConfig.heatOutput > 0)? state.heat / state.productionConfig.heatOutput: 0);
         }
+        drawGlow(build.x, build.y, (build.rotation + rotOffset) * 90, (state.productionConfig.heatOutput > 0)? state.heat / state.productionConfig.heatOutput: 0);
+
 
         if(build instanceof HeatBlock heater){
             drawOut(build.x, build.y, (build.rotation + rotOffset) * 90, Mathf.mod((build.rotation + rotOffset), 4) > 1, heater.heatFrac());

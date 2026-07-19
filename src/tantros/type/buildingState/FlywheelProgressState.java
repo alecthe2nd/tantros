@@ -14,9 +14,17 @@ public class FlywheelProgressState implements BuildingState {
     public float progress = 0f;
     public float flywheelSpeed = 0f;
 
+    public FlywheelProgressState(){
+
+    }
+
+    public FlywheelProgressState(FlywheelConfig config){
+        this.config = config;
+    }
+
     @Override
     public void initState(BlockExtended ownerType, BlockExtended.BuildExtended owner) {
-        config = ownerType.getBlockConfig(FlywheelConfig.class);
+        if(config == null) config = ownerType.getBlockConfig(FlywheelConfig.class);
     }
 
     @Override

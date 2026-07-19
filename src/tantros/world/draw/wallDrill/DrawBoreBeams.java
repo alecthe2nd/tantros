@@ -19,7 +19,7 @@ import mindustry.type.Item;
 import mindustry.world.Block;
 import mindustry.world.Tile;
 import mindustry.world.draw.DrawBlock;
-import tantros.type.buildingState.LaserState;
+import tantros.type.buildingState.drills.LaserState;
 import tantros.world.blocks.production.ProductionBlock;
 
 import static mindustry.Vars.tilesize;

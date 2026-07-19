@@ -1,15 +1,8 @@
 package tantros.type.production;
 
 import arc.math.Mathf;
-import arc.math.Rand;
-import mindustry.content.Bullets;
-import mindustry.content.Liquids;
 import mindustry.entities.bullet.BulletType;
-import mindustry.world.meta.Stat;
-import mindustry.world.meta.StatValue;
-import mindustry.world.meta.StatValues;
 import mindustry.world.meta.Stats;
-import tantros.type.Resource;
 import tantros.world.blocks.production.ProductionBlock;
 
 public class ProduceBulletSpray extends Produce{

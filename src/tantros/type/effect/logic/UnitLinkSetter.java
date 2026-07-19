@@ -65,7 +65,7 @@ public class UnitLinkSetter<E extends BuildingState & Links> implements BlockEff
     public void apply(BlockExtended block) {
         updateTimer = block.timers++;
 
-        block.stateSources.add(()-> newInstance.get());
+        block.postStateRequest(()-> newInstance.get());
         block.putBlockConfig(range);
         block.putBlockConfig(new ConfigApplier<>(linksType, Integer.class));
         block.inputs.add(new LinkInput<>(OneLink.class));

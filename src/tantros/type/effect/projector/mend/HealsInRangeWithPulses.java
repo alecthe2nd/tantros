@@ -42,16 +42,8 @@ public class HealsInRangeWithPulses extends StatDisplayEffect implements BlockEf
         block.putBlockConfig(rangeConfig);
         block.putBlockConfig(progressConfig);
         block.putBlockConfig(mendConfig);
-    }
-
-    @Override
-    public void initBuildStates(BlockExtended.BuildExtended build) {
-        RangeState rangeState = new RangeState();
-        rangeState.config = this.rangeConfig;
-        rangeName = build.putState(rangeState, "PulseRange");
-        ProgressTimerState progressState = new ProgressTimerState();
-        progressState.config = this.progressConfig;
-        progressName = build.putState(progressState, "PulseProgress");
+        block.postStateRequest(()-> new RangeState(this.rangeConfig), "PulseRange");
+        block.postStateRequest(()-> new ProgressTimerState(this.progressConfig), "PulseProgress");
     }
 
     @Override
@@ -76,7 +68,7 @@ public class HealsInRangeWithPulses extends StatDisplayEffect implements BlockEf
                     )
             );
         }
-        displayStat(t, Stat.range, rangeConfig.maxScale, StatUnit.blocks);
+        displayStat(t, Stat.range, rangeConfig.maxScale * tilesize, StatUnit.blocks);
     }
 
     @Override

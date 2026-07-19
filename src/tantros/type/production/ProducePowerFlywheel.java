@@ -10,28 +10,25 @@ public class ProducePowerFlywheel extends ProducePower{
 
     public FlywheelConfig config;
 
-    public String stateName = "FlywheelProgress0";
-
     public ProducePowerFlywheel(float maxPower) {
+        this(maxPower, new FlywheelConfig());
+    }
+
+    public ProducePowerFlywheel(float maxPower, FlywheelConfig config){
         super(maxPower);
+        this.config = config;
     }
 
     @Override
     public void apply(ProductionBlock block) {
         super.apply(block);
-        if(!block.namedSources.containsKey(stateName) || block.namedSources.get(stateName) instanceof FlywheelProgressState) {
-            block.namedSources.put(stateName, FlywheelProgressState::new);
-        }
-        if(block.blockConfigs.containsKey(FlywheelConfig.class)) {
-            config = block.getBlockConfig(FlywheelConfig.class);
-        } else {
-            block.putBlockConfig(config = new FlywheelConfig());
-        }
+        block.putBlockConfig(config);
+        config.flywheelStateName = block.postStateRequest(()->new FlywheelProgressState(config), "FlywheelPowerProgress");
     }
 
     @Override
     public void updateAlways(ProductionBlock.ProductionBuild build) {
-        FlywheelProgressState state = build.getState(FlywheelProgressState.class, stateName);
+        FlywheelProgressState state = build.getState(FlywheelProgressState.class, config.flywheelStateName);
         super.updateAlways(build);
         build.powerProductionEfficiency = state.flywheelSpeed;
     }

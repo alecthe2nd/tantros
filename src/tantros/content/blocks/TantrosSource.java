@@ -20,10 +20,13 @@ import mindustry.world.blocks.production.Pump;
 import mindustry.world.draw.*;
 import mindustry.world.meta.*;
 import tantros.content.recipes.TantrosRecipes;
+import tantros.content.world.TantrosItems;
 import tantros.content.world.TantrosLiquids;
 import tantros.type.Resource;
 import tantros.type.blockConfig.AttributeConfig;
+import tantros.type.buildConfig.DrillConfig;
 import tantros.type.effect.AttributePlacementRestriction;
+import tantros.type.effect.DrillsFloorOres;
 import tantros.type.effect.IsBuilding;
 import tantros.type.production.*;
 import tantros.world.blocks.BlockExtended;
@@ -52,9 +55,9 @@ public class TantrosSource {
             testProdBlock,
             testBlock,
             testExtended,
-            mechanicalBore,
             copperBore,
             siltSifter,
+            vortexSifter,
             deepBoreDrill,
             deepLaserDrill,
             boreholeDrill,
@@ -74,18 +77,27 @@ public class TantrosSource {
             researchCost = with(Items.copper, 10);
             productionTime = 100;
             drawArrow = true;
+            warmupEnabled = true;
             warmupEffectsProduction = true;
 
             drawer = new DrawMultiExtended(
-                    new DrawDefault()
+                    //new DrawDefault(),
+                    new DrawParticles(){{
+                        color = Liquids.water.color;
+                        particleSize = 4f;
+                        particles = 20;
+                        particleRad = 10f;
+                        particleLife = 120f;
+                        rotateScl = 1f/20f;
+                    }}
             );
 
-            AttributeConfig attributeConfig = new AttributeConfig();
-            attributeConfig.attribute = Attribute.steam;
-            attributeConfig.minEfficiency = 4 - 0.0001f;
-            putBlockConfig(attributeConfig);
-            consume(new ConsumeAttributeTile());
-            effects.add(new AttributePlacementRestriction());
+            //AttributeConfig attributeConfig = new AttributeConfig();
+            //attributeConfig.attribute = Attribute.steam;
+            //attributeConfig.minEfficiency = 4 - 0.0001f;
+            //putBlockConfig(attributeConfig);
+            //consume(new ConsumeAttributeTile());
+            //effects.add(new AttributePlacementRestriction());
             produce(new ProduceLiquid(new LiquidStack(Liquids.water, 5f/60f)));
         }};
 
@@ -104,25 +116,8 @@ public class TantrosSource {
 
             size = 2;
 
+
             effects.add(new IsBuilding());
-        }};
-
-        mechanicalBore = new CustomDrawerBeamDrill("mechanical-bore"){{
-            requirements(Category.production, with(Items.copper, 12));
-
-            drillTime = 240f;
-            tier = 2;
-            size = 2;
-            range = 2;
-            researchCost = with(Items.copper, 10);
-            hideDatabase = true;
-            buildVisibility = BuildVisibility.hidden;
-
-            drawer = new DrawMulti(
-                    new DrawDrillBit(),
-                    new DrawDefault()
-            );
-            optionalBoostIntensity = 1;
         }};
 
         copperBore = new ProductionBlock("copper-bore"){{
@@ -131,6 +126,7 @@ public class TantrosSource {
             productionTime = 240f;
             size = 2;
             researchCost = with(Items.copper, 10);
+            warmupEnabled = true;
             warmupEffectsProduction = true;
             rotateDraw = false;
             regionRotated1 = -2;
@@ -169,6 +165,57 @@ public class TantrosSource {
             flags = EnumSet.of(BlockFlag.drill);
         }};
 
+        vortexSifter = new ProductionBlock("vortex-sifter"){{
+            requirements(Category.production, with(Items.copper, 32, Items.oxide, 40, Items.silicon, 20));
+
+            productionTime = 240f;
+            warmupEnabled = true;
+            warmupEffectsProduction = true;
+
+            customShadow = true;
+
+            size = 3;
+
+            DrillConfig drillConfig = new DrillConfig();
+
+            drillConfig.tier = 1;
+            drillConfig.whitelist = Seq.with(
+                    Items.sand,
+                    TantrosItems.bluecyst,
+                    TantrosItems.redcyst
+            );
+
+            drawer = new DrawMultiExtended(
+                    new DrawDefault(),
+                    /*new DrawParticles(){{
+                        color = Liquids.water.color;
+                        particleSize = 4f;
+                        particles = 20;
+                        particleRad = 10f;
+                        particleLife = 120f;
+                        rotateScl = 1f/12f;
+                    }},*/
+                    new DrawRegion("-rotator", 12, true),
+                    new DrawRegion("-top")
+            );
+
+            this.effects.add(new DrillsFloorOres(drillConfig));
+
+            /*ProduceOre drillProduce = new ProduceOre();
+            drillProduce.tier = 1;
+            drillProduce.blockedItems = Seq.with(
+                    Items.copper,
+                    Items.coal,
+                    Items.lead,
+                    Items.scrap
+            );
+            produce(drillProduce);*/
+
+            consume(new ConsumeEnv(LocalEnv.with(Liquids.water)));
+            consumePower(30f);
+            flags = EnumSet.of(BlockFlag.drill);
+        }};
+
         hydrothermalTap = new ProductionBlock("hydrothermal-tap"){{
             requirements(Category.liquid, with(Items.copper, 12, Items.metaglass, 25));
             productionTime = 60;
@@ -194,8 +241,8 @@ public class TantrosSource {
             attributeConfig.attribute = Attribute.steam;
             attributeConfig.minEfficiency = 9;
             attributeConfig.displayEfficiencyScale = attributeConfig.efficiencyScale = 1f/9f;
-            putBlockConfig(attributeConfig);
-            consume(new ConsumeAttributeTile());
+
+            consume(new ConsumeAttributeTile(attributeConfig));
             effects.add(new AttributePlacementRestriction());
             produce(new ProduceLiquid(new LiquidStack(TantrosLiquids.steam, 10f/60f)));
         }};

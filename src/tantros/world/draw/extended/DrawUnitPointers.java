@@ -14,9 +14,8 @@ public class DrawUnitPointers extends DrawBlockExtended{
     public Vec2 temp = new Vec2();
 
     @Override
-    public void draw(Building build) {
-        if(!(build instanceof BlockExtended.BuildExtended owner))return;
-        UnitLinks links = owner.getState(UnitLinks.class);
+    public void draw(BlockExtended.BuildExtended build) {
+        UnitLinks links = build.getState(UnitLinks.class);
         if(links == null) return;
         for(Unit unit: links.unitLinks){
             temp.set(unit).sub(build).nor().scl(lineLength);

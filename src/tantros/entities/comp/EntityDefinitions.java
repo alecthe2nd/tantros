@@ -6,8 +6,8 @@ import tantros.gen.*;
 
 public class EntityDefinitions<E> {
 
-    @EntityDef({Unitc.class, Burrowerc.class}) E myUnit;
-    @EntityDef({Puddlec.class, Wellc.class}) E wellPuddle;
+    @EntityDef(value = {Unitc.class, Burrowerc.class}, serialize = false) E myUnit;
+    @EntityDef(value = {Puddlec.class, Wellc.class}) E wellPuddle;
 
 
 }

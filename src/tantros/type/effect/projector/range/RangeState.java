@@ -12,6 +12,14 @@ public class RangeState implements BuildingState {
 
     public boolean wasUpdated = false;
 
+    public RangeState(){
+
+    }
+
+    public RangeState(RangeConfig config){
+        this.config = config;
+    }
+
     @Override
     public void initState(BlockExtended ownerType, BlockExtended.BuildExtended owner) {
         if (config == null) config = ownerType.getBlockConfig(RangeConfig.class);

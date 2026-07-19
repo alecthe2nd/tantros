@@ -7,6 +7,7 @@ import arc.struct.ObjectFloatMap;
 import arc.util.Log;
 import arc.util.Reflect;
 import arc.util.Tmp;
+import mindustry.Vars;
 import mindustry.content.Fx;
 import mindustry.world.blocks.defense.RegenProjector;
 import mindustry.world.meta.Stat;
@@ -46,13 +47,7 @@ public class HealsInRangeContinuously extends StatDisplayEffect implements Block
     public void apply(BlockExtended block) {
         block.putBlockConfig(rangeConfig);
         block.putBlockConfig(mendConfig);
-    }
-
-    @Override
-    public void initBuildStates(BlockExtended.BuildExtended build) {
-        RangeState rangeState = new RangeState();
-        rangeState.config = this.rangeConfig;
-        rangeName = build.putState(rangeState, "HealContinuousRange");
+        block.postStateRequest(()-> new RangeState(rangeConfig), "HealContinuousRange");
     }
 
     @Override
@@ -72,7 +67,7 @@ public class HealsInRangeContinuously extends StatDisplayEffect implements Block
                     )
             );
         }
-        TantrosStats.displayStat(t, Stat.range, rangeConfig.maxScale, StatUnit.blocks);
+        TantrosStats.displayStat(t, Stat.range, rangeConfig.maxScale * tilesize, StatUnit.blocks);
     }
 
     @Override

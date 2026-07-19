@@ -1,12 +1,12 @@
-package tantros.type.buildingState;
+package tantros.type.buildingState.drills;
 
 import arc.func.Boolf;
 import arc.math.geom.Geometry;
 import arc.math.geom.Point2;
 import arc.util.Log;
 import mindustry.world.Tile;
+import tantros.type.buildingState.BuildingState;
 import tantros.world.blocks.BlockExtended;
-import tantros.world.blocks.production.ProductionBlock;
 
 import static mindustry.Vars.world;
 

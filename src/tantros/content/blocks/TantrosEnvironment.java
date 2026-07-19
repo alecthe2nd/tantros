@@ -1,10 +1,12 @@
 package tantros.content.blocks;
 
+import arc.graphics.Color;
 import mindustry.content.Blocks;
 import mindustry.content.Items;
 import mindustry.game.SpawnGroup;
 import mindustry.game.Team;
 import mindustry.world.Block;
+import mindustry.world.Tile;
 import mindustry.world.blocks.environment.Floor;
 import mindustry.world.blocks.environment.SeaBush;
 import mindustry.world.blocks.environment.Seaweed;
@@ -15,7 +17,7 @@ import tantros.world.blocks.environment.AmbientSpawn;
 import tantros.world.blocks.environment.TallSeaBush;
 
 public class TantrosEnvironment {
-
+    public static Color tempColor1 = new Color();
 
 
     public static Block
@@ -42,18 +44,29 @@ public class TantrosEnvironment {
             team = Team.blue;
         }});
 
-
         Blocks.redmat.asFloor().itemDrop = TantrosItems.redcyst;
         redmatBloom = new Floor("redmat-bloom"){{
             variants = 3;
             itemDrop = TantrosItems.redcyst;
-        }};
+        }
+
+            @Override
+            public int minimapColor(Tile tile) {
+                return tempColor1.set(mapColor).lerp(itemDrop.color, 0.75f).abgr();
+            }
+        };
 
         Blocks.bluemat.asFloor().itemDrop = TantrosItems.bluecyst;
         bluematBloom = new Floor("bluemat-bloom"){{
             variants = 3;
             itemDrop = TantrosItems.bluecyst;
-        }};
+        }
+
+            @Override
+            public int minimapColor(Tile tile) {
+                return tempColor1.set(mapColor).lerp(itemDrop.color, 0.75f).abgr();
+            }
+        };
 
         bleachmat = new Floor("bleachmat"){{
             variants = 3;
@@ -89,17 +102,6 @@ public class TantrosEnvironment {
             magMin = 1f;
             magMax = 5f;
         }};
-
-        /*yellowCoral = new SeaBush("yellowcoral"){{
-            lobesMin = 2;
-            lobesMax = 3;
-            magMax = 8f;
-            magMin = 2f;
-            origin = 0.3f;
-            spread = 40f;
-            sclMin = 60f;
-            sclMax = 100f;
-        }};*/
 
 
         kelp = new TallSeaBush("kelp"){{

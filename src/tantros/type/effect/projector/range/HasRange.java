@@ -19,6 +19,6 @@ public class HasRange implements BlockEffect {
     @Override
     public void apply(BlockExtended block) {
         block.putBlockConfig(config);
-        block.stateSources.add(RangeState::new);
+        block.postStateRequest(RangeState::new);
     }
 }

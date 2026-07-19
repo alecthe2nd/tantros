@@ -6,6 +6,7 @@ import mindustry.gen.Building;
 import mindustry.world.draw.DrawBlock;
 import mindustry.world.draw.DrawRegion;
 import tantros.type.buildingState.CooldownState;
+import tantros.world.blocks.BlockExtended;
 import tantros.world.blocks.production.ProductionBlock;
 import tantros.world.draw.extended.DrawMultiExtended;
 
@@ -28,7 +29,7 @@ public class DrawLoweredCooldown extends DrawMultiExtended {
     }
 
     @Override
-    public void draw(Building build) {
+    public void draw(BlockExtended.BuildExtended build) {
         CooldownState cooldownState = null;
         if(build instanceof ProductionBlock.ProductionBuild prod){
             cooldownState = prod.getState(CooldownState.class);

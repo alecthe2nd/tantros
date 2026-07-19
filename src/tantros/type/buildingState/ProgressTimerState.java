@@ -17,6 +17,14 @@ public class ProgressTimerState implements BuildingState {
     public float totalProgress = 0f;
     public float warmup = 0f;
 
+    public ProgressTimerState(){
+
+    }
+
+    public ProgressTimerState(ProgressTimerConfig config){
+        this.config = config;
+    }
+
     @Override
     public void initState(BlockExtended ownerType, BlockExtended.BuildExtended owner) {
         if(config == null) config = ownerType.getBlockConfig(ProgressTimerConfig.class);

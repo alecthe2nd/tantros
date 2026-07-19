@@ -42,6 +42,7 @@ import tantros.world.draw.extended.DrawMultiExtended;
 
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
+import java.util.Objects;
 
 import static mindustry.Vars.*;
 import static mindustry.Vars.state;
@@ -58,8 +59,7 @@ public class BlockExtended extends Block {
     public DrawBlockExtended drawer = new DrawMultiExtended(new DrawDefault());
     public ObjectMap<Class<? extends BlockConfig>, ? super BlockConfig> blockConfigs = new ObjectMap<>();
     public Seq<ConfigApplier<?,?>> configAppliers = new Seq<>();
-    public Seq<BuildingStateSource> stateSources = new Seq<>();
-    public ObjectMap<String, BuildingStateSource> namedSources = new ObjectMap<>();
+    public ObjectMap<String, BuildingStateRequest> stateRequests = new ObjectMap<>();
 
     public Seq<BlockEffect> effects =  new Seq<>();
 
@@ -78,6 +78,9 @@ public class BlockExtended extends Block {
     @Override
     public void init() {
         super.init();
+
+        effects.removeAll((e)->!e.canBeAppliedTo(this))
+                .each((effect)-> Log.warn("Failed to assign effect " + effect + " to block " + name));
 
         for(BlockEffect effect: effects){
             effect.apply(this);
@@ -139,7 +142,7 @@ public class BlockExtended extends Block {
 
     @Override
     public boolean canPlaceOn(Tile tile, Team team, int rotation){
-        boolean allowed = super.canPlaceOn(tile, team, rotation);;
+        boolean allowed = super.canPlaceOn(tile, team, rotation);
         for(BlockEffect effect : effects){
             allowed &= effect.placementAllowed(this, tile, team, rotation);
         }
@@ -155,7 +158,39 @@ public class BlockExtended extends Block {
         this.blockConfigs.put(state.getClass(), state);
     }
 
+    public int computeNumberOfIdenticalStateRequestNames(String name){
+        int i = 0;
+        for(BuildingStateRequest request: stateRequests.values()){
+            if(request.name.equals(name)){
+                i++;
+            }
+        }
+        return i;
+    }
+
+    /**
+     * Adds a state request to the block.
+     * @return The generated name for later reference.
+     */
+    @Deprecated
+    public String postStateRequest(BuildingStateSource factory){
+        return postStateRequest(factory, "State");
+    }
+
+    /**
+     * Adds a state request with the given name to this block.
+     * State requests added this way will look like "x-name", where x is the number of requests added with name 'name' before this one.
+     * @return The generated name for later reference.
+     */
+    public String postStateRequest(BuildingStateSource factory, String name){
+        int nameId = computeNumberOfIdenticalStateRequestNames(name);
+        String newName = nameId + "-" + name;
+        this.stateRequests.put(newName, new BuildingStateRequest(factory, name));
+        return newName;
+    }
+
     public class BuildExtended extends Building{
+        public ObjectMap<String, BuildingState> statesAsSerialized = new ObjectMap<>();
         public ObjectMap<String, BuildingState> states = new ObjectMap<>();
         private final ObjectMap.Values<BuildingState> stateValuesForSearching = new ObjectMap.Values<>(states);
 
@@ -202,6 +237,10 @@ public class BlockExtended extends Block {
             return this.states.get(name);
         }
 
+        public BuildingState getStatesAsSerialized(String name){
+            return this.statesAsSerialized.get(name);
+        }
+
         public <state extends BuildingState> state getState(Class<state> type){
             stateValuesForSearching.reset();
             for(BuildingState state : stateValuesForSearching){
@@ -212,75 +251,24 @@ public class BlockExtended extends Block {
             return null;
         }
 
-        public int computeNumberOfIdenticalStateNames(String name){
-            int i = 0;
-            for(BuildingState state: states.values()){
-                if(state.getName().equals(name)){
-                    i++;
-                }
-            }
-            return i;
-        }
-
-        /**
-        * Adds a state to this building. Returns the name of the building.
-        */
-        public String putState(BuildingState state){
-            String name = state.getName();
-            int suffixNum = computeNumberOfIdenticalStateNames(name);
-            name += "-" + suffixNum;
-            this.putState(state,name, true);
-            return name;
-        }
-
-        /**
-         * Adds a state to this building with the given name. If the name already exists, it gets overridden.
-         * The true name applied will be "state name-supplied suffix"
-         * @return The full name for later reference.
-         */
-        public String putState(BuildingState state, String suffix){
-            String trueName = state.getName() + "-" + suffix;
-            this.putState(state, trueName, false);
-            return trueName;
-        }
-
-        /**
-         * Adds a state to this building with the given name. If the name already exists and generateFallbackName is true, a new name will be generated for it. If the name already exists but generateFallbackName is false, then the old name will be overridden with this state.
-         */
-        private void putState(BuildingState state, String name, boolean generateFallbackName){
-            if(generateFallbackName && this.states.containsKey(name)){
-                this.putState(state);
-            } else {
-                this.states.put(name, state);
-            }
-        }
-
         @Override
-        public void created() {
-            super.created();
+        public Building create(Block block, Team team) {
+            super.create(block, team);
 
-            for(BlockEffect effect: effects){
-                effect.initBuildStates(this);
-            }
-
-            for(ObjectMap.Entry<String, BuildingStateSource> entry: namedSources){
-                BuildingState state = entry.value.get();
-                putState(state, entry.key, true);
-            }
-
-            for(BuildingStateSource stateSource : stateSources){
-                BuildingState state = stateSource.get();
-                putState(state);
+            for(ObjectMap.Entry<String,BuildingStateRequest> entry: stateRequests){
+                BuildingState state = entry.value.factory.get();
+                this.states.put(entry.key, state);
+                this.statesAsSerialized.put(state.getName() + entry.key, state);
             }
 
             for(BuildingState state : this.states.values()){
                 state.initState((BlockExtended) this.block, this);
             }
-            initializedStates = true;
 
             for(BlockInput input: inputs){
                 input.post(this);
             }
+            return this;
         }
 
         @Override
@@ -331,6 +319,24 @@ public class BlockExtended extends Block {
         @Override
         @SuppressWarnings("unchecked")
         public void configured(Unit builder, Object value) {
+            Class<?> type = selectClass(value);
+
+            if (builder != null && builder.isPlayer()) {
+                this.updateLastAccess(builder.getPlayer());
+            }
+
+            if (this.block.configurations.containsKey(type)) {
+                this.block.configurations.get(type).get(this, value);
+            } else if (value instanceof Building build) {
+                Object conf = build.config();
+                if (conf != null && !(conf instanceof Building)) {
+                    this.configured(builder, conf);
+                }
+            }
+        }
+
+        @SuppressWarnings("DuplicatedCode")
+        private static Class<?> selectClass(Object value) {
             Class<?> type = value == null ? Void.TYPE : (value.getClass().isAnonymousClass() ? value.getClass().getSuperclass() : value.getClass());
             if (value instanceof Item) {
                 type = Item.class;
@@ -351,20 +357,7 @@ public class BlockExtended extends Block {
             if (value instanceof Unit) {
                 type = Unit.class;
             }
-
-            if (builder != null && builder.isPlayer()) {
-                this.updateLastAccess(builder.getPlayer());
-            }
-
-            if (this.block.configurations.containsKey(type)) {
-                this.block.configurations.get(type).get(this, value);
-            } else if (value instanceof Building) {
-                Building build = (Building)value;
-                Object conf = build.config();
-                if (conf != null && !(conf instanceof Building)) {
-                    this.configured(builder, conf);
-                }
-            }
+            return type;
         }
 
         @Override
@@ -373,7 +366,7 @@ public class BlockExtended extends Block {
                 float overflow = amount - (liquidCapacity - liquids.get(liquid));
                 amount = amount - overflow;
                 tempLiquid.set(liquid, overflow);
-                for(BuildingState state: this.states.values()){
+                for(BuildingState state: this.statesAsSerialized.values()){
                     state.onOverflow(tempLiquid);
                 }
             }
@@ -381,6 +374,7 @@ public class BlockExtended extends Block {
         }
 
         /** Called when the block is destroyed. The tile is still intact at this stage. */
+        @SuppressWarnings("DuplicatedCode")
         @Override
         public void onDestroyed(){
             float explosiveness = block.baseExplosiveness;
@@ -430,7 +424,7 @@ public class BlockExtended extends Block {
             super.write(write);
             //step one, count the non-transient states
             int count = 0;
-            for(ObjectMap.Entry<String, BuildingState> entry : states.entries()){
+            for(ObjectMap.Entry<String, BuildingState> entry : statesAsSerialized.entries()){
                 if(!entry.value.isTransient()){
                     count++;
                 }
@@ -445,7 +439,7 @@ public class BlockExtended extends Block {
 
             //guard against ever writing more states than count. This may happen if some building ends up with more than 255 states.
             int guardCount = 0;
-            for(ObjectMap.Entry<String, BuildingState> entry : states.entries()){
+            for(ObjectMap.Entry<String, BuildingState> entry : statesAsSerialized.entries()){
                 if(!entry.value.isTransient() && guardCount < count){
                     write.str(entry.key);
                     write.i(entry.value.getVersion());
@@ -477,7 +471,7 @@ public class BlockExtended extends Block {
                 //read number of incoming bytes, for later.
                 int size = read.i();
 
-                BuildingState state = getState(name);
+                BuildingState state = getStatesAsSerialized(name);
 
                 if(state != null && state.getVersion() == version){
                     //state looks valid, should be safe to read it
@@ -564,4 +558,6 @@ public class BlockExtended extends Block {
     public interface BuildingStateSource extends Prov<BuildingState>{
 
     }
+
+    public record BuildingStateRequest(BuildingStateSource factory, String name){}
 }

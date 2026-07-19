@@ -12,13 +12,13 @@ public class AttributeState implements BuildingState{
 
     public float sum = 0;
 
+    public AttributeState(AttributeConfig config){
+        this.config = config;
+    }
+
     @Override
     public void initState(BlockExtended ownerType, BlockExtended.BuildExtended owner) {
-        if(ownerType.blockConfigs.containsKey(AttributeConfig.class)){
-            config = ownerType.getBlockConfig(AttributeConfig.class);
-        } else {
-            config = new AttributeConfig();
-        }
+
     }
 
     @Override

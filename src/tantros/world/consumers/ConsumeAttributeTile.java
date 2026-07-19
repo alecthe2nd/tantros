@@ -17,18 +17,14 @@ public class ConsumeAttributeTile extends ExtendedConsume{
 
     public AttributeConfig config;
 
+    public ConsumeAttributeTile(AttributeConfig config){
+        this.config = config;
+    }
+
     @Override
     public void apply(BlockExtended block) {
-        if(block.blockConfigs.containsKey(AttributeConfig.class)){
-            config = block.getBlockConfig(AttributeConfig.class);
-        } else {
-            config = new AttributeConfig();
-            block.putBlockConfig(config);
-        }
-
-        if(!block.namedSources.containsKey("AttributeState0")){
-            block.namedSources.put("AttributeState0", AttributeState::new);
-        }
+        config = new AttributeConfig();
+        config.attributeStateName = block.postStateRequest(()->new AttributeState(config),"AttributeState");
     }
 
     @Override
@@ -50,13 +46,13 @@ public class ConsumeAttributeTile extends ExtendedConsume{
 
     @Override
     public float efficiency(BlockExtended.BuildExtended build) {
-        AttributeState attributeState = build.getState(AttributeState.class);
+        AttributeState attributeState = build.getState(AttributeState.class, config.attributeStateName);
         return (config.minEfficiency > attributeState.sum)? 0:1;
     }
 
     @Override
     public float efficiencyMultiplier(BlockExtended.BuildExtended build) {
-        AttributeState attributeState = build.getState(AttributeState.class);
+        AttributeState attributeState = build.getState(AttributeState.class, config.attributeStateName);
         return attributeState.sum * config.efficiencyScale;
     }
 }

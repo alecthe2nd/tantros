@@ -14,6 +14,7 @@ import mindustry.graphics.Drawf;
 import mindustry.graphics.Layer;
 import mindustry.type.UnitType;
 import mindustry.world.Block;
+import tantros.world.blocks.BlockExtended;
 
 public class DrawUnit extends DrawBlockExtended{
 
@@ -41,7 +42,7 @@ public class DrawUnit extends DrawBlockExtended{
     }
 
     @Override
-    public void draw(Building build){
+    public void draw(BlockExtended.BuildExtended build){
         float z = Draw.z();
 
         if(z >= Layer.blockOver && z < Layer.groundUnit -1){

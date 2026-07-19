@@ -21,7 +21,7 @@ import mindustry.world.meta.Stats;
 import tantros.type.Resource;
 import tantros.type.blockConfig.BoreDrillConfig;
 import tantros.type.buildingState.BuildingState;
-import tantros.type.buildingState.LaserState;
+import tantros.type.buildingState.drills.LaserState;
 import tantros.world.blocks.production.ProductionBlock;
 import tantros.world.meta.TantrosStats;
 
@@ -42,8 +42,11 @@ public class ProduceWallOre extends Produce{
 
     @Override
     public Resource output(ProductionBlock.ProductionBuild build) {
+
+        tempResource.clear();
         BoreDrillConfig boreConfig = ((ProductionBlock)build.block).getBlockConfig(BoreDrillConfig.class);
         LaserState laserState = build.getState(LaserState.class);
+        if(laserState == null) return tempResource;
 
         tempOreCount.clear();
         tempResource.clear();
@@ -72,7 +75,7 @@ public class ProduceWallOre extends Produce{
 
         block.rotate = true;
         block.putBlockConfig(config);
-        block.stateSources.add(this::newState);
+        block.postStateRequest(this::newState);
     }
 
     public BuildingState newState(){
@@ -90,6 +93,7 @@ public class ProduceWallOre extends Produce{
     @Override
     public void trigger(ProductionBlock.ProductionBuild build) {
         LaserState laserState = build.getState(LaserState.class);
+        if(laserState == null) return;
         for(Tile tile : laserState.facing){
             Item drop = tile == null ? null : tile.wallDrop();
             if(build.items.total() < build.block.itemCapacity && drop != null){
@@ -150,6 +154,7 @@ public class ProduceWallOre extends Produce{
                 new Bar(
                         () -> {
                             LaserState laserState = owner.getState(LaserState.class);
+                            if(laserState == null) return "";
                             return Core.bundle.format("bar.drillspeed", Strings.fixed(60 / owner.currentProductionTime * owner.timeScale() * laserState.facingAmount, 2));
                         },
                         () -> Pal.ammo, () -> owner.warmup));

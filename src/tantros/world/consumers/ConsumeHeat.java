@@ -1,6 +1,5 @@
 package tantros.world.consumers;
 
-import mindustry.gen.Building;
 import mindustry.world.meta.Stat;
 import mindustry.world.meta.StatUnit;
 import mindustry.world.meta.Stats;
@@ -18,7 +17,7 @@ public class ConsumeHeat extends ExtendedConsume {
 
     @Override
     public void apply(BlockExtended block) {
-        block.stateSources.add(InputHeatState::new);
+        block.postStateRequest(InputHeatState::new);
         block.putBlockConfig(config);
     }
 

@@ -29,19 +29,17 @@ public class DrawPressureWarning extends DrawBlockExtended{
     }
 
     @Override
-    public void draw(Building build) {
-        if(build instanceof BlockExtended.BuildExtended extended){
-            BoilerPressureBuildup buildup = extended.getState(BoilerPressureBuildup.class);
-            if(buildup == null) return;
-            if(buildup.pressure > 0.001f){
-                float a = Mathf.clamp(buildup.pressureFrac() * 1.33f) * Mathf.absin(5f,1);
-                Draw.alpha(a);
-                float z = Draw.z();
-                Draw.z(Layer.power+0.1f);
-                Draw.rect(warning, extended.x, extended.y);
-                Draw.reset();
-                Draw.z(z);
-            }
+    public void draw(BlockExtended.BuildExtended build) {
+        BoilerPressureBuildup buildup = build.getState(BoilerPressureBuildup.class);
+        if(buildup == null) return;
+        if(buildup.pressure > 0.001f) {
+            float a = Mathf.clamp(buildup.pressureFrac() * 1.33f) * Mathf.absin(5f, 1);
+            Draw.alpha(a);
+            float z = Draw.z();
+            Draw.z(Layer.power + 0.1f);
+            Draw.rect(warning, build.x, build.y);
+            Draw.reset();
+            Draw.z(z);
         }
     }
 
