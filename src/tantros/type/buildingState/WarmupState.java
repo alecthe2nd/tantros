@@ -3,7 +3,7 @@ package tantros.type.buildingState;
 import arc.math.Mathf;
 import arc.util.io.Reads;
 import arc.util.io.Writes;
-import tantros.type.buildConfig.WarmupConfig;
+import tantros.type.blockConfig.WarmupConfig;
 import tantros.world.blocks.BlockExtended;
 
 public class WarmupState implements BuildingState {

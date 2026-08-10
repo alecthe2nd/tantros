@@ -1,72 +1,52 @@
 package tantros.type.buildConfig;
 
 import arc.struct.IntMap;
+import arc.struct.ObjectMap;
+import arc.struct.StringMap;
+import arc.util.Log;
+import arc.util.Nullable;
 import arc.util.io.Reads;
 import arc.util.io.Writes;
 import arc.util.pooling.Pool;
 import arc.util.pooling.Pools;
+import mindustry.world.blocks.logic.LogicBlock;
 import tantros.util.io.ReadContext;
 import tantros.util.io.WriteContext;
 
+import java.io.*;
+import java.util.zip.DeflaterOutputStream;
+import java.util.zip.InflaterInputStream;
+
 public abstract class BuildConfigurationUnit implements Pool.Poolable {
 
-    public static final IntMap<Class<? extends BuildConfigurationUnit>> seenHashes = new IntMap<>();
-    private static int nameHash = 0;
+    public static final ObjectMap<String, Class<? extends BuildConfigurationUnit>> registeredUnits = new ObjectMap<>();
 
-    public static ReadContext readContext = new ReadContext();
-    public static WriteContext writeContext = new WriteContext();
+    static {
+        register(AddUnitConfig.class);
+        register(SetItemConfig.class);
+        register(ClearQueueConfig.class);
+        register(ClearUnitsConfig.class);
+    }
 
     public BuildConfigurationUnit(){
-        this.getNameHash();
+        register();
     }
 
-    public int getNameHash(){
-        if(nameHash == 0){
-            nameHash = generateNameHash(this);
-            if(seenHashes.containsKey(nameHash)) {
-                throw new RuntimeException("Duplicate Name Hash " + nameHash + "found in class " + seenHashes.get(nameHash) + " when trying to add class " + this.getClass());
-            }
-            seenHashes.put(nameHash, this.getClass());
-        }
-        return nameHash;
+    public void register(){
+        registeredUnits.put(this.getClass().getName(), this.getClass());
     }
 
-    private int generateNameHash(BuildConfigurationUnit configUnit){
-        String name = configUnit.getClass().getName();
-        int h = 0;
-        char[] chars = name.toCharArray();
-        for (char aChar : chars) {
-            h = 31 * h + aChar;
-        }
-        return h;
+    public static void register(Class<? extends BuildConfigurationUnit> type){
+        registeredUnits.put(type.getName(), type);
     }
 
     public void read(Reads read){
-        readContext.init(read);
-        this.read(readContext);
-        readContext.flush(this::reset);
-    }
-
-    public void read(ReadContext read){
-
     }
 
     public void write(Writes write){
-        writeContext.init(write);
-        this.write(writeContext);
-        writeContext.flush();
     }
 
-    public void write(WriteContext write){
-
-    }
-
-    public static BuildConfigurationUnit get(int hash){
-        Class<? extends BuildConfigurationUnit> type = BuildConfigurationUnit.seenHashes.get(hash);
-        return (type == null) ? null: get(type);
-    }
-
-    public static <E extends BuildConfigurationUnit> BuildConfigurationUnit get(Class<E> type){
+    public static <E extends BuildConfigurationUnit> E get(Class<E> type){
         return Pools.obtain(type, ()->BuildConfigurationUnit.newFrom(type));
     }
 
@@ -76,6 +56,45 @@ public abstract class BuildConfigurationUnit implements Pool.Poolable {
         }catch(Exception e){
             return null;
         }
+    }
+
+    public byte[] toByteArray(){
+        try{
+            var baos = new ByteArrayOutputStream();
+            var writes = new Writes(new DataOutputStream(new DeflaterOutputStream(baos)));
+
+
+            writes.str(this.getClass().getName());
+            this.write(writes);
+
+            writes.close();
+
+            if(baos.size() > 40000){
+                Log.err("Failed to send building config unit: size greater than 40000");
+            }
+
+            return baos.toByteArray();
+        }catch(Exception e){
+            Log.err("Failed to send building config unit.", e);
+        }
+        return new byte[]{};
+    }
+
+    @Nullable
+    public static BuildConfigurationUnit fromByteArray(byte[] in){
+        try(Reads reads = new Reads(new DataInputStream(new InflaterInputStream(new ByteArrayInputStream(in))))) {
+
+            String name = reads.str();
+
+            BuildConfigurationUnit unit = get(registeredUnits.get(name));
+            unit.read(reads);
+            return unit;
+
+        }catch(Exception ignored){
+            Log.err("Failed to receive building config unit.", ignored);
+        }
+        return null;
+
     }
 
 }

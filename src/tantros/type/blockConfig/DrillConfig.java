@@ -1,11 +1,10 @@
-package tantros.type.buildConfig;
+package tantros.type.blockConfig;
 
 import arc.struct.ObjectFloatMap;
 import arc.struct.Seq;
 import arc.util.Nullable;
 import mindustry.type.Item;
 import mindustry.world.Tile;
-import tantros.type.blockConfig.BlockConfig;
 
 public class DrillConfig implements BlockConfig {
 
@@ -30,6 +29,8 @@ public class DrillConfig implements BlockConfig {
 
     /** Multipliers of drill speed for each item. Defaults to 1. */
     public ObjectFloatMap<Item> drillMultipliers = new ObjectFloatMap<>();
+
+    public boolean isOreSelectable = false;
 
     public boolean drillable(Item item){
         return (

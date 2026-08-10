@@ -26,6 +26,7 @@ import mindustry.type.UnitType;
 import mindustry.world.Block;
 import mindustry.world.Tile;
 import mindustry.world.consumers.Consume;
+import mindustry.world.consumers.ConsumeLiquid;
 import mindustry.world.draw.DrawDefault;
 import tantros.net.TantrosCalls;
 import tantros.type.blockConfig.BlockConfig;
@@ -36,6 +37,7 @@ import tantros.type.blockUtil.OnDestroyExplosionContext;
 import tantros.type.buildConfig.BuildConfigurationUnit;
 import tantros.type.buildingState.BuildingState;
 import tantros.type.effect.BlockEffect;
+import tantros.world.consumers.ConsumeBoostWrapper;
 import tantros.world.consumers.ExtendedConsume;
 import tantros.world.draw.extended.DrawBlockExtended;
 import tantros.world.draw.extended.DrawMultiExtended;
@@ -61,7 +63,7 @@ public class BlockExtended extends Block {
     public Seq<ConfigApplier<?,?>> configAppliers = new Seq<>();
     public ObjectMap<String, BuildingStateRequest> stateRequests = new ObjectMap<>();
 
-    public Seq<BlockEffect> effects =  new Seq<>();
+    public final Seq<BlockEffect> effects =  new Seq<>();
 
     public Floatf<BuildExtended> warmupSource = (b)->0.0f;
 
@@ -78,7 +80,7 @@ public class BlockExtended extends Block {
     @Override
     public void init() {
         super.init();
-
+        
         effects.removeAll((e)->!e.canBeAppliedTo(this))
                 .each((effect)-> Log.warn("Failed to assign effect " + effect + " to block " + name));
 
@@ -129,6 +131,16 @@ public class BlockExtended extends Block {
     }
 
     @Override
+    public void setBars() {
+        super.setBars();
+        for(Consume consume: consumers){
+            if(consume instanceof ExtendedConsume cons){
+                cons.setBars(this);
+            }
+        }
+    }
+
+    @Override
     public void load(){
         super.load();
 
@@ -173,7 +185,7 @@ public class BlockExtended extends Block {
      * @return The generated name for later reference.
      */
     @Deprecated
-    public String postStateRequest(BuildingStateSource factory){
+    public <state extends BuildingState> String postStateRequest(BuildingStateSource<state> factory){
         return postStateRequest(factory, "State");
     }
 
@@ -182,11 +194,34 @@ public class BlockExtended extends Block {
      * State requests added this way will look like "x-name", where x is the number of requests added with name 'name' before this one.
      * @return The generated name for later reference.
      */
-    public String postStateRequest(BuildingStateSource factory, String name){
+    public <state extends BuildingState> String postStateRequest(BuildingStateSource<state> factory, String name){
         int nameId = computeNumberOfIdenticalStateRequestNames(name);
         String newName = nameId + "-" + name;
         this.stateRequests.put(newName, new BuildingStateRequest(factory, name));
         return newName;
+    }
+
+    public <state extends BuildingState> String postStateRequest(BuildingStateSource<state> factory, String name, Class<state> stateType, Seq<Class<?>> buildConfigs){
+        String newName = postStateRequest(factory, name);
+        for(Class<?> configType: buildConfigs){
+            this.configAppliers.add(new ConfigApplier<>(stateType, configType));
+        }
+        return newName;
+    }
+
+    public void effect(BlockEffect effect){
+        this.effects.add(effect);
+        effect.applySubEffects(this);
+    }
+
+    public void effect(BlockEffect... effects){
+        for(BlockEffect effect: effects){
+            effect(effect);
+        }
+    }
+
+    public Consume consumeBoost(Consume consume, float efficiency){
+        return consume(new ConsumeBoostWrapper(consume, efficiency));
     }
 
     public class BuildExtended extends Building{
@@ -291,29 +326,34 @@ public class BlockExtended extends Block {
             for(BuildingState state : this.states.values()){
                 state.update((BlockExtended) this.block, this);
             }
+            for(BlockEffect effect: effects){
+                effect.updateAlways(this);
+            }
             if(efficiency > 0){
                 for(BlockEffect effect: effects){
                     effect.update(this);
                 }
             }
+
+
         }
 
         @Override
         public void configure(Object value) {
+            Object trueValue = value;
             if(value instanceof BuildConfigurationUnit buildConfig){
-                this.block.lastConfig = buildConfig;
-                TantrosCalls.tileConfig(Vars.player, this, buildConfig);
-                return;
+                trueValue = buildConfig.toByteArray();
             }
-            super.configure(value);
+            super.configure(trueValue);
         }
 
         @Override
         public void configureAny(Object value) {
+            Object trueValue = value;
             if(value instanceof BuildConfigurationUnit buildConfig){
-                TantrosCalls.tileConfig(null, this, buildConfig);
+                trueValue = buildConfig.toByteArray();
             }
-            super.configureAny(value);
+            super.configureAny(trueValue);
         }
 
         @Override
@@ -324,8 +364,9 @@ public class BlockExtended extends Block {
             if (builder != null && builder.isPlayer()) {
                 this.updateLastAccess(builder.getPlayer());
             }
-
-            if (this.block.configurations.containsKey(type)) {
+            if(value instanceof byte[] bytes){
+                this.configured(builder, BuildConfigurationUnit.fromByteArray(bytes));
+            }else if (this.block.configurations.containsKey(type)) {
                 this.block.configurations.get(type).get(this, value);
             } else if (value instanceof Building build) {
                 Object conf = build.config();
@@ -555,9 +596,9 @@ public class BlockExtended extends Block {
         }
     }
 
-    public interface BuildingStateSource extends Prov<BuildingState>{
+    public interface BuildingStateSource<state extends BuildingState> extends Prov<state>{
 
     }
 
-    public record BuildingStateRequest(BuildingStateSource factory, String name){}
+    public record BuildingStateRequest(BuildingStateSource<? extends BuildingState> factory, String name){}
 }

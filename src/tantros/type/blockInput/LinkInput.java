@@ -31,7 +31,6 @@ public class LinkInput<E extends BuildingState & Links> implements BlockInput{
 
         if(links.validLink(build, other)){
             build.configure(other.pos());
-            Log.info("Run");
             return false;
         }
         return true;

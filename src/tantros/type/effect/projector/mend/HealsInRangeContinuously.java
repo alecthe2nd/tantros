@@ -2,21 +2,12 @@ package tantros.type.effect.projector.mend;
 
 import arc.math.Mathf;
 import arc.scene.ui.layout.Table;
-import arc.struct.IntFloatMap;
-import arc.struct.ObjectFloatMap;
-import arc.util.Log;
-import arc.util.Reflect;
 import arc.util.Tmp;
-import mindustry.Vars;
 import mindustry.content.Fx;
-import mindustry.world.blocks.defense.RegenProjector;
 import mindustry.world.meta.Stat;
 import mindustry.world.meta.StatUnit;
 import mindustry.world.meta.StatValues;
-import mindustry.world.meta.Stats;
 import tantros.TantrosVars;
-import tantros.type.buildConfig.ProgressTimerConfig;
-import tantros.type.buildingState.ProgressTimerState;
 import tantros.type.effect.BlockEffect;
 import tantros.type.effect.StatDisplayEffect;
 import tantros.type.effect.projector.range.RangeConfig;
@@ -25,8 +16,6 @@ import tantros.world.blocks.BlockExtended;
 import tantros.world.meta.TantrosStats;
 
 import static mindustry.Vars.*;
-import static mindustry.Vars.state;
-import static mindustry.Vars.world;
 
 public class HealsInRangeContinuously extends StatDisplayEffect implements BlockEffect {
 

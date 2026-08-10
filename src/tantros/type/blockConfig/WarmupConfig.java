@@ -1,6 +1,4 @@
-package tantros.type.buildConfig;
-
-import tantros.type.blockConfig.BlockConfig;
+package tantros.type.blockConfig;
 
 public class WarmupConfig implements BlockConfig {
 

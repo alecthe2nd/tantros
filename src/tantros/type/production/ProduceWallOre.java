@@ -155,7 +155,7 @@ public class ProduceWallOre extends Produce{
                         () -> {
                             LaserState laserState = owner.getState(LaserState.class);
                             if(laserState == null) return "";
-                            return Core.bundle.format("bar.drillspeed", Strings.fixed(60 / owner.currentProductionTime * owner.timeScale() * laserState.facingAmount, 2));
+                            return Core.bundle.format("bar.drillspeed", Strings.fixed(60 / owner.currentProductionTime * owner.timeScale() * laserState.facingAmount * owner.efficiency, 2));
                         },
                         () -> Pal.ammo, () -> owner.warmup));
     }

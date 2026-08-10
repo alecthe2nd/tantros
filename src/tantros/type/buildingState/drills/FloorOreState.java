@@ -1,11 +1,15 @@
 package tantros.type.buildingState.drills;
 
+import arc.func.Boolf;
+import arc.func.Boolp;
+import arc.math.Rand;
 import arc.struct.ObjectIntMap;
 import arc.struct.Seq;
 import arc.util.Nullable;
+import mindustry.content.Items;
 import mindustry.type.Item;
 import mindustry.world.Tile;
-import tantros.type.buildConfig.DrillConfig;
+import tantros.type.blockConfig.DrillConfig;
 import tantros.type.buildingState.BuildingState;
 import tantros.world.blocks.BlockExtended;
 
@@ -20,6 +24,7 @@ public class FloorOreState implements BuildingState {
     public int totalOres = 0;
 
     public int totalDominantOres = 0;
+    public Boolf<Item> filter = (i)->true;
 
     public static final Seq<Tile> tempTiles = new Seq<>();
     public static final Seq<Item> tempItems = new Seq<>();
@@ -38,8 +43,7 @@ public class FloorOreState implements BuildingState {
 
     }
 
-    @Override
-    public void onProximity(BlockExtended ownerType, BlockExtended.BuildExtended owner) {
+    public void rebuildOres(BlockExtended.BuildExtended owner){
         dominantOre = null;
         totalDominantOres = 0;
         totalOres = 0;
@@ -47,7 +51,7 @@ public class FloorOreState implements BuildingState {
         oreCount.clear();
         tempItems.clear();
 
-        for(Tile other : owner.tile.getLinkedTilesAs(ownerType, tempTiles)){
+        for(Tile other : owner.tile.getLinkedTilesAs(owner.block, tempTiles)){
             if(config.canMine(other)){
                 oreCount.increment(other.drop(), 0, 1);
                 totalOres++;
@@ -75,6 +79,11 @@ public class FloorOreState implements BuildingState {
     }
 
     @Override
+    public void onProximity(BlockExtended ownerType, BlockExtended.BuildExtended owner) {
+        this.rebuildOres(owner);
+    }
+
+    @Override
     public String getName() {
         return "FloorOreState";
     }
@@ -87,5 +96,19 @@ public class FloorOreState implements BuildingState {
     @Override
     public void reset() {
 
+    }
+
+    public Item selectRandomOre(Rand random){
+        if(this.totalOres < 1) return null;
+        int step = (this.totalOres == 1)? 0: random.nextInt(0, this.totalOres - 1);
+        int index = 0;
+        for(ObjectIntMap.Entry<Item> entry : this.oreCount.entries()){
+            if(step >= index  && step < entry.value + index){
+                return (filter.get(entry.key))? entry.key: null;
+            } else {
+                index += entry.value;
+            }
+        }
+        return null;
     }
 }

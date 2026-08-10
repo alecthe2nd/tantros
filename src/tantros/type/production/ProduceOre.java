@@ -11,7 +11,7 @@ import mindustry.type.ItemStack;
 import mindustry.ui.Bar;
 import mindustry.world.meta.Stats;
 import tantros.type.Resource;
-import tantros.type.buildConfig.DrillConfig;
+import tantros.type.blockConfig.DrillConfig;
 import tantros.type.buildingState.drills.FloorOreState;
 import tantros.world.blocks.production.ProductionBlock;
 
@@ -73,15 +73,9 @@ public class ProduceOre extends Produce{
         if(config.onlyDrillsDominantItems){
             build.offload(state.dominantOre);
         } else {
-            int step = Mathf.random(0,state.totalOres - 1);
-            int index = 0;
-            for(ObjectIntMap.Entry<Item> entry : state.oreCount.entries()){
-                if(step >= index  && step < entry.value + index){
-                    build.offload(entry.key);
-                    break;
-                } else {
-                    index += entry.value;
-                }
+            Item ore = state.selectRandomOre(Mathf.rand);
+            if(ore != null){
+                build.offload(ore);
             }
         }
     }

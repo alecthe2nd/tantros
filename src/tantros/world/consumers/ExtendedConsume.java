@@ -87,6 +87,12 @@ public class ExtendedConsume extends Consume {
         super.apply(block);
     }
 
+    /** Sets static bars. Preferred performance-wise over displayBars. */
+    public void setBars(BlockExtended block){
+
+    }
+
+    /** Displays bars dynamically. */
     public void displayBars(BlockExtended.BuildExtended build, Table table){
 
     }

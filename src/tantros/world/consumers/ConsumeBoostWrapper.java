@@ -1,13 +1,13 @@
 package tantros.world.consumers;
 
 import arc.scene.ui.layout.Table;
-import arc.struct.ObjectMap;
 import arc.struct.OrderedMap;
 import arc.struct.Seq;
 import arc.util.Log;
 import arc.util.Reflect;
-import mindustry.type.Category;
 import mindustry.world.consumers.Consume;
+import mindustry.world.consumers.ConsumeLiquid;
+import mindustry.world.consumers.ConsumeLiquids;
 import mindustry.world.meta.Stat;
 import mindustry.world.meta.StatCat;
 import mindustry.world.meta.StatValue;
@@ -68,6 +68,17 @@ public class ConsumeBoostWrapper extends ExtendedConsume{
     public void apply(BlockExtended block) {
         wrapped.optional(true, true);
         wrapped.apply(block);
+    }
+
+    @Override
+    public void setBars(BlockExtended block) {
+        if(wrapped instanceof ConsumeLiquid liq){
+            block.addLiquidBar(liq.liquid);
+        }else if(wrapped instanceof ConsumeLiquids multi){
+            for(var stack : multi.liquids){
+                block.addLiquidBar(stack.liquid);
+            }
+        }
     }
 
     @Override

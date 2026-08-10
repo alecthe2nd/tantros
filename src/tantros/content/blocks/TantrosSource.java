@@ -17,6 +17,7 @@ import mindustry.type.LiquidStack;
 import mindustry.world.Block;
 import mindustry.world.blocks.production.GenericCrafter;
 import mindustry.world.blocks.production.Pump;
+import mindustry.world.consumers.ConsumeLiquid;
 import mindustry.world.draw.*;
 import mindustry.world.meta.*;
 import tantros.content.recipes.TantrosRecipes;
@@ -24,13 +25,12 @@ import tantros.content.world.TantrosItems;
 import tantros.content.world.TantrosLiquids;
 import tantros.type.Resource;
 import tantros.type.blockConfig.AttributeConfig;
-import tantros.type.buildConfig.DrillConfig;
+import tantros.type.blockConfig.DrillConfig;
 import tantros.type.effect.AttributePlacementRestriction;
 import tantros.type.effect.DrillsFloorOres;
 import tantros.type.effect.IsBuilding;
 import tantros.type.production.*;
 import tantros.world.blocks.BlockExtended;
-import tantros.world.blocks.drill.CustomDrawerBeamDrill;
 import tantros.world.blocks.drill.CustomDrawerDrill;
 import tantros.world.blocks.production.ProductionBlock;
 import tantros.world.blocks.production.RecipeCrafter;
@@ -42,7 +42,6 @@ import tantros.world.draw.extended.DrawAttributeEfficiency;
 import tantros.world.draw.extended.DrawMultiExtended;
 import tantros.world.draw.wallDrill.DrawBoreBit;
 import tantros.world.draw.wallDrill.DrawBoreEfficiency;
-import tantros.world.draw.wallDrill.DrawDrillBit;
 import tantros.world.consumers.ConsumeEnv;
 import tantros.world.draw.wallDrill.DrawPlacementLines;
 import tantros.world.environment.LocalEnv;
@@ -56,8 +55,9 @@ public class TantrosSource {
             testBlock,
             testExtended,
             copperBore,
+            turbineBore,
             siltSifter,
-            vortexSifter,
+            rotoSifter,
             deepBoreDrill,
             deepLaserDrill,
             boreholeDrill,
@@ -91,13 +91,6 @@ public class TantrosSource {
                         rotateScl = 1f/20f;
                     }}
             );
-
-            //AttributeConfig attributeConfig = new AttributeConfig();
-            //attributeConfig.attribute = Attribute.steam;
-            //attributeConfig.minEfficiency = 4 - 0.0001f;
-            //putBlockConfig(attributeConfig);
-            //consume(new ConsumeAttributeTile());
-            //effects.add(new AttributePlacementRestriction());
             produce(new ProduceLiquid(new LiquidStack(Liquids.water, 5f/60f)));
         }};
 
@@ -117,7 +110,7 @@ public class TantrosSource {
             size = 2;
 
 
-            effects.add(new IsBuilding());
+            effect(new IsBuilding());
         }};
 
         copperBore = new ProductionBlock("copper-bore"){{
@@ -129,12 +122,13 @@ public class TantrosSource {
             warmupEnabled = true;
             warmupEffectsProduction = true;
             rotateDraw = false;
-            regionRotated1 = -2;
+            regionRotated1 = 1;
             ignoreLineRotation = true;
 
             drawer = new DrawMultiExtended(
-                    new DrawDefault(),
+                    new DrawRegion(),
                     new DrawBoreBit(),
+                    new DrawSideRegion(),
                     new DrawPlacementLines(),
                     new DrawBoreEfficiency()
             );
@@ -143,6 +137,46 @@ public class TantrosSource {
                             120
                     )
             );
+            flags = EnumSet.of(BlockFlag.drill);
+        }};
+
+        turbineBore = new ProductionBlock("turbine-bore"){{
+            requirements(Category.production, with(Items.copper, 32, Items.oxide, 40, Items.lead, 25));
+
+            productionTime = 120f;
+            size = 3;
+            warmupEnabled = true;
+            warmupEffectsProduction = true;
+            rotateDraw = false;
+            regionRotated1 = -2;
+            ignoreLineRotation = true;
+
+            hasPower = true;
+            hasLiquids = true;
+
+            drawer = new DrawMultiExtended(
+                    new DrawRegion("-bottom"),
+                    new DrawRegion("-blades", 3, true),
+                    new DrawRegion("-blades", 3, true){{
+                        this.rotation = 30;
+                    }},
+                    new DrawRegion("-blades", 3, true){{
+                        this.rotation = 60;
+                    }},
+                    new DrawRegion(),
+                    new DrawBoreBit(),
+                    new DrawSideRegion(),
+                    new DrawPlacementLines(),
+                    new DrawBoreEfficiency()
+            );
+            produce(new ProduceIfCooldown(
+                            new ProduceWallOre(2,4),
+                            120
+                    )
+            );
+
+            consumePower(45f/60f);
+            consumeBoost(new ConsumeLiquid(TantrosLiquids.steam, 2.5f/60f), 2.5f);
             flags = EnumSet.of(BlockFlag.drill);
         }};
 
@@ -165,7 +199,7 @@ public class TantrosSource {
             flags = EnumSet.of(BlockFlag.drill);
         }};
 
-        vortexSifter = new ProductionBlock("vortex-sifter"){{
+        rotoSifter = new ProductionBlock("roto-sifter"){{
             requirements(Category.production, with(Items.copper, 32, Items.oxide, 40, Items.silicon, 20));
 
             productionTime = 240f;
@@ -184,32 +218,24 @@ public class TantrosSource {
                     TantrosItems.bluecyst,
                     TantrosItems.redcyst
             );
+            drillConfig.isOreSelectable = true;
+            drillConfig.onlyDrillsDominantItems = false;
 
             drawer = new DrawMultiExtended(
                     new DrawDefault(),
-                    /*new DrawParticles(){{
-                        color = Liquids.water.color;
-                        particleSize = 4f;
-                        particles = 20;
-                        particleRad = 10f;
-                        particleLife = 120f;
-                        rotateScl = 1f/12f;
-                    }},*/
                     new DrawRegion("-rotator", 12, true),
+                    new DrawSandVortex(drillConfig){{
+                        particleRad = 10;
+                        rotateScl = 1/11f;
+                        particleSize = 2;
+                        particleLife = 60f;
+                        alpha = 0.9f;
+                        particles = 70;
+                    }},
                     new DrawRegion("-top")
             );
 
-            this.effects.add(new DrillsFloorOres(drillConfig));
-
-            /*ProduceOre drillProduce = new ProduceOre();
-            drillProduce.tier = 1;
-            drillProduce.blockedItems = Seq.with(
-                    Items.copper,
-                    Items.coal,
-                    Items.lead,
-                    Items.scrap
-            );
-            produce(drillProduce);*/
+            this.effect(new DrillsFloorOres(drillConfig));
 
             consume(new ConsumeEnv(LocalEnv.with(Liquids.water)));
             consumePower(30f);
@@ -243,7 +269,7 @@ public class TantrosSource {
             attributeConfig.displayEfficiencyScale = attributeConfig.efficiencyScale = 1f/9f;
 
             consume(new ConsumeAttributeTile(attributeConfig));
-            effects.add(new AttributePlacementRestriction());
+            effect(new AttributePlacementRestriction());
             produce(new ProduceLiquid(new LiquidStack(TantrosLiquids.steam, 10f/60f)));
         }};
 

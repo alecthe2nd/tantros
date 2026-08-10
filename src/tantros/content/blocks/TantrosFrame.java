@@ -64,7 +64,7 @@ public class TantrosFrame {
     public static BlockExtended buildFrame(UnitType unitType, ItemStack[] cost, Cons<BlockExtended> modifier){
         return new BlockExtended((unitType.name.replaceFirst("tantros-","")) + "-frame"){{
             requirements(Category.units, cost);
-            effects.add(new IsBuilding());
+            effect(new IsBuilding());
 
             rotate = true;
             drawArrow = true;

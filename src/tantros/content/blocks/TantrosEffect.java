@@ -1,13 +1,9 @@
 package tantros.content.blocks;
 
-import arc.graphics.Color;
 import arc.struct.Seq;
 import mindustry.Vars;
-import mindustry.content.Bullets;
 import mindustry.content.Items;
 import mindustry.content.Liquids;
-import mindustry.content.UnitTypes;
-import mindustry.entities.bullet.LiquidBulletType;
 import mindustry.graphics.Layer;
 import mindustry.type.Category;
 import mindustry.world.Block;
@@ -18,14 +14,12 @@ import mindustry.world.draw.DrawPulseShape;
 import mindustry.world.draw.DrawRegion;
 import mindustry.world.meta.Env;
 import tantros.graphics.TantrosPal;
-import tantros.type.buildConfig.ProgressTimerConfig;
+import tantros.type.blockConfig.ProgressTimerConfig;
 import tantros.type.effect.IsBuilding;
 import tantros.type.effect.projector.mend.HealsInRangeContinuously;
 import tantros.type.effect.projector.mend.HealsInRangeWithPulses;
 import tantros.type.effect.projector.mend.MendConfig;
-import tantros.type.effect.projector.range.HasRange;
 import tantros.type.effect.projector.range.RangeConfig;
-import tantros.type.production.ProduceBulletSpray;
 import tantros.world.blocks.BlockExtended;
 import tantros.world.blocks.effect.FacingPressureBooster;
 import tantros.world.blocks.effect.GenericProjector;
@@ -35,8 +29,6 @@ import tantros.world.blocks.effect.projector.draw.DrawCircleEmitterRange;
 import tantros.world.blocks.effect.projector.draw.DrawEnvIconEmitter;
 import tantros.world.blocks.effect.projector.draw.DrawFieldArea;
 import tantros.world.blocks.effect.projector.draw.DrawMultiEmitter;
-import tantros.world.blocks.production.ProductionBlock;
-import tantros.world.consumers.ConsumeNearbyDamagedBuilding;
 import tantros.world.draw.extended.DrawMultiExtended;
 import tantros.world.draw.extended.DrawPlacementRange;
 import tantros.world.environment.LocalEnv;
@@ -163,7 +155,7 @@ public class TantrosEffect {
                     }}
             );
 
-            effects.add(
+            effect(
                     new IsBuilding(),
                     new HealsInRangeContinuously(
                             new MendConfig(20f / 60f, MendConfig.MendType.ABSOLUTE),

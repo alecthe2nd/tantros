@@ -28,7 +28,6 @@ public class UnitCommandAssigner implements BlockEffect {
         if(build.timer(updateTimer, checkInterval) && !net.client()){
 
             for (Unit link : links.unitLinks) {
-                Log.info("linked to "+ link);
                 if(canControl(build, link)){
                     CommandAI ai = link.command();
                     ai.clearCommands();

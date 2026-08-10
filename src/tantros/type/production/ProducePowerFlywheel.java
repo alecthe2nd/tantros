@@ -1,8 +1,6 @@
 package tantros.type.production;
 
-import mindustry.world.meta.Stats;
-import tantros.type.Resource;
-import tantros.type.buildConfig.FlywheelConfig;
+import tantros.type.blockConfig.FlywheelConfig;
 import tantros.type.buildingState.FlywheelProgressState;
 import tantros.world.blocks.production.ProductionBlock;
 

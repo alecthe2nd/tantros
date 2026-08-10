@@ -340,7 +340,7 @@ public class TantrosProduction {
             ProduceBoilerLiquid p = new ProduceBoilerLiquid(new LiquidStack(TantrosLiquids.steam, 10f/60f));
             p.config.pressureCapacity = 30;
             produce(p);
-            effects.add(new PressureExplosionOnDestruction(10));
+            effect(new PressureExplosionOnDestruction(10));
 
             schematicPriority = -5;
         }};

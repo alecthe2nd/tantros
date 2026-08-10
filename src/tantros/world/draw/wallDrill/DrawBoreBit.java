@@ -81,8 +81,10 @@ public class DrawBoreBit extends DrawBlock {
         Draw.z(mainZ);
         var dir = Geometry.d4(build.rotation);
 
+        float totalProgress = build.totalProgress();
+
         for(int i = 0; i < build.block.size; i++){
-            float offset = Mathf.absin((build.totalProgress()*productionTime + i*5 + (build.id % 9)*9), 6f, range) * forwardThrust;
+            float offset = Mathf.absin((totalProgress + i*5 + (build.id % 9)*9), 6f, range) * forwardThrust;
 
             Tile face = tempFacing[i];
             Point2 p = tempLasers[i];
@@ -100,12 +102,13 @@ public class DrawBoreBit extends DrawBlock {
             Lines.stroke(2f);
             Lines.line(axle, targetx, targety, homex, homey, false);
             Lines.stroke(1f);
+            Draw.rect(cap, homex,homey, build.rotdeg());
             Draw.rect(head, targetx, targety, build.rotdeg());
             for(int j = 0; j < finCount; j++){
 
                 var finDir = Geometry.d4(build.rotation + 1);
-                float horizOffset = Mathf.cosDeg(build.totalProgress()*productionTime * rotationSpeed + (360f/finCount)*j) * headWidth,
-                        depthOffset = Mathf.sinDeg(build.totalProgress()*productionTime * rotationSpeed + (360f/finCount)*j) * headWidth;
+                float horizOffset = Mathf.cosDeg(totalProgress * rotationSpeed + (360f/finCount)*j) * headWidth,
+                        depthOffset = Mathf.sinDeg(totalProgress * rotationSpeed + (360f/finCount)*j) * headWidth;
                 float z2 = Draw.z();
                 if(depthOffset < 0){
                     Draw.z(z2 - 0.1f);
@@ -115,8 +118,8 @@ public class DrawBoreBit extends DrawBlock {
             }
             for(int k = 0; k < spikeCount; k++){
                 var finDir = Geometry.d4(build.rotation + 1);
-                float horizOffset = Mathf.cosDeg(build.totalProgress()*productionTime * rotationSpeed + (360f/spikeCount)*k) * headWidth * spikeCircleFraction,
-                        depthOffset = Mathf.sinDeg(build.totalProgress()*productionTime * rotationSpeed + (360f/spikeCount)*k) * headWidth * spikeCircleFraction;
+                float horizOffset = Mathf.cosDeg(totalProgress * rotationSpeed + (360f/spikeCount)*k) * headWidth * spikeCircleFraction,
+                        depthOffset = Mathf.sinDeg(totalProgress * rotationSpeed + (360f/spikeCount)*k) * headWidth * spikeCircleFraction;
                 float z2 = Draw.z();
                 if(depthOffset < 0){
                     Draw.z(z2 - 0.1f);
@@ -124,15 +127,13 @@ public class DrawBoreBit extends DrawBlock {
                 Draw.rect(spike, targetx + (finDir.x)*horizOffset + spikeYOffset*dir.x, targety + (finDir.y)*horizOffset + spikeYOffset*dir.y, build.rotdeg());
                 Draw.z(z2);
             }
-
-            Draw.rect(cap, homex,homey, build.rotdeg());
             Draw.z(Layer.effect);
             Lines.stroke(build.warmup());
             rand.setState(i, build.id);
             Color col = drop.color;
             Color spark = Tmp.c3.set(sparkColor);
             for(int j = 0; j < sparks; j++){
-                float fin = (build.totalProgress()*productionTime / sparkLife + rand.random(sparkRecurrence + 1f)) % sparkRecurrence;
+                float fin = (totalProgress / sparkLife + rand.random(sparkRecurrence + 1f)) % sparkRecurrence;
                 float or = rand.range(2f);
                 Tmp.v1.set(sparkRange * fin, 0).rotate(build.rotdeg() + rand.range(sparkSpread));
 

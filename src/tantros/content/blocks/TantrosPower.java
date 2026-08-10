@@ -14,7 +14,7 @@ import mindustry.world.draw.*;
 import mindustry.world.meta.Env;
 import tantros.content.TantrosFx;
 import tantros.content.world.TantrosLiquids;
-import tantros.type.buildConfig.FlywheelConfig;
+import tantros.type.blockConfig.FlywheelConfig;
 import tantros.type.buildingState.FlywheelProgressState;
 import tantros.type.effect.PistonSoundFxEffect;
 import tantros.type.production.ProducePowerFlywheel;
@@ -152,7 +152,7 @@ public class TantrosPower {
             warmupEffectsProduction = true;
             warmupSpeed = 0.0005f;
 
-            effects.add(new PistonSoundFxEffect(){{
+            effect(new PistonSoundFxEffect(){{
                 sfx = new SoundEffect(Sounds.blockExplodeWall, TantrosFx.parallaxBubble);
                 sinMag = 3f;
                 sinScl = 5f;

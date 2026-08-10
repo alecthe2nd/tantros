@@ -42,15 +42,15 @@ public class TantrosLogic {
             );
             size = 3;
 
-            effects.add(
+            effect(
                     new UnitLinkSetter<>(
                             OneLink.class,
                             ()-> new OneLink((b)->b.block.configurations.containsKey(AddUnitConfig.class)),
                             new RangeConfig(4*Vars.tilesize)
                     )
             );
-            effects.add(new IsBuilding());
-            effects.add(new IsWalkable());
+            effect(new IsBuilding());
+            effect(new IsWalkable());
         }};
 
         unitInstructor = new BlockExtended("unit-instructor"){{
@@ -64,8 +64,8 @@ public class TantrosLogic {
             );
             size = 2;
 
-            effects.add(new IsBuilding());
-            effects.add(new UnitCommandAssigner());
+            effect(new IsBuilding());
+            effect(new UnitCommandAssigner());
         }};
 
 

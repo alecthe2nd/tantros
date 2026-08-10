@@ -1,5 +1,7 @@
 package tantros.type.buildConfig;
 
+import arc.util.io.Reads;
+import arc.util.io.Writes;
 import mindustry.Vars;
 import mindustry.gen.Groups;
 import mindustry.gen.Unit;
@@ -17,14 +19,14 @@ public class AddUnitConfig extends BuildConfigurationUnit{
     }
 
     @Override
-    public void read(ReadContext read) {
+    public void read(Reads read) {
         int id = read.i();
         if (id != -1) unit = Groups.unit.getByID(id);
         toggle = read.bool();
     }
 
     @Override
-    public void write(WriteContext write) {
+    public void write(Writes write) {
         write.i(unit == null? -1 : unit.id);
         write.bool(toggle);
     }

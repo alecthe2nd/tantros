@@ -4,7 +4,7 @@ import arc.math.Mathf;
 import arc.util.Time;
 import arc.util.io.Reads;
 import arc.util.io.Writes;
-import tantros.type.buildConfig.FlywheelConfig;
+import tantros.type.blockConfig.FlywheelConfig;
 import tantros.world.blocks.BlockExtended;
 
 public class FlywheelProgressState implements BuildingState {

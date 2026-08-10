@@ -7,14 +7,14 @@ import mindustry.content.Fx;
 import mindustry.world.meta.Stat;
 import mindustry.world.meta.StatUnit;
 import mindustry.world.meta.StatValues;
-import tantros.type.buildConfig.ProgressTimerConfig;
+import tantros.type.blockConfig.ProgressTimerConfig;
 import tantros.type.buildingState.ProgressTimerState;
 import tantros.type.effect.BlockEffect;
 import tantros.type.effect.StatDisplayEffect;
 import tantros.type.effect.projector.range.RangeConfig;
 import tantros.type.effect.projector.range.RangeState;
 import tantros.world.blocks.BlockExtended;
-import tantros.world.meta.TantrosStats;
+
 import static tantros.world.meta.TantrosStats.displayStat;
 
 import static mindustry.Vars.indexer;

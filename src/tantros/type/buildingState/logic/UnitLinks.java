@@ -38,7 +38,6 @@ public class UnitLinks implements BuildingState {
 
     @Override
     public void update(BlockExtended ownerType, BlockExtended.BuildExtended owner) {
-        Log.info("[Unitlinks] clear unit ids");
         if(!unitIds.isEmpty()){
             unitLinks.clear();
             unitIds.each(i -> {

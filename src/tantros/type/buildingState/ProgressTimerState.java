@@ -1,12 +1,10 @@
 package tantros.type.buildingState;
 
-import arc.func.Func;
 import arc.math.Mathf;
-import arc.util.Log;
 import arc.util.Time;
 import arc.util.io.Reads;
 import arc.util.io.Writes;
-import tantros.type.buildConfig.ProgressTimerConfig;
+import tantros.type.blockConfig.ProgressTimerConfig;
 import tantros.world.blocks.BlockExtended;
 
 public class ProgressTimerState implements BuildingState {

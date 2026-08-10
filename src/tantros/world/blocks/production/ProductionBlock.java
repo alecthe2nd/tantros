@@ -185,7 +185,7 @@ public class ProductionBlock extends BlockExtended {
 
             if(efficiency > 0){
 
-                warmup = Mathf.approachDelta(warmup, 1f, warmupSpeed);
+                warmup = Mathf.approachDelta(warmup, efficiency, warmupSpeed);
                 progress += progressThisTick;
 
                 for(Produce producer: producers){

@@ -12,6 +12,14 @@ public interface BlockEffect {
 
     void update(BlockExtended.BuildExtended build);
 
+    default void updateAlways(BlockExtended.BuildExtended build){
+
+    }
+
+    default void applySubEffects(BlockExtended block){
+
+    }
+
     default void apply(BlockExtended block){
 
     }

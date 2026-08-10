@@ -1,14 +1,18 @@
 package tantros.type.effect;
 
 import arc.struct.Seq;
+import arc.util.Log;
+import arc.util.Nullable;
 import mindustry.game.Team;
+import mindustry.type.Item;
 import mindustry.world.Tile;
 import mindustry.world.blocks.environment.Floor;
 import mindustry.world.meta.Stat;
 import mindustry.world.meta.StatUnit;
 import mindustry.world.meta.StatValues;
-import tantros.type.buildConfig.DrillConfig;
+import tantros.type.blockConfig.DrillConfig;
 import tantros.type.buildingState.drills.FloorOreState;
+import tantros.type.buildingState.drills.ItemSelectionState;
 import tantros.type.production.ProduceOre;
 import tantros.world.blocks.BlockExtended;
 import tantros.world.blocks.production.ProductionBlock;
@@ -20,7 +24,11 @@ public class DrillsFloorOres implements BlockEffect {
 
     public DrillConfig drillConfig;
 
+    @Nullable
+    public HasSelectableItems itemSelectionEffect;
+
     public static final Seq<Tile> tempTiles = new Seq<>();
+    public static final Seq<Item> tempItems = new Seq<>();
 
     public DrillsFloorOres(DrillConfig drillConfig){
         this.drillConfig = drillConfig;
@@ -36,6 +44,14 @@ public class DrillsFloorOres implements BlockEffect {
     }
 
     @Override
+    public void applySubEffects(BlockExtended block) {
+        if(drillConfig.isOreSelectable){
+            itemSelectionEffect = new HasSelectableItems();
+            block.effect(itemSelectionEffect);
+        }
+    }
+
+    @Override
     public boolean canBeAppliedTo(BlockExtended block) {
         return BlockEffect.super.canBeAppliedTo(block) && block instanceof ProductionBlock;
     }
@@ -43,6 +59,31 @@ public class DrillsFloorOres implements BlockEffect {
     @Override
     public void update(BlockExtended.BuildExtended build) {
 
+    }
+
+    @Override
+    public void updateAlways(BlockExtended.BuildExtended build) {
+        tempItems.clear();
+        FloorOreState oreState = build.getState(FloorOreState.class, drillConfig.oreStateName);
+        if(oreState == null) return;
+        if(drillConfig.isOreSelectable && !drillConfig.onlyDrillsDominantItems){
+            ItemSelectionState selectState = build.getState(ItemSelectionState.class, itemSelectionEffect.stateName);
+            if(selectState != null) {
+                oreState.filter = selectState.isSelected;
+                Log.info("-----");
+                for(Item item: oreState.oreCount.keys().toSeq(tempItems)){
+                    if(!selectState.toggles.containsKey(item)){
+                        selectState.toggles.put(item, true);
+                    }
+                }
+                tempItems.clear();
+                for(Item item: selectState.toggles.keys().toSeq(tempItems)){
+                    if(!oreState.oreCount.containsKey(item)){
+                        selectState.toggles.remove(item);
+                    }
+                }
+            }
+        }
     }
 
     @Override
@@ -61,10 +102,11 @@ public class DrillsFloorOres implements BlockEffect {
     @Override
     public boolean placementAllowed(BlockExtended block, Tile tile, Team team, int rotation) {
         if(block.isMultiblock()){
+            boolean placeable = false;
             for(Tile other : tile.getLinkedTilesAs(block, tempTiles)){
-                return drillConfig.canMine(other);
+                placeable |= drillConfig.canMine(other);
             }
-            return false;
+            return placeable;
         }else{
             return drillConfig.canMine(tile);
         }
