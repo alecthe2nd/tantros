@@ -42,8 +42,8 @@ public class HealsInRangeWithPulses extends StatDisplayEffect implements BlockEf
         block.putBlockConfig(rangeConfig);
         block.putBlockConfig(progressConfig);
         block.putBlockConfig(mendConfig);
-        block.postStateRequest(()-> new RangeState(this.rangeConfig), "PulseRange");
-        block.postStateRequest(()-> new ProgressTimerState(this.progressConfig), "PulseProgress");
+        rangeName = block.postStateRequest(()-> new RangeState(this.rangeConfig), "PulseRange");
+        progressName = block.postStateRequest(()-> new ProgressTimerState(this.progressConfig), "PulseProgress");
     }
 
     @Override

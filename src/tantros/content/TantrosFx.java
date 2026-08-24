@@ -1,6 +1,10 @@
 package tantros.content;
 
+import arc.graphics.g2d.Draw;
+import arc.graphics.g2d.Lines;
+import arc.math.Angles;
 import arc.math.Mathf;
+import mindustry.Vars;
 import mindustry.content.Items;
 import mindustry.entities.Effect;
 import mindustry.graphics.Drawf;
@@ -55,10 +59,16 @@ public class TantrosFx {
                 }
 
                 Drawf.light(e.x, e.y, 60f, Pal.bulletYellowBack, 0.6f * e.fout());
+            }),
+
+            tremorImpactWave = new Effect(50.0F, (e) -> {
+                Draw.color(e.color);
+                Lines.stroke(e.fout() * 1.5F);
+                Angles.randLenVectors((long)e.id, 12, 4.0F + e.finpow() * e.rotation, (x, y) -> Lines.lineAngle(e.x + x, e.y + y, Mathf.angle(x, y), e.fout() * 5.0F + 1.0F));
+                e.scaled(30.0F, (b) -> {
+                    Lines.stroke(5.0F * b.fout());
+                    Lines.circle(e.x, e.y, b.finpow() * 25 * Vars.tilesize);
+                });
             })
-
-
-
-
-            ;
+        ;
 }

@@ -59,6 +59,8 @@ public class TantrosTechTree {
                 });
             });
             TechTree.node(TantrosSource.copperBore, Seq.with(copper, embark), () -> {
+                TechTree.node(TantrosSource.turbineBore, Seq.with(never), () -> {
+                });
                 TechTree.node(TantrosSource.deepBoreDrill, Seq.with(never), () -> {
                     TechTree.node(TantrosSource.deepLaserDrill, Seq.with(never), () -> {
 
@@ -96,7 +98,9 @@ public class TantrosTechTree {
                 });
 
                 TechTree.node(TantrosSource.siltSifter, Seq.with(shallows), () -> {
+                    TechTree.node(TantrosSource.rotoSifter, Seq.with(never), () -> {
 
+                    });
                 });
             });
             TechTree.node(TantrosPower.tidalTurbine, Seq.with(shallows), () -> {
@@ -162,7 +166,11 @@ public class TantrosTechTree {
                     TechTree.node(TantrosTurret.lob, Seq.with(
                             polarEdge
                     ), () -> {
+                        TechTree.node(TantrosTurret.tremor, Seq.with(
+                                deepChannels
+                        ), () -> {
 
+                        });
                     });
                 });
                 TechTree.node(TantrosDefense.largeCopperBulkhead, () -> {

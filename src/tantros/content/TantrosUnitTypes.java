@@ -221,15 +221,18 @@ public class TantrosUnitTypes {
         roach = EntityRegistry.content("roach", BurrowerUnit.class, name -> new BurrowerUnitType(name){{
             //constructor = LegsUnit::create;
             aiController = SuicideAI::new;
-            speed = 0.5f;
+            speed = 0.48f;
             drag = 0.11f;
             hitSize = 7f;
             rotateSpeed = 6f;
-            health = 360;
+            health = 300;
             armor = 4f;
             legStraightness = 0.3f;
             stepShake = 0f;
             mechStepParticles = false;
+
+            burrowDislodgeCooldown = 210;
+            dislodgeStatusDuration = 120;
 
             legCount = 6;
             legLength = 6f;
@@ -300,6 +303,9 @@ public class TantrosUnitTypes {
             legStraightness = 0.3f;
             stepShake = 0f;
             mechStepParticles = false;
+
+            burrowDislodgeCooldown = 240;
+            dislodgeStatusDuration = 120;
 
             legCount = 6;
             legLength = 6f;

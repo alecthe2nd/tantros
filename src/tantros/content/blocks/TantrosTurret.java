@@ -5,6 +5,7 @@ import arc.graphics.Color;
 import arc.math.Interp;
 import arc.struct.EnumSet;
 import arc.struct.Seq;
+import mindustry.Vars;
 import mindustry.content.*;
 import mindustry.entities.Effect;
 import mindustry.entities.bullet.*;
@@ -19,6 +20,7 @@ import mindustry.type.Category;
 import mindustry.world.Block;
 import mindustry.world.blocks.defense.turrets.ItemTurret;
 import mindustry.world.blocks.defense.turrets.LiquidTurret;
+import mindustry.world.blocks.defense.turrets.PowerTurret;
 import mindustry.world.consumers.ConsumeCoolant;
 import mindustry.world.consumers.ConsumeLiquid;
 import mindustry.world.draw.DrawTurret;
@@ -37,6 +39,7 @@ public class TantrosTurret {
             thrust,
             lob,
             puncture,
+            tremor,
             leviathan
             ;
 
@@ -485,6 +488,68 @@ public class TantrosTurret {
             health = 260;
             shootSound = Sounds.shootArtillerySmall;
             limitRange(0f);
+        }};
+
+        tremor = new PowerTurret("tremor"){{
+            requirements(Category.turret, with(Items.oxide, 45, Items.lead, 60, Items.silicon, 30));
+
+            consumePower(120f/60f);
+
+            shootX = 0;
+            shootY = 0;
+
+            rotate = false;
+            rotateSpeed = 0;
+
+            shootCone = 360;
+
+            shootType = new BasicBulletType(0, 0){{
+
+                instantDisappear = true;
+
+                despawnHit = true;
+
+                collidesAir = false;
+
+                hitColor = backColor = trailColor = frontColor = Pal.water;
+
+                hitEffect = despawnEffect = TantrosFx.tremorImpactWave;
+
+                splashDamageRadius = 25f * Vars.tilesize;
+                splashDamage = 44f;
+                //scaledSplashDamage = true;
+
+                status = StatusEffects.blasted;
+            }};
+
+            size = 2;
+
+            targetGround = true;
+            targetAir = false;
+
+            reload = 320f;
+            recoil = 0;
+            range = 25f * Vars.tilesize;
+
+            health = 260;
+            shootSound = Sounds.drillImpact;
+
+            drawer = new DrawTurret("sealed-"){{
+                parts.add(new RegionPart("-weight"){{
+                    growProgress = PartProgress.reload.curve(Interp.pow2In);
+                    growX = -0.5f;
+                    growY = -0.5f;
+                }});
+                parts.add(new RegionPart("-head"){{
+                    progress = PartProgress.reload.curve(Interp.pow2In);
+                    moveRot = 360 * 3;
+                }});
+            }};
+
+            shootWarmupSpeed = 0.1f;
+            warmupMaintainTime = 60f;
+            minWarmup = 0.99f;
+
         }};
 
 

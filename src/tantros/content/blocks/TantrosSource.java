@@ -238,7 +238,7 @@ public class TantrosSource {
             this.effect(new DrillsFloorOres(drillConfig));
 
             consume(new ConsumeEnv(LocalEnv.with(Liquids.water)));
-            consumePower(30f);
+            consumePower(30f/60f);
             flags = EnumSet.of(BlockFlag.drill);
         }};
 

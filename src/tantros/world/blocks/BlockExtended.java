@@ -261,6 +261,7 @@ public class BlockExtended extends Block {
         }
 
         public <state extends BuildingState> state getState(Class<state> type, String name){
+            if(name == null) return null;
             BuildingState found = this.states.get(name);
             if(type.isInstance(found)){
                 return type.cast(found);
@@ -269,10 +270,12 @@ public class BlockExtended extends Block {
         }
 
         public BuildingState getState(String name){
+            if(name == null) return null;
             return this.states.get(name);
         }
 
         public BuildingState getStatesAsSerialized(String name){
+            if(name == null) return null;
             return this.statesAsSerialized.get(name);
         }
 

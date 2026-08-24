@@ -36,7 +36,7 @@ public class HealsInRangeContinuously extends StatDisplayEffect implements Block
     public void apply(BlockExtended block) {
         block.putBlockConfig(rangeConfig);
         block.putBlockConfig(mendConfig);
-        block.postStateRequest(()-> new RangeState(rangeConfig), "HealContinuousRange");
+        rangeName = block.postStateRequest(()-> new RangeState(rangeConfig), "HealContinuousRange");
     }
 
     @Override
