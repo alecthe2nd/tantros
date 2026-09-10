@@ -1,10 +1,15 @@
 package tantros.world.draw;
 
+import arc.Core;
+import arc.graphics.g2d.TextureRegion;
+import mindustry.world.Block;
 import mindustry.world.blocks.storage.CoreBlock;
 import mindustry.world.draw.DrawDefault;
 import mindustry.world.draw.DrawMulti;
 
 public class DrawCore extends DrawMulti {
+
+    public TextureRegion fullIcon;
 
     public DrawCore(){
         super(
@@ -23,6 +28,14 @@ public class DrawCore extends DrawMulti {
                         )
                 )
         );
+    }
+
+    public TextureRegion[] icons(Block block) {
+        return new TextureRegion[]{fullIcon};
+    }
+
+    public void load(Block block){
+        this.fullIcon = Core.atlas.find(block.name + "-full");
     }
 
 }
