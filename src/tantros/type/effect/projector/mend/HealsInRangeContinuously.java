@@ -2,12 +2,14 @@ package tantros.type.effect.projector.mend;
 
 import arc.math.Mathf;
 import arc.scene.ui.layout.Table;
-import arc.util.Tmp;
 import mindustry.content.Fx;
+import mindustry.gen.Building;
 import mindustry.world.meta.Stat;
 import mindustry.world.meta.StatUnit;
 import mindustry.world.meta.StatValues;
 import tantros.TantrosVars;
+import tantros.type.blockConfig.BuildingTargetsConfig;
+import tantros.type.buildingState.BuildingTargetsState;
 import tantros.type.effect.BlockEffect;
 import tantros.type.effect.StatDisplayEffect;
 import tantros.type.effect.projector.range.RangeConfig;
@@ -21,8 +23,11 @@ public class HealsInRangeContinuously extends StatDisplayEffect implements Block
 
     RangeConfig rangeConfig;
     MendConfig mendConfig;
+    BuildingTargetsConfig targetsConfig;
 
     String rangeName = "";
+
+    String targetsName = "";
 
     public boolean any = false;
 
@@ -30,6 +35,16 @@ public class HealsInRangeContinuously extends StatDisplayEffect implements Block
         super();
         this.rangeConfig = rangeConfig;
         this.mendConfig = mendConfig;
+        this.targetsConfig = new BuildingTargetsConfig();
+        this.targetsConfig.refreshEachTick = false;
+        this.targetsConfig.refreshTime = 10;
+    }
+
+    public HealsInRangeContinuously(MendConfig mendConfig, RangeConfig rangeConfig, BuildingTargetsConfig targetsConfig){
+        super();
+        this.rangeConfig = rangeConfig;
+        this.mendConfig = mendConfig;
+        this.targetsConfig = targetsConfig;
     }
 
     @Override
@@ -37,6 +52,8 @@ public class HealsInRangeContinuously extends StatDisplayEffect implements Block
         block.putBlockConfig(rangeConfig);
         block.putBlockConfig(mendConfig);
         rangeName = block.postStateRequest(()-> new RangeState(rangeConfig), "HealContinuousRange");
+        targetsName = block.postStateRequest(()->new BuildingTargetsState(targetsConfig, rangeConfig), "HealContinuousTargets");
+        rangeConfig.rangeStateName = rangeName;
     }
 
     @Override
@@ -65,31 +82,37 @@ public class HealsInRangeContinuously extends StatDisplayEffect implements Block
         RangeState rangeState = build.getState(RangeState.class,rangeName);
         if(rangeState == null) return;
 
+        BuildingTargetsState targetsState = build.getState(BuildingTargetsState.class,targetsName);
+        if(targetsState == null) return;
+
         if(build.efficiency > 0){
-            if(!build.checkSuppression() /* TODO && DAMAGED TARGET TRACKING FINDS SOMETHING*/){
+            if(!build.checkSuppression() && targetsState.targets.size > 0){
 
                 any = false;
 
-                indexer.eachBlock(build.team, Tmp.r1.setCentered(build.x, build.y, rangeState.range() * tilesize), b -> b.damaged() && !b.isHealSuppressed() && rangeState.inRange(build, b), other -> {
-                    int pos = other.pos();
-                    float value = TantrosVars.healMap.mendMap.get(pos);
-                    float healAmount =Math.min(
-                            Math.max(
-                                    value,
-                                    (
-                                            (mendConfig.mendType == MendConfig.MendType.ABSOLUTE)?
-                                                    mendConfig.heal:
-                                                    other.maxHealth() * mendConfig.heal / 100
-                                    ) * build.edelta()),
-                            other.block.health - other.health
-                    );
+                for(int i = 0; i < targetsState.targets.size; i++){
+                    Building other = targetsState.targets.get(i);
+                    if(other.damaged() && !other.isHealSuppressed()) {
+                        int pos = other.pos();
+                        float value = TantrosVars.healMap.mendMap.get(pos);
+                        float healAmount = Math.min(
+                                Math.max(
+                                        value,
+                                        (
+                                                (mendConfig.mendType == MendConfig.MendType.ABSOLUTE) ?
+                                                        mendConfig.heal :
+                                                        other.maxHealth() * mendConfig.heal / 100
+                                        ) * build.edelta()),
+                                other.block.health - other.health
+                        );
 
-                    TantrosVars.healMap.mendMap.put(pos, healAmount );
-                    if(Mathf.chanceDelta(0.003f * other.block.size * other.block.size)){
-                        Fx.regenParticle.at(other.x + Mathf.range(other.block.size * tilesize/2f - 1f), other.y + Mathf.range(other.block.size * tilesize/2f - 1f));
+                        TantrosVars.healMap.mendMap.put(pos, healAmount);
+                        if (Mathf.chanceDelta(0.003f * other.block.size * other.block.size)) {
+                            Fx.regenParticle.at(other.x + Mathf.range(other.block.size * tilesize / 2f - 1f), other.y + Mathf.range(other.block.size * tilesize / 2f - 1f));
+                        }
+                        any = true;
                     }
-                    any = true;
-                });
+                }
 
                 if(any){
                     mendConfig.mendSound.at(build, 1f + Mathf.range(0.1f), mendConfig.mendSoundVolume);

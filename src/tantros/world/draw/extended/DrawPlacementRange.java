@@ -27,6 +27,7 @@ public class DrawPlacementRange extends DrawBlockExtended{
             r = rangeState.range();
         }
         if(range == null) return;
+
         Draw.color(Pal.accent);
         if(dashed){
             if(range.shape.drawDashed != null){

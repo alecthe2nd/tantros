@@ -11,7 +11,6 @@ import arc.util.Eachable;
 import arc.util.Log;
 import arc.util.io.Reads;
 import arc.util.io.Writes;
-import mindustry.Vars;
 import mindustry.content.Liquids;
 import mindustry.entities.Damage;
 import mindustry.entities.Effect;
@@ -26,9 +25,7 @@ import mindustry.type.UnitType;
 import mindustry.world.Block;
 import mindustry.world.Tile;
 import mindustry.world.consumers.Consume;
-import mindustry.world.consumers.ConsumeLiquid;
 import mindustry.world.draw.DrawDefault;
-import tantros.net.TantrosCalls;
 import tantros.type.blockConfig.BlockConfig;
 import tantros.type.blockConfig.ConfigApplier;
 import tantros.type.blockInput.BlockInput;
@@ -44,7 +41,6 @@ import tantros.world.draw.extended.DrawMultiExtended;
 
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
-import java.util.Objects;
 
 import static mindustry.Vars.*;
 import static mindustry.Vars.state;
@@ -57,6 +53,7 @@ public class BlockExtended extends Block {
     public static final ByteArrayOutputStream writeOutputStream = new ByteArrayOutputStream();
 
     public static final Writes writeDelegate = new Writes(new DataOutputStream(writeOutputStream));
+    public static final Seq<BuildingState> tempStates = new Seq<>();
 
     public DrawBlockExtended drawer = new DrawMultiExtended(new DrawDefault());
     public ObjectMap<Class<? extends BlockConfig>, ? super BlockConfig> blockConfigs = new ObjectMap<>();
@@ -326,19 +323,24 @@ public class BlockExtended extends Block {
         public void updateTile() {
             super.updateTile();
 
-            for(BuildingState state : this.states.values()){
+            tempStates.clear();
+            this.states.values().toSeq(tempStates);
+
+            for( int i = 0; i < tempStates.size; i++ ){
+                BuildingState state = tempStates.get(i);
                 state.update((BlockExtended) this.block, this);
             }
-            for(BlockEffect effect: effects){
+
+            for(int i = 0; i < effects.size; i++){
+                BlockEffect effect = effects.get(i);
                 effect.updateAlways(this);
             }
             if(efficiency > 0){
-                for(BlockEffect effect: effects){
+                for(int i = 0; i < effects.size; i++){
+                    BlockEffect effect = effects.get(i);
                     effect.update(this);
                 }
             }
-
-
         }
 
         @Override

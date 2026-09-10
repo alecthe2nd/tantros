@@ -109,25 +109,23 @@ public class TantrosDistribution {
         }};
 
         pneumaticDuctRouter = new BoostDuctRouter("pneumatic-duct-router"){{
-            requirements(Category.distribution, with(Items.metaglass, 3, Items.graphite, 2));
+            requirements(Category.distribution, with(Items.metaglass, 3, Items.oxide, 2));
             health = 90;
             speed = 7.5f;
             regionRotated1 = 1;
             solid = false;
-            researchCost = with(Items.copper, 5);
             max_pressure = 20;
         }};
 
         pneumaticDuctBridge = new BoostDuctBridge("pneumatic-duct-bridge"){{
-            requirements(Category.distribution, with(Items.metaglass, 5, Items.graphite, 4));
+            requirements(Category.distribution, with(Items.metaglass, 5, Items.oxide, 4));
             health = 90;
             speed = 7.5f;
-            researchCost = with(Items.copper, 5, Items.lead, 5);
             max_pressure = 20;
         }};
 
         pneumaticDuct = new BoostDuct("pneumatic-duct"){{
-            requirements(Category.distribution, with(Items.metaglass, 2, Items.graphite, 1));
+            requirements(Category.distribution, with(Items.metaglass, 2));
             health = 180;
             speed = 7.5f;
             bridgeReplacement = copperDuctBridge;

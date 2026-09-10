@@ -13,6 +13,7 @@ import mindustry.world.draw.DrawMulti;
 import mindustry.world.draw.DrawPulseShape;
 import mindustry.world.draw.DrawRegion;
 import mindustry.world.meta.Env;
+import tantros.content.world.TantrosLiquids;
 import tantros.graphics.TantrosPal;
 import tantros.type.blockConfig.ProgressTimerConfig;
 import tantros.type.effect.IsBuilding;
@@ -30,6 +31,7 @@ import tantros.world.blocks.effect.projector.draw.DrawEnvIconEmitter;
 import tantros.world.blocks.effect.projector.draw.DrawFieldArea;
 import tantros.world.blocks.effect.projector.draw.DrawMultiEmitter;
 import tantros.world.draw.extended.DrawMultiExtended;
+import tantros.world.draw.extended.DrawPlacementBlockTargets;
 import tantros.world.draw.extended.DrawPlacementRange;
 import tantros.world.environment.LocalEnv;
 
@@ -76,7 +78,7 @@ public class TantrosEffect {
 
             regionRotated1 = 1;
 
-            consumeLiquid(Liquids.hydrogen, 0.25f/60f);
+            consumeLiquid(TantrosLiquids.steam, 0.25f/60f);
 
         }};
 
@@ -152,6 +154,9 @@ public class TantrosEffect {
                     }},
                     new DrawPlacementRange(){{
                         dashed = true;
+                    }},
+                    new DrawPlacementBlockTargets(){{
+                        baseColor = TantrosPal.mendLight;
                     }}
             );
 

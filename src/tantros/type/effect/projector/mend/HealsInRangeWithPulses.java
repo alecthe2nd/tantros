@@ -2,6 +2,7 @@ package tantros.type.effect.projector.mend;
 
 import arc.math.Mathf;
 import arc.scene.ui.layout.Table;
+import arc.util.Time;
 import arc.util.Tmp;
 import mindustry.content.Fx;
 import mindustry.world.meta.Stat;
@@ -26,8 +27,8 @@ public class HealsInRangeWithPulses extends StatDisplayEffect implements BlockEf
     ProgressTimerConfig progressConfig;
     MendConfig mendConfig;
 
-    String progressName;
-    String rangeName;
+    String progressName = "";
+    String rangeName = "";
 
     public boolean any = false;
 
@@ -74,14 +75,14 @@ public class HealsInRangeWithPulses extends StatDisplayEffect implements BlockEf
     @Override
     public void update(BlockExtended.BuildExtended build) {
 
-        RangeState rangeState = build.getState(RangeState.class,rangeName);
-        ProgressTimerState progressState = build.getState(ProgressTimerState.class,progressName);
-        if(rangeState == null || progressState == null) return;
-
         if(build.efficiency > 0){
+            RangeState rangeState = build.getState(RangeState.class,rangeName);
+            ProgressTimerState progressState = build.getState(ProgressTimerState.class,progressName);
+            if(rangeState == null || progressState == null) return;
             if(!build.isHealSuppressed() && progressState.progress > 1 /* TODO && DAMAGED TARGET TRACKING FINDS SOMETHING*/){
 
                 any = false;
+                progressState.progress = 0;
 
                 indexer.eachBlock(build.team, Tmp.r1.setCentered(build.x, build.y, rangeState.range() * tilesize), b -> b.damaged() && !b.isHealSuppressed() && rangeState.inRange(build, b), other -> {
                     other.heal(((mendConfig.mendType == MendConfig.MendType.ABSOLUTE)? mendConfig.heal: other.maxHealth() * mendConfig.heal / 100) * build.efficiency);
@@ -92,7 +93,6 @@ public class HealsInRangeWithPulses extends StatDisplayEffect implements BlockEf
 
                 if(any){
                     mendConfig.mendSound.at(build, 1f + Mathf.range(0.1f), mendConfig.mendSoundVolume);
-                    progressState.progress = 0;
                 }
             }
         }

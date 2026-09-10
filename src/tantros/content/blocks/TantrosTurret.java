@@ -27,6 +27,7 @@ import mindustry.world.draw.DrawTurret;
 import mindustry.world.meta.BlockFlag;
 import mindustry.world.meta.Env;
 import tantros.content.TantrosFx;
+import tantros.content.world.TantrosItems;
 import tantros.content.world.TantrosLiquids;
 
 import static mindustry.type.ItemStack.with;
@@ -40,6 +41,7 @@ public class TantrosTurret {
             lob,
             puncture,
             tremor,
+            denial,
             leviathan
             ;
 
@@ -139,137 +141,11 @@ public class TantrosTurret {
             health = 250;
             inaccuracy = 2f;
             rotateSpeed = 10f;
-            coolant = consume(new ConsumeCoolant(6f/60f){{
-                filter = liquid -> liquid != Liquids.water && liquid.coolant && (this.allowLiquid && !liquid.gas || this.allowGas && liquid.gas) && liquid.temperature <= maxTemp && liquid.flammability < maxFlammability;
-            }});
+
             researchCostMultiplier = 0.05f;
 
             limitRange(5f);
         }};
-
-
-        jetstream = new LiquidTurret("jetstream"){{
-            requirements(Category.turret, with(Items.metaglass, 55, Items.oxide, 125, Items.titanium, 55));
-            drawer = new DrawTurret("sealed-");
-
-            ammo(
-                    Liquids.water,new LiquidBulletType(Liquids.water){{
-                        damage = 6;
-                        knockback = 0.9f;
-                        drag = 0.01f;
-                        layer = Layer.bullet - 2f;
-                        inaccuracy = 7.5f;
-                        reload = 6;
-                        limitRange(this, 7f);
-                    }},
-                    TantrosLiquids.steam, new LiquidBulletType(TantrosLiquids.steam){{
-                        knockback = 0.7f;
-                        damage = 36;
-                        drag = 0.01f;
-                        boilTime = 80;
-                    }}
-            );
-            size = 3;
-            recoil = 1f;
-            reload = 3f;
-            inaccuracy = 2.5f;
-            shootCone = 50f;
-            liquidCapacity = 10f;
-            shootEffect = Fx.shootLiquid;
-            range = 110f;
-            scaledHealth = 250;
-
-            flags = EnumSet.of(BlockFlag.turret, BlockFlag.extinguisher);
-        }};
-        thrust = new ItemTurret("thrust"){
-            {
-                requirements(Category.turret, with(Items.copper, 25, Items.metaglass, 15, Items.oxide, 10));
-
-                ammo(
-                        Items.copper,  new MissileBulletType(3.7f, 15){{
-                            width = 8f;
-                            height = 8f;
-                            shrinkY = 0f;
-                            splashDamageRadius = 30f;
-                            splashDamage = 10f;
-                            ammoMultiplier = 1f;
-                            hitEffect = Fx.blastExplosion;
-                            despawnEffect = Fx.blastExplosion;
-
-                            status = StatusEffects.blasted;
-
-                            hitColor = backColor = trailColor = TantrosLiquids.steam.color;
-                            frontColor = Pal.copperAmmoFront;
-                        }},
-                        Items.graphite,  new MissileBulletType(3.7f, 20){{
-                            width = 8f;
-                            height = 8f;
-                            shrinkY = 0f;
-                            splashDamageRadius = 30f;
-                            splashDamage = 8f;
-                            ammoMultiplier = 2f;
-                            hitEffect = Fx.blastExplosion;
-                            despawnEffect = Fx.blastExplosion;
-
-                            status = StatusEffects.blasted;
-
-                            hitColor = backColor = trailColor = Pal.blastAmmoBack;
-                            frontColor = Pal.blastAmmoFront;
-                        }},
-                        Items.silicon,  new MissileBulletType(3.7f, 20){{
-                            width = 8f;
-                            height = 8f;
-                            shrinkY = 0f;
-                            splashDamageRadius = 30f;
-                            splashDamage = 10;
-                            ammoMultiplier = 1f;
-                            hitEffect = Fx.blastExplosion;
-                            despawnEffect = Fx.blastExplosion;
-                            homingPower = 0.1f;
-
-                            status = StatusEffects.blasted;
-
-                            hitColor = backColor = trailColor = Pal.blastAmmoBack;
-                            frontColor = Pal.blastAmmoFront;
-                        }}
-                );
-
-                drawer = new DrawTurret("sealed-"){{
-                    parts.add(new RegionPart("-missile"){{
-                                progress = PartProgress.reload.curve(Interp.pow2In);
-
-                                colorTo = new Color(1f, 1f, 1f, 0f);
-                                color = Color.white;
-                                mixColorTo = Pal.accent;
-                                mixColor = new Color(1f, 1f, 1f, 0f);
-                                outline = false;
-                                under = true;
-                                layerOffset = -0.01f;
-
-                                moves.add(new PartMove(PartProgress.warmup, 0f, 2f, 0f));
-                            }});
-                }};
-
-                recoil = 0.5f;
-                shootSound = Sounds.shootMissile;
-
-                minWarmup = 0.94f;
-                newTargetInterval = 40f;
-                targetAir = true;
-
-                ammoPerShot = 1;
-                maxAmmo = 5;
-                size = 1;
-                reload = 50;
-                range = 200;
-                shootCone = 1f;
-                scaledHealth = 220;
-                rotateSpeed = 5f;
-
-                consume(new ConsumeLiquid(TantrosLiquids.steam, 5f / 60f));
-                limitRange();
-            }
-        };
 
         puncture = new ItemTurret("puncture"){{
             requirements(Category.turret, with(Items.oxide, 35, Items.metaglass,50, Items.copper, 25));
@@ -490,6 +366,96 @@ public class TantrosTurret {
             limitRange(0f);
         }};
 
+        thrust = new ItemTurret("thrust"){
+            {
+                requirements(Category.turret, with(Items.copper, 25, Items.metaglass, 15, Items.oxide, 10));
+
+                ammo(
+                        Items.copper,  new MissileBulletType(3.7f, 15){{
+                            width = 8f;
+                            height = 8f;
+                            shrinkY = 0f;
+                            splashDamageRadius = 30f;
+                            splashDamage = 10f;
+                            ammoMultiplier = 1f;
+                            hitEffect = Fx.blastExplosion;
+                            despawnEffect = Fx.blastExplosion;
+
+                            status = StatusEffects.blasted;
+
+                            hitColor = backColor = trailColor = TantrosLiquids.steam.color;
+                            frontColor = Pal.copperAmmoFront;
+                        }},
+                        Items.graphite,  new MissileBulletType(3.7f, 20){{
+                            width = 8f;
+                            height = 8f;
+                            shrinkY = 0f;
+                            splashDamageRadius = 30f;
+                            splashDamage = 8f;
+                            ammoMultiplier = 2f;
+                            hitEffect = Fx.blastExplosion;
+                            despawnEffect = Fx.blastExplosion;
+
+                            status = StatusEffects.blasted;
+
+                            hitColor = backColor = trailColor = Pal.blastAmmoBack;
+                            frontColor = Pal.blastAmmoFront;
+                        }},
+                        Items.silicon,  new MissileBulletType(3.7f, 20){{
+                            width = 8f;
+                            height = 8f;
+                            shrinkY = 0f;
+                            splashDamageRadius = 30f;
+                            splashDamage = 10;
+                            ammoMultiplier = 1f;
+                            hitEffect = Fx.blastExplosion;
+                            despawnEffect = Fx.blastExplosion;
+                            homingPower = 0.1f;
+
+                            status = StatusEffects.blasted;
+
+                            hitColor = backColor = trailColor = Pal.blastAmmoBack;
+                            frontColor = Pal.blastAmmoFront;
+                        }}
+                );
+
+                drawer = new DrawTurret("sealed-"){{
+                    parts.add(new RegionPart("-missile"){{
+                        progress = PartProgress.reload.curve(Interp.pow2In);
+
+                        colorTo = new Color(1f, 1f, 1f, 0f);
+                        color = Color.white;
+                        mixColorTo = Pal.accent;
+                        mixColor = new Color(1f, 1f, 1f, 0f);
+                        outline = false;
+                        under = true;
+                        layerOffset = -0.01f;
+
+                        moves.add(new PartMove(PartProgress.warmup, 0f, 2f, 0f));
+                    }});
+                }};
+
+                recoil = 0.5f;
+                shootSound = Sounds.shootMissile;
+
+                minWarmup = 0.94f;
+                newTargetInterval = 40f;
+                targetAir = true;
+
+                ammoPerShot = 1;
+                maxAmmo = 5;
+                size = 1;
+                reload = 50;
+                range = 200;
+                shootCone = 1f;
+                scaledHealth = 220;
+                rotateSpeed = 5f;
+
+                consume(new ConsumeLiquid(TantrosLiquids.steam, 5f / 60f));
+                limitRange();
+            }
+        };
+
         tremor = new PowerTurret("tremor"){{
             requirements(Category.turret, with(Items.oxide, 45, Items.lead, 60, Items.silicon, 30));
 
@@ -550,6 +516,237 @@ public class TantrosTurret {
             warmupMaintainTime = 60f;
             minWarmup = 0.99f;
 
+        }};
+
+        denial = new ItemTurret("denial"){{
+            requirements(Category.turret, with(Items.copper, 35));
+            ammo(
+                    TantrosItems.redcyst, new BasicBulletType(9f, 5){{
+                        frontColor = TantrosItems.redcyst.color;
+                        backColor = hitColor = Color.darkGray;
+
+                        width = 9f;
+                        height = 9f;
+                        lifetime = 20;
+
+                        collidesAir = true;
+                        collidesGround = false;
+
+                        ammoMultiplier = 1f;
+
+                        fragOnDespawn = true;
+                        fragBullets = 3;
+
+                        fragBullet = intervalBullet = new BasicBulletType(2,10){{
+                            this.sprite = "mine-bullet";
+                            this.backSprite = "mine-bullet-back";
+                            frontColor = TantrosItems.redcyst.color;
+                            backColor = hitColor = Color.gray;
+
+                            this.hitEffect = Fx.explosion;
+                            this.despawnEffect = Fx.despawn;
+
+                            width = 7f;
+                            height = 7f;
+
+                            splashDamage = 10f;
+                            splashDamageRadius = Vars.tilesize * 2;
+
+                            drag = 0.05f;
+
+                            lifetime = 720;
+
+                            collidesAir = true;
+                            collidesGround = false;
+                        }};
+
+                        this.bulletInterval = 3.0F;
+                        this.intervalRandomSpread = 20.0F;
+                        this.intervalBullets = 3;
+                        this.intervalAngle = 180.0F;
+                        this.intervalSpread = 30.0F;
+                    }},
+                    Items.metaglass,  new BasicBulletType(9f, 20){{
+                        frontColor = Items.metaglass.color;
+                        backColor = hitColor = Color.darkGray;
+
+
+                        width = 9f;
+                        height = 9f;
+                        lifetime = 20;
+
+                        collidesAir = true;
+                        collidesGround = false;
+
+                        fragOnDespawn = true;
+                        fragBullets = 5;
+
+                        fragBullet = intervalBullet = new BasicBulletType(2,10){{
+
+                            this.sprite = "mine-bullet";
+                            this.backSprite = "mine-bullet-back";
+                            frontColor = Items.metaglass.color;
+                            backColor = hitColor = Color.darkGray;
+
+                            this.hitEffect = Fx.flakExplosion;
+                            this.despawnEffect = Fx.despawn;
+
+                            width = 7f;
+                            height = 7f;
+                            lifetime = 720;
+
+                            collidesAir = true;
+                            collidesGround = false;
+
+                            drag = 0.05f;
+
+                            fragBullets = 5;
+                            fragBullet = new BasicBulletType(2,5){{
+                                frontColor = Items.metaglass.color;
+                                backColor = hitColor = Color.darkGray;
+
+                                width = 3f;
+                                height = 3f;
+
+                                lifetime = 4;
+
+                                collidesAir = true;
+                                collidesGround = false;
+                            }};
+                        }};
+
+                        this.bulletInterval = 6.0F;
+                        this.intervalRandomSpread = 20.0F;
+                        this.intervalBullets = 2;
+                        this.intervalAngle = 180.0F;
+                        this.intervalSpread = 300.0F;
+
+                    }},
+                    Items.titanium,  new BasicBulletType(9f, 20){{
+                        frontColor = Items.titanium.color;
+                        backColor = hitColor = Color.darkGray;
+
+
+                        width = 9f;
+                        height = 9f;
+                        lifetime = 20;
+
+                        collidesAir = true;
+                        collidesGround = false;
+
+                        fragOnDespawn = true;
+                        fragBullets = 3;
+
+                        fragBullet = intervalBullet = new BasicBulletType(2,15){{
+
+                            sprite = "mine-bullet";
+                            backSprite = "mine-bullet-back";
+                            frontColor = Items.titanium.color;
+                            backColor = hitColor = Color.darkGray;
+
+                            hitEffect = Fx.flakExplosion;
+                            despawnEffect = Fx.despawn;
+                            despawnHit = false;
+                            fragOnDespawn = false;
+
+                            width = 7f;
+                            height = 7f;
+                            lifetime = 720;
+
+                            collidesAir = true;
+                            collidesGround = false;
+
+                            pierce = true;
+                            pierceCap = 3;
+
+                            drag = 0.05f;
+
+                            fragBullets = 3;
+                            fragBullet = new BasicBulletType(2,7){{
+                                frontColor = Items.titanium.color;
+                                backColor = hitColor = Color.darkGray;
+
+                                pierce = true;
+                                pierceCap = 2;
+
+                                width = 3f;
+                                height = 3f;
+
+                                lifetime = 4;
+
+                                collidesAir = true;
+                                collidesGround = false;
+                            }};
+                        }};
+
+                        this.bulletInterval = 6.0F;
+                        this.intervalRandomSpread = 20.0F;
+                        this.intervalBullets = 2;
+                        this.intervalAngle = 180.0F;
+                        this.intervalSpread = 300.0F;
+
+                    }}
+            );
+
+            size = 3;
+
+            recoil = 4.5f;
+            shootY = 3f;
+            reload = 360;
+            range = Vars.tilesize * 25;
+            rotateSpeed = 20;
+
+            shootY = 8;
+            shootCone = 15f;
+            shoot.shots = 3;
+            shoot.shotDelay = 5.0F;
+            inaccuracy = 17f;
+            targetGround = false;
+            targetAir = true;
+
+            maxAmmo = 30;
+            ammoPerShot = 15;
+
+            ammoUseEffect = Fx.casing1;
+            health = 250;
+            rotateSpeed = 10f;
+
+            drawer = new DrawTurret("sealed-");
+        }};
+
+
+        jetstream = new LiquidTurret("jetstream"){{
+            requirements(Category.turret, with(Items.metaglass, 55, Items.oxide, 125, Items.titanium, 55));
+            drawer = new DrawTurret("sealed-");
+
+            ammo(
+                    Liquids.water,new LiquidBulletType(Liquids.water){{
+                        damage = 6;
+                        knockback = 0.9f;
+                        drag = 0.01f;
+                        layer = Layer.bullet - 2f;
+                        inaccuracy = 7.5f;
+                        reload = 6;
+                        limitRange(this, 7f);
+                    }},
+                    TantrosLiquids.steam, new LiquidBulletType(TantrosLiquids.steam){{
+                        knockback = 0.7f;
+                        damage = 36;
+                        drag = 0.01f;
+                        boilTime = 80;
+                    }}
+            );
+            size = 3;
+            recoil = 1f;
+            reload = 3f;
+            inaccuracy = 2.5f;
+            shootCone = 50f;
+            liquidCapacity = 10f;
+            shootEffect = Fx.shootLiquid;
+            range = 110f;
+            scaledHealth = 250;
+
+            flags = EnumSet.of(BlockFlag.turret, BlockFlag.extinguisher);
         }};
 
 

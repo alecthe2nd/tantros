@@ -1,6 +1,8 @@
 package tantros.type.effect.projector.range;
 
 import arc.math.geom.Position;
+import arc.util.Tmp;
+import mindustry.gen.Building;
 import tantros.type.buildingState.BuildingState;
 import tantros.world.blocks.BlockExtended;
 
@@ -59,6 +61,10 @@ public class RangeState implements BuildingState {
     }
 
     public Boolean inRange(BlockExtended.BuildExtended build, Position posToCheck) {
-        return (config.shape.optimizedCheck != null)? config.shape.optimizedCheck.get(build, posToCheck, range()): false;
+        return config.inRange(build, posToCheck, range());
+    }
+
+    public Boolean inRange(BlockExtended.BuildExtended build, Building posToCheck) {
+        return config.inRange(build, posToCheck, range());
     }
 }
