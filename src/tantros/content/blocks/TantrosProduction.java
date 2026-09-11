@@ -28,7 +28,6 @@ import tantros.type.blockConfig.HeatProductionConfig;
 import tantros.type.effect.PressureExplosionOnDestruction;
 import tantros.type.production.ProduceBoilerLiquid;
 import tantros.type.production.ProduceHeat;
-import tantros.world.blocks.production.Boiler;
 import tantros.world.blocks.production.ProductionBlock;
 import tantros.world.consumers.ConsumeAttributeTile;
 import tantros.world.consumers.ConsumeBoostWrapper;
@@ -53,13 +52,11 @@ public class TantrosProduction {
             siliconPressureSmelter,
             nanostructureWeaver,
             electrolysisChamber,
-            combustionHeater,
             cystCombustionHeater,
             geothermalHeater,
             hydrogenCatalysisHeater,
             sealedElectricHeater,
             oxidizationHeater,
-            copperBoiler,
             simpleBoiler,
             pneumaticPress
                     ;
