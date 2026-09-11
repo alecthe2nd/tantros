@@ -319,9 +319,9 @@ public class TantrosProduction {
                     new DrawParticles(){{
                         color = TantrosLiquids.steam.color;
                         reverse = true;
-                        particleSize = 2f;
+                        particleSize = 0.9f;
                         particles = 20;
-                        particleRad = 8f;
+                        particleRad = 7.5f;
                         particleLife = 60f;
                     }},
                     new DrawDefault(),
