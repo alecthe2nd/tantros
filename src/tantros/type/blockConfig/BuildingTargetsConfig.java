@@ -1,10 +1,11 @@
 package tantros.type.blockConfig;
 
+import arc.func.Boolf;
+import arc.func.Prov;
+import mindustry.gen.Building;
 import tantros.world.blocks.BlockExtended;
 
 public class BuildingTargetsConfig implements BlockConfig {
-
-    public int refreshTimer;
 
     public int refreshTime = 10;
 
@@ -15,8 +16,5 @@ public class BuildingTargetsConfig implements BlockConfig {
     * */
     public boolean refreshEachTick = false;
 
-    @Override
-    public void apply(BlockExtended block) {
-        refreshTimer = block.timers++;
-    }
+    public Boolf<Building> filter = (b)->true;
 }

@@ -5,16 +5,22 @@ import arc.scene.ui.layout.Table;
 import arc.util.Time;
 import arc.util.Tmp;
 import mindustry.content.Fx;
+import mindustry.gen.Building;
+import mindustry.world.Block;
+import mindustry.world.consumers.Consume;
 import mindustry.world.meta.Stat;
 import mindustry.world.meta.StatUnit;
 import mindustry.world.meta.StatValues;
+import tantros.type.blockConfig.BuildingTargetsConfig;
 import tantros.type.blockConfig.ProgressTimerConfig;
+import tantros.type.buildingState.BuildingTargetsState;
 import tantros.type.buildingState.ProgressTimerState;
 import tantros.type.effect.BlockEffect;
 import tantros.type.effect.StatDisplayEffect;
 import tantros.type.effect.projector.range.RangeConfig;
 import tantros.type.effect.projector.range.RangeState;
 import tantros.world.blocks.BlockExtended;
+import tantros.world.consumers.ExtendedConsume;
 
 import static tantros.world.meta.TantrosStats.displayStat;
 
@@ -26,9 +32,11 @@ public class HealsInRangeWithPulses extends StatDisplayEffect implements BlockEf
     RangeConfig rangeConfig;
     ProgressTimerConfig progressConfig;
     MendConfig mendConfig;
+    BuildingTargetsConfig targetsConfig;
 
     String progressName = "";
     String rangeName = "";
+    String targetsName = "";
 
     public boolean any = false;
 
@@ -36,6 +44,16 @@ public class HealsInRangeWithPulses extends StatDisplayEffect implements BlockEf
         this.rangeConfig = rangeConfig;
         this.progressConfig = progressConfig;
         this.mendConfig = mendConfig;
+        this.targetsConfig = new BuildingTargetsConfig();
+        this.targetsConfig.refreshEachTick = false;
+        this.targetsConfig.refreshTime = 10;
+    }
+
+    public HealsInRangeWithPulses(RangeConfig rangeConfig, BuildingTargetsConfig targetsConfig, MendConfig mendConfig, ProgressTimerConfig progressConfig) {
+        this.rangeConfig = rangeConfig;
+        this.targetsConfig = targetsConfig;
+        this.mendConfig = mendConfig;
+        this.progressConfig = progressConfig;
     }
 
     @Override
@@ -45,6 +63,8 @@ public class HealsInRangeWithPulses extends StatDisplayEffect implements BlockEf
         block.putBlockConfig(mendConfig);
         rangeName = block.postStateRequest(()-> new RangeState(this.rangeConfig), "PulseRange");
         progressName = block.postStateRequest(()-> new ProgressTimerState(this.progressConfig), "PulseProgress");
+        targetsName = block.postStateRequest(()->new BuildingTargetsState(targetsConfig, rangeConfig), "HealPulseTargets");
+        rangeConfig.rangeStateName = rangeName;
     }
 
     @Override
@@ -79,20 +99,25 @@ public class HealsInRangeWithPulses extends StatDisplayEffect implements BlockEf
             RangeState rangeState = build.getState(RangeState.class,rangeName);
             ProgressTimerState progressState = build.getState(ProgressTimerState.class,progressName);
             if(rangeState == null || progressState == null) return;
-            if(!build.isHealSuppressed() && progressState.progress > 1 /* TODO && DAMAGED TARGET TRACKING FINDS SOMETHING*/){
+            BuildingTargetsState targetsState = build.getState(BuildingTargetsState.class,targetsName);
+            if(targetsState == null) return;
+            if(!build.isHealSuppressed() && progressState.progress > 1 && targetsState.targets.contains(Building::damaged)){
 
                 any = false;
-                progressState.progress = 0;
 
-                indexer.eachBlock(build.team, Tmp.r1.setCentered(build.x, build.y, rangeState.range() * tilesize), b -> b.damaged() && !b.isHealSuppressed() && rangeState.inRange(build, b), other -> {
-                    other.heal(((mendConfig.mendType == MendConfig.MendType.ABSOLUTE)? mendConfig.heal: other.maxHealth() * mendConfig.heal / 100) * build.efficiency);
-                    other.recentlyHealed();
-                    Fx.healBlockFull.at(other.x, other.y, other.block.size, mendConfig.mendColor, other.block);
-                    any = true;
-                });
+                for(int i = 0; i < targetsState.targets.size; i++){
+                    Building target = targetsState.targets.get(i);
+                    if(target.damaged() && !target.isHealSuppressed()) {
+                        target.heal(((mendConfig.mendType == MendConfig.MendType.ABSOLUTE) ? mendConfig.heal : target.maxHealth() * mendConfig.heal / 100) * build.efficiency);
+                        target.recentlyHealed();
+                        Fx.healBlockFull.at(target.x, target.y, target.block.size, mendConfig.mendColor, target.block);
+                        any = true;
+                    }
+                }
 
                 if(any){
                     mendConfig.mendSound.at(build, 1f + Mathf.range(0.1f), mendConfig.mendSoundVolume);
+                    progressState.progress = 0;
                 }
             }
         }
