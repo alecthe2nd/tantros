@@ -4,11 +4,13 @@ import arc.struct.Seq;
 import mindustry.content.*;
 import mindustry.type.*;
 import mindustry.world.*;
+import mindustry.world.blocks.payloads.PayloadRouter;
 import mindustry.world.blocks.units.UnitAssembler;
 import mindustry.world.blocks.units.UnitAssemblerModule;
 import mindustry.world.blocks.units.UnitFactory;
 import tantros.content.TantrosUnitTypes;
 import tantros.world.blocks.distribution.payload.SealedPayloadConveyor;
+import tantros.world.blocks.distribution.payload.SealedPayloadRouter;
 import tantros.world.blocks.payload.FrameConstructor;
 import tantros.world.blocks.units.unitAssembly.BranchableUnitAssembler;
 
@@ -24,7 +26,8 @@ public class TantrosPayload {
             smallBenthicAssembler,
             smallSubBenthicAssembler,
             smallSubmarineAssembler,
-            sealedPayloadConveyor
+            sealedPayloadConveyor,
+            sealedPayloadRouter
             ;
     
     public static void load(){
@@ -118,6 +121,14 @@ public class TantrosPayload {
             health = 800;
             researchCostMultiplier = 4f;
             underBullets = true;
+        }};
+
+        sealedPayloadRouter = new SealedPayloadRouter("sealed-payload-router"){{
+            this.requirements(Category.units, with(Items.copper, 15, Items.metaglass, 25, Items.oxide, 30));
+            this.canOverdrive = false;
+            moveTime = 35f;
+            underBullets = true;
+            health = 850;
         }};
 
     }
