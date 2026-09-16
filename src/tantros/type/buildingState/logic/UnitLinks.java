@@ -7,6 +7,7 @@ import arc.struct.Seq;
 import arc.util.Log;
 import arc.util.io.Reads;
 import arc.util.io.Writes;
+import arc.util.pooling.Pools;
 import mindustry.gen.Groups;
 import mindustry.gen.Unit;
 import tantros.type.buildConfig.AddUnitConfig;
@@ -53,19 +54,23 @@ public class UnitLinks implements BuildingState {
     @Override
     public <E> void onConfig(BlockExtended.BuildExtended owner, E config) {
         Log.info("[Unitlinks] Received config");
-        if(config instanceof AddUnitConfig unitConfig && condition.get(owner, unitConfig.unit)){
-            Log.info("[Unitlinks] Received unit "+ unitConfig.unit);
+        if(config instanceof AddUnitConfig unitConfig){
+            if (condition.get(owner, unitConfig.unit)) {
+                Log.info("[Unitlinks] Received unit " + unitConfig.unit);
 
-            boolean alreadyLinked = unitLinks.contains((u)->u.id == unitConfig.unit.id);
-            if(alreadyLinked && unitConfig.toggle){
-                unitLinks.remove((u)->u.id == unitConfig.unit.id);
-            } else {
-                unitLinks.remove((u)->u.id == unitConfig.unit.id);
-                unitLinks.add(unitConfig.unit);
+                boolean alreadyLinked = unitLinks.contains((u) -> u.id == unitConfig.unit.id);
+                if (alreadyLinked && unitConfig.toggle) {
+                    unitLinks.remove((u) -> u.id == unitConfig.unit.id);
+                } else {
+                    unitLinks.remove((u) -> u.id == unitConfig.unit.id);
+                    unitLinks.add(unitConfig.unit);
+                }
             }
+            Pools.free(unitConfig);
         }
-        if(config instanceof ClearUnitsConfig){
+        if(config instanceof ClearUnitsConfig c){
             unitLinks.clear();
+            Pools.free(c);
         }
     }
 

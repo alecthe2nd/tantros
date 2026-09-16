@@ -81,7 +81,7 @@ public class FacingPressureBooster extends Block {
         public void updateTile() {
             if (efficiency > 0) {
                 Building front = this.front();
-                if (front instanceof BoostPneumatic boostable && boostable.canReceiveBoost(this)){
+                if (front instanceof BoostPneumatic boostable /*&& boostable.canReceiveBoost(this)*/){
                     boostable.passBoost(realBoost(), reload + 1f, (int) (pressure_range * efficiency));
                     consume();
                 }

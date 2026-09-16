@@ -6,11 +6,13 @@ import arc.graphics.g2d.TextureRegion;
 import arc.math.Mathf;
 import arc.scene.ui.layout.Table;
 import arc.struct.ObjectMap;
+import arc.struct.ObjectSet;
 import arc.struct.Seq;
 import arc.util.Eachable;
 import arc.util.Log;
 import arc.util.io.Reads;
 import arc.util.io.Writes;
+import arc.util.pooling.Pools;
 import mindustry.content.Liquids;
 import mindustry.entities.Damage;
 import mindustry.entities.Effect;
@@ -224,6 +226,7 @@ public class BlockExtended extends Block {
     public class BuildExtended extends Building{
         public ObjectMap<String, BuildingState> statesAsSerialized = new ObjectMap<>();
         public ObjectMap<String, BuildingState> states = new ObjectMap<>();
+        public ObjectSet<Class<? extends BuildingState>> stateTypes = new ObjectSet<>();
         private final ObjectMap.Values<BuildingState> stateValuesForSearching = new ObjectMap.Values<>(states);
 
         public Seq<InputListener<?>> listeners = new Seq<>();
@@ -294,6 +297,7 @@ public class BlockExtended extends Block {
                 BuildingState state = entry.value.factory.get();
                 this.states.put(entry.key, state);
                 this.statesAsSerialized.put(state.getName() + entry.key, state);
+                this.stateTypes.add(state.getClass());
             }
 
             for(BuildingState state : this.states.values()){
@@ -364,6 +368,7 @@ public class BlockExtended extends Block {
         @Override
         @SuppressWarnings("unchecked")
         public void configured(Unit builder, Object value) {
+            boolean found = false;
             Class<?> type = selectClass(value);
 
             if (builder != null && builder.isPlayer()) {
@@ -373,11 +378,15 @@ public class BlockExtended extends Block {
                 this.configured(builder, BuildConfigurationUnit.fromByteArray(bytes));
             }else if (this.block.configurations.containsKey(type)) {
                 this.block.configurations.get(type).get(this, value);
+                found = true;
             } else if (value instanceof Building build) {
                 Object conf = build.config();
                 if (conf != null && !(conf instanceof Building)) {
                     this.configured(builder, conf);
                 }
+            }
+            if(!found && value instanceof BuildConfigurationUnit){
+                Pools.free(value);
             }
         }
 
@@ -462,6 +471,15 @@ public class BlockExtended extends Block {
 
             if(block.createRubble && !floor().solid && !floor().isLiquid){
                 Effect.rubble(x, y, block.size);
+            }
+        }
+
+        @Override
+        public void removeFromProximity() {
+            super.removeFromProximity();
+
+            for(int i = 0; i < effects.size; i++){
+                effects.get(i).removeFromProximity(this);
             }
         }
 

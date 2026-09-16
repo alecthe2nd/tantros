@@ -5,6 +5,7 @@ import arc.func.Cons;
 import arc.struct.ObjectMap;
 import arc.util.io.Reads;
 import arc.util.io.Writes;
+import arc.util.pooling.Pools;
 import mindustry.Vars;
 import mindustry.type.Item;
 import tantros.type.buildConfig.SetItemConfig;
@@ -36,6 +37,7 @@ public class ItemSelectionState implements BuildingState {
     public <E> void onConfig(BlockExtended.BuildExtended owner, E config) {
         if(config instanceof SetItemConfig itemConfig){
             this.toggles.put( itemConfig.item,!this.toggles.get(itemConfig.item, false));
+            Pools.free(itemConfig);
         }
     }
 

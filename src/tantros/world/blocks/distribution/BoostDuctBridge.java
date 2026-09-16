@@ -2,6 +2,7 @@ package tantros.world.blocks.distribution;
 
 import arc.Core;
 import arc.math.Mathf;
+import arc.util.Tmp;
 import mindustry.gen.Building;
 import mindustry.graphics.Pal;
 import mindustry.ui.Bar;
@@ -42,9 +43,11 @@ public class BoostDuctBridge extends DuctBridge {
             super.updateTile();
             pressure = largestPressure;
 
+
             if (this.timeScale > 1){
                 if(lastLink instanceof BoostPneumatic boostable && boostable.canReceiveBoost(this)){
-                    boostable.passBoost(this.timeScale, this.timeScaleDuration, this.pressure - 1);
+                    int dist = (lastLink==null) ? 1 : Mathf.floor(Tmp.v1.set(this.tile.x, this.tile.y).sub(lastLink.tile.x,lastLink.tile.y).len());
+                    boostable.passBoost(this.timeScale, this.timeScaleDuration, this.pressure - dist);
                 }
                 if (lastLink == null){
                     Building front = this.front();

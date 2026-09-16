@@ -1,12 +1,10 @@
 package tantros.content.blocks;
 
-import arc.Core;
 import mindustry.content.Items;
 import mindustry.type.Category;
 import mindustry.world.Block;
 import mindustry.world.blocks.distribution.*;
 import mindustry.world.blocks.heat.HeatConductor;
-import mindustry.world.blocks.liquid.Conduit;
 import mindustry.world.draw.DrawDefault;
 import mindustry.world.draw.DrawHeatInput;
 import mindustry.world.draw.DrawHeatOutput;
@@ -15,6 +13,7 @@ import mindustry.world.meta.BlockGroup;
 import tantros.world.blocks.distribution.BoostDuct;
 import tantros.world.blocks.distribution.BoostDuctBridge;
 import tantros.world.blocks.distribution.BoostDuctRouter;
+import tantros.world.blocks.distribution.BoostOverflowDuct;
 import tantros.world.blocks.distribution.liquidTransport.*;
 
 import static mindustry.type.ItemStack.with;
@@ -33,6 +32,8 @@ public class TantrosDistribution {
             pneumaticDuct,
             pneumaticDuctRouter,
             pneumaticDuctBridge,
+            pneumaticOverflowDuct,
+            pneumaticUnderflowDuct,
 
             copperPipeline,
             copperPipelineRouter,
@@ -111,24 +112,47 @@ public class TantrosDistribution {
         pneumaticDuctRouter = new BoostDuctRouter("pneumatic-duct-router"){{
             requirements(Category.distribution, with(Items.metaglass, 3, Items.oxide, 2));
             health = 90;
-            speed = 7.5f;
+            speed = 6f;
             regionRotated1 = 1;
             solid = false;
+            squareSprite = false;
             max_pressure = 20;
         }};
 
         pneumaticDuctBridge = new BoostDuctBridge("pneumatic-duct-bridge"){{
             requirements(Category.distribution, with(Items.metaglass, 5, Items.oxide, 4));
             health = 90;
-            speed = 7.5f;
+            speed = 6f;
             max_pressure = 20;
         }};
 
         pneumaticDuct = new BoostDuct("pneumatic-duct"){{
             requirements(Category.distribution, with(Items.metaglass, 2));
             health = 180;
-            speed = 7.5f;
+            speed = 6f;
             bridgeReplacement = copperDuctBridge;
+            max_pressure = 20;
+        }};
+
+        pneumaticOverflowDuct = new BoostOverflowDuct("pneumatic-overflow-duct"){{
+            requirements(Category.distribution, with(Items.metaglass, 3, Items.oxide, 5));
+            health = 90;
+            speed = 6f;
+            solid = false;
+            squareSprite = false;
+            //researchCostMultiplier = 1.5f;
+
+            max_pressure = 20;
+        }};
+        pneumaticUnderflowDuct = new BoostOverflowDuct("pneumatic-underflow-duct"){{
+            requirements(Category.distribution, with(Items.metaglass, 3, Items.oxide, 5));
+            health = 90;
+            speed = 6f;
+            solid = false;
+            squareSprite = false;
+            //researchCostMultiplier = 1.5f;
+            invert = true;
+
             max_pressure = 20;
         }};
 

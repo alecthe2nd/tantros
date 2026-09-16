@@ -1,6 +1,9 @@
 package tantros.world.blocks.distribution;
 
 import arc.Core;
+import arc.graphics.Color;
+import arc.graphics.g2d.Draw;
+import arc.graphics.g2d.TextureRegion;
 import arc.math.Mathf;
 import mindustry.gen.Building;
 import mindustry.graphics.Pal;
@@ -12,6 +15,7 @@ import tantros.world.meta.TantrosStats;
 public class BoostDuct extends Duct {
 
     public int max_pressure = 7;
+    public TextureRegion[] glowRegions;
 
     public BoostDuct(String name) {
         super(name);
@@ -31,6 +35,16 @@ public class BoostDuct extends Duct {
         addBar("pressure", (BoostDuctBuild entity) -> new Bar(() -> Core.bundle.format("bar.pressure", Mathf.round(Math.max((entity.pressure), 0))), () -> Pal.lightishGray, () -> (float) entity.pressure / max_pressure));
     }
 
+    @Override
+    public void load() {
+        super.load();
+        this.glowRegions = new TextureRegion[5];
+
+        for(int i = 0; i < 5; ++i) {
+            this.glowRegions[i] = Core.atlas.find(this.name + "-glow-" + i, "duct-glow-" + i);
+        }
+    }
+
     public class BoostDuctBuild extends DuctBuild implements BoostPneumatic{
 
         public int pressure = 0;
@@ -48,6 +62,17 @@ public class BoostDuct extends Duct {
                 }
             }
             largestPressure = 0;
+        }
+
+        @Override
+        protected void drawAt(float x, float y, int bits, float rotation, SliceMode slice, boolean under) {
+            super.drawAt(x, y, bits, rotation, slice, under);
+            if(!under && pressure > 0) {
+                Draw.color(Color.white);
+                Draw.alpha((float) pressure / max_pressure);
+                Draw.rect(BoostDuct.this.sliced(BoostDuct.this.glowRegions[bits], slice), x, y, rotation);
+                Draw.reset();
+            }
         }
 
         @Override

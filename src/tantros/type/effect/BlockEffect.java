@@ -37,6 +37,10 @@ public interface BlockEffect {
 
     }
 
+    default void removeFromProximity(BlockExtended.BuildExtended build){
+
+    }
+
     default boolean placementAllowed(BlockExtended block, Tile tile, Team team, int rotation){
         return true;
     }

@@ -1,17 +1,12 @@
 package tantros.type.buildConfig;
 
-import arc.struct.IntMap;
 import arc.struct.ObjectMap;
-import arc.struct.StringMap;
 import arc.util.Log;
 import arc.util.Nullable;
 import arc.util.io.Reads;
 import arc.util.io.Writes;
 import arc.util.pooling.Pool;
 import arc.util.pooling.Pools;
-import mindustry.world.blocks.logic.LogicBlock;
-import tantros.util.io.ReadContext;
-import tantros.util.io.WriteContext;
 
 import java.io.*;
 import java.util.zip.DeflaterOutputStream;
@@ -26,6 +21,8 @@ public abstract class BuildConfigurationUnit implements Pool.Poolable {
         register(SetItemConfig.class);
         register(ClearQueueConfig.class);
         register(ClearUnitsConfig.class);
+        register(UpdateSignal.class);
+        register(StopSignal.class);
     }
 
     public BuildConfigurationUnit(){

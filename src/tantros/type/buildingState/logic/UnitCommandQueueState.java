@@ -6,6 +6,7 @@ import arc.math.geom.Vec2;
 import arc.struct.Seq;
 import arc.util.io.Reads;
 import arc.util.io.Writes;
+import arc.util.pooling.Pools;
 import mindustry.Vars;
 import mindustry.game.Teams;
 import mindustry.gen.*;
@@ -77,8 +78,9 @@ public class UnitCommandQueueState implements BuildingState {
                 commandQueue.add(target);
             }
         }
-        if(config instanceof ClearQueueConfig){
+        if(config instanceof ClearQueueConfig c){
             this.commandQueue.clear();
+            Pools.free(c);
         }
     }
 
