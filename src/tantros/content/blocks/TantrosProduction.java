@@ -172,7 +172,6 @@ public class TantrosProduction {
                 );
                 itemCapacity = 10;
                 liquidCapacity = 10;
-                envDisabled |= Env.oxygen;
 
                 ambientSound = Sounds.loopFire;
                 emitLight = true;
