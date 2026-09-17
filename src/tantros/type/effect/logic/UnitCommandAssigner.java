@@ -1,5 +1,6 @@
 package tantros.type.effect.logic;
 
+import arc.math.geom.Position;
 import arc.util.Log;
 import mindustry.ai.types.CommandAI;
 import mindustry.gen.Unit;
@@ -31,7 +32,9 @@ public class UnitCommandAssigner implements BlockEffect {
                 if(canControl(build, link)){
                     CommandAI ai = link.command();
                     ai.clearCommands();
-                    queue.commandQueue.forEach(ai::commandQueue);
+                    for(Position position: queue.commandQueue){
+                        ai.commandQueue(position);
+                    }
                 }
             }
         }
