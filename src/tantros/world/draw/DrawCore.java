@@ -35,6 +35,7 @@ public class DrawCore extends DrawMulti {
     }
 
     public void load(Block block){
+        super.load(block);
         this.fullIcon = Core.atlas.find(block.name + "-full");
     }
 

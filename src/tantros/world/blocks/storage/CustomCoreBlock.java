@@ -31,6 +31,12 @@ public class CustomCoreBlock extends CoreBlock {
         return drawer.icons(this);
     }
 
+    @Override
+    public void load() {
+        super.load();
+        drawer.load(this);
+    }
+
     public class CustomCoreBuild extends CoreBuild{
 
         @Override
