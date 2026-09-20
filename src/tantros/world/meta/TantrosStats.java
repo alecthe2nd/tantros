@@ -37,17 +37,17 @@ public class TantrosStats {
 
     public static Stat
 
-            pressureRange = new Stat("pressurerange", StatCat.function),
+            pressureRange = new Stat("pressure-range", StatCat.function),
 
-            maxPressure = new Stat("maxpressure", StatCat.function),
+            maxPressure = new Stat("max-pressure", StatCat.function),
 
             recipes = new Stat("recipes", StatCat.crafting),
 
             recipe = new Stat("recipe", StatCat.crafting),
 
-            requiredEnvironments = new Stat("requiredenvironments", TantrosStats.environment),
+            requiredEnvironments = new Stat("required-environments", TantrosStats.environment),
 
-            boreRange = new Stat("borerange", StatCat.crafting);
+            boreRange = new Stat("bore-range", StatCat.crafting);
 
 
 
