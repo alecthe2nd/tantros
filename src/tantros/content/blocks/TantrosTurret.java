@@ -8,6 +8,7 @@ import arc.struct.Seq;
 import mindustry.Vars;
 import mindustry.content.*;
 import mindustry.entities.Effect;
+import mindustry.entities.UnitSorts;
 import mindustry.entities.bullet.*;
 import mindustry.entities.effect.MultiEffect;
 import mindustry.entities.effect.WaveEffect;
@@ -18,6 +19,7 @@ import mindustry.graphics.Layer;
 import mindustry.graphics.Pal;
 import mindustry.type.Category;
 import mindustry.world.Block;
+import mindustry.world.blocks.defense.turrets.ContinuousTurret;
 import mindustry.world.blocks.defense.turrets.ItemTurret;
 import mindustry.world.blocks.defense.turrets.LiquidTurret;
 import mindustry.world.blocks.defense.turrets.PowerTurret;
@@ -29,6 +31,9 @@ import mindustry.world.meta.Env;
 import tantros.content.TantrosFx;
 import tantros.content.world.TantrosItems;
 import tantros.content.world.TantrosLiquids;
+import tantros.entities.bullet.HarpoonBulletType;
+import tantros.graphics.TantrosPal;
+import tantros.world.blocks.defense.turrets.OneShotTurret;
 
 import static mindustry.type.ItemStack.with;
 
@@ -42,13 +47,27 @@ public class TantrosTurret {
             puncture,
             tremor,
             denial,
-            leviathan
+            leviathan,
+            reel
             ;
 
     public static void load(){
         bident = new ItemTurret("bident"){{
             requirements(Category.turret, with(Items.copper, 35));
             ammo(
+                    Items.lead,  new HarpoonBulletType(2f, 9){{
+                        width = 7f;
+                        height = 9f;
+                        lifetime = 60f;
+                        ammoMultiplier = 2;
+
+                        pullingForce = 16f;
+                        pullingScalingForce = 9f;
+
+                        hitEffect = despawnEffect = Fx.hitBulletColor;
+                        hitColor = backColor = trailColor = Pal.scrapAmmoBack;
+                        frontColor = Pal.scrapAmmoFront;
+                    }},
                     Items.copper,  new BasicBulletType(2f, 9){{
                         width = 7f;
                         height = 9f;
@@ -459,14 +478,16 @@ public class TantrosTurret {
         tremor = new PowerTurret("tremor"){{
             requirements(Category.turret, with(Items.oxide, 45, Items.lead, 60, Items.silicon, 30));
 
+            health = 260;
+            size = 2;
+            rotate = false;
+
             consumePower(120f/60f);
 
             shootX = 0;
             shootY = 0;
 
-            rotate = false;
             rotateSpeed = 0;
-
             shootCone = 360;
 
             shootType = new BasicBulletType(0, 0){{
@@ -488,7 +509,6 @@ public class TantrosTurret {
                 status = StatusEffects.blasted;
             }};
 
-            size = 2;
 
             targetGround = true;
             targetAir = false;
@@ -497,7 +517,6 @@ public class TantrosTurret {
             recoil = 0;
             range = 25f * Vars.tilesize;
 
-            health = 260;
             shootSound = Sounds.drillImpact;
 
             drawer = new DrawTurret("sealed-"){{
@@ -875,6 +894,161 @@ public class TantrosTurret {
             minWarmup = 0.99f;
 
             limitRange(12f);
+        }};
+
+        reel = new OneShotTurret("reel"){{
+
+            requirements(Category.turret, with(Items.metaglass, 15, Items.oxide, 55, Items.copper, 35));
+            ammo(
+                    Items.copper,  new HarpoonBulletType(5f, 4, "tantros-reel-harpoon-copper"){{
+                        width = 4f;
+                        height = 12f;
+                        lifetime = 60f;
+
+                        shrinkY = 0;
+                        shrinkX = 0;
+
+                        pullingForce = 64f;
+                        pullingScalingForce = 9f;
+
+                        hitEffect = despawnEffect = Fx.hitBulletColor;
+                        hitColor = Pal.copperAmmoBack;
+                        ammoMultiplier = 2;
+                    }},
+                    Items.titanium,  new HarpoonBulletType(9f, 6, "tantros-reel-harpoon-titanium"){{
+                        width = 4f;
+                        height = 12f;
+                        lifetime = 60f;
+
+                        shrinkY = 0;
+                        shrinkX = 0;
+
+                        pullingForce = 88f;
+                        pullingScalingForce = 9f;
+
+                        hitEffect = despawnEffect = Fx.hitBulletColor;
+                        hitColor = Items.titanium.color;
+                        ammoMultiplier = 1;
+                    }},
+                    Items.tungsten,  new HarpoonBulletType(7f, 7, "tantros-reel-harpoon-tungsten"){{
+                        width = 4f;
+                        height = 12f;
+                        lifetime = 60f;
+
+                        shrinkY = 0;
+                        shrinkX = 0;
+
+                        pullingForce = 100f;
+                        pullingScalingForce = 9f;
+
+                        hitEffect = despawnEffect = Fx.hitBulletColor;
+                        hitColor = Pal.tungstenShot;
+                        ammoMultiplier = 1;
+                    }}
+            );
+
+            drawer = new DrawTurret("sealed-"){{
+                parts.add(new RegionPart("-lock"){{
+                    mirror = true;
+                    layerOffset = -0.001f;
+
+                    moves.add(new PartMove(){{
+                         progress = PartProgress.reload.delay(0.2f).inv().delay(0.55f);
+                         x = -1.25f;
+                    }});
+
+                    moves.add(new PartMove(){{
+                        progress = PartProgress.reload.delay(0.1f).inv().delay(0.8f);
+                        y = 2f;
+                    }});
+                }});
+                parts.add(new RegionPart("-arm"){{
+                    mirror = true;
+                    x = 3.5f;
+                    y = 4.5f;
+                    progress = PartProgress.warmup.min(PartProgress.recoil.delay(0.4f).inv());
+                    moveRot = 45f;
+                }});
+                setAmmoParts(
+                        Items.copper, Seq.with(new RegionPart("-harpoon-copper-full"){{
+                            y = -4f;
+                            layerOffset = -0.001f;
+
+                            moves.add(new PartMove(){{
+                                progress = PartProgress.reload.delay(0.1f).inv().delay(0.8f);
+                                y = 2f;
+                            }});
+
+                            progress = PartProgress.reload.curve(Interp.pow2In);
+                            outline = false;
+
+                            colorTo = new Color(1f, 1f, 1f, 0f);
+                            color = Color.white;
+                            mixColorTo = Pal.accent;
+                            mixColor = new Color(1f, 1f, 1f, 0f);
+                        }}),
+                        Items.titanium, Seq.with(new RegionPart("-harpoon-titanium-full"){{
+                            y = -4f;
+                            layerOffset = -0.001f;
+
+                            moves.add(new PartMove(){{
+                                progress = PartProgress.reload.delay(0.1f).inv().delay(0.8f);
+                                y = 2f;
+                            }});
+
+                            progress = PartProgress.reload.curve(Interp.pow2In);
+                            outline = false;
+
+                            colorTo = new Color(1f, 1f, 1f, 0f);
+                            color = Color.white;
+                            mixColorTo = Pal.accent;
+                            mixColor = new Color(1f, 1f, 1f, 0f);
+                        }}),
+                        Items.tungsten, Seq.with(new RegionPart("-harpoon-tungsten-full"){{
+                            y = -4f;
+                            layerOffset = -0.001f;
+
+                            moves.add(new PartMove(){{
+                                progress = PartProgress.reload.delay(0.1f).inv().delay(0.8f);
+                                y = 2f;
+                            }});
+
+                            progress = PartProgress.reload.curve(Interp.pow2In);
+                            outline = false;
+
+                            colorTo = new Color(1f, 1f, 1f, 0f);
+                            color = Color.white;
+                            mixColorTo = Pal.accent;
+                            mixColor = new Color(1f, 1f, 1f, 0f);
+                        }})
+                );
+            }};
+
+            shootSound = Sounds.shootBreach;
+
+            health = 1300;
+            armor = 5;
+            size = 2;
+
+            recoil = 0.8f;
+            shootY = 8f;
+            range = 160;
+            trackingRange = range * 1.2f;
+            shootCone = 2f;
+            inaccuracy = 0.5f;
+            rotateSpeed = 15f;
+
+
+            minWarmup = 0.99f;
+            reload = 120f;
+
+            maxAmmo = 20;
+            ammoPerShot = 5;
+            ammoUseEffect = new MultiEffect(Fx.shootBigColor, Fx.colorSparkBig);
+
+            consumePower(/*50*/5/6f);
+
+            limitRange(0f);
         }};
     }
 

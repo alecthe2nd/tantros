@@ -70,7 +70,6 @@ public class DrillsFloorOres implements BlockEffect {
             ItemSelectionState selectState = build.getState(ItemSelectionState.class, itemSelectionEffect.stateName);
             if(selectState != null) {
                 oreState.filter = selectState.isSelected;
-                Log.info("-----");
                 for(Item item: oreState.oreCount.keys().toSeq(tempItems)){
                     if(!selectState.toggles.containsKey(item)){
                         selectState.toggles.put(item, true);
