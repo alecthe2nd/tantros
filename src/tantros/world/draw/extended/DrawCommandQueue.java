@@ -9,7 +9,6 @@ import arc.math.Mathf;
 import arc.math.geom.Position;
 import arc.math.geom.Vec2;
 import arc.util.Tmp;
-import mindustry.Vars;
 import mindustry.ai.UnitCommand;
 import mindustry.ai.types.CommandAI;
 import mindustry.ai.types.LogicAI;

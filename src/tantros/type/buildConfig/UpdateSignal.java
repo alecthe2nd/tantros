@@ -8,6 +8,7 @@ import arc.util.pooling.Pools;
 import mindustry.gen.Building;
 import mindustry.io.TypeIO;
 import tantros.type.buildingState.logic.signalling.Signal;
+import tantros.world.blocks.BlockExtended;
 
 /**
  * The config sent by a logic chip when the list of signals it is relaying changes.
@@ -41,5 +42,12 @@ public class UpdateSignal extends BuildConfigurationUnit{
     public void reset() {
         source = null;
         signals.clear();
+    }
+
+    public static UpdateSignal getEmpty(BlockExtended.BuildExtended source){
+        UpdateSignal signal = UpdateSignal.get(UpdateSignal.class);
+        signal.source = source;
+        signal.signals.clear();
+        return signal;
     }
 }

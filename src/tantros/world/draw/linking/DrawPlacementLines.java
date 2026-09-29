@@ -1,4 +1,4 @@
-package tantros.world.draw.wallDrill;
+package tantros.world.draw.linking;
 
 import arc.Core;
 import arc.graphics.g2d.Draw;
@@ -10,7 +10,6 @@ import mindustry.graphics.Pal;
 import mindustry.world.Tile;
 import tantros.type.blockConfig.BoreDrillConfig;
 import tantros.world.blocks.BlockExtended;
-import tantros.world.blocks.production.ProductionBlock;
 import tantros.world.draw.extended.DrawBlockExtended;
 
 import static mindustry.Vars.tilesize;

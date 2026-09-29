@@ -11,8 +11,8 @@ public class BuildingTargetsConfig implements BlockConfig {
 
     /**
     * Whether to refresh targets every tick.
-    * If true, {@link #refreshTimer} will be used as the timer and {@link #refreshTime} will be used as the duration (in ticks) between refreshes.
-    * If false, targets will be refreshed only when the world changes. {@link #refreshTimer} will be used as a cooldown timer of duration {@link #refreshTime} in ticks.
+    * If true, {@link #refreshTime} will be used as the duration (in ticks) between refreshes.
+    * If false, targets will be refreshed only when the world changes. {@link #refreshTime} will be used as a cooldown duration in ticks to reduce checks when world updates occur too frequently.
     * */
     public boolean refreshEachTick = false;
 

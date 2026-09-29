@@ -1,4 +1,4 @@
-package tantros.world.draw.extended;
+package tantros.world.draw.linking;
 
 import mindustry.gen.Building;
 import mindustry.graphics.Drawf;
@@ -8,11 +8,12 @@ import tantros.type.buildingState.BuildingState;
 import tantros.type.buildingState.logic.Link;
 import tantros.type.buildingState.logic.Links;
 import tantros.world.blocks.BlockExtended;
+import tantros.world.draw.extended.DrawBlockExtended;
 
 import static mindustry.Vars.tilesize;
 import static mindustry.Vars.world;
 
-public class DrawLinkConfigureRange<E extends Links & BuildingState> extends DrawBlockExtended{
+public class DrawLinkConfigureRange<E extends Links & BuildingState> extends DrawBlockExtended {
 
     public Class<E> linksType;
 

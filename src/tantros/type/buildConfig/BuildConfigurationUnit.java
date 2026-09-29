@@ -22,7 +22,8 @@ public abstract class BuildConfigurationUnit implements Pool.Poolable {
         register(ClearQueueConfig.class);
         register(ClearUnitsConfig.class);
         register(UpdateSignal.class);
-        register(StopSignal.class);
+        register(SetParseType.class);
+        register(SetOperation.class);
     }
 
     public BuildConfigurationUnit(){

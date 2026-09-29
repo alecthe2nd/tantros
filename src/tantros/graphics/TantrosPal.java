@@ -10,5 +10,9 @@ public class TantrosPal {
             radarDark = Color.valueOf("17b07f"),
 
             mendLight = Color.valueOf("84f491"),
-            mendDark = Color.valueOf("62ae7f");
+            mendDark = Color.valueOf("62ae7f"),
+
+            logicLight = Color.valueOf("bf92f9"),
+            logic = Color.valueOf("8a73c6"),
+            logicDark = Color.valueOf("665c9f");
 }

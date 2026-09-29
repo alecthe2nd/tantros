@@ -80,8 +80,8 @@ public class BlockExtended extends Block {
     public void init() {
         super.init();
         
-        effects.removeAll((e)->!e.canBeAppliedTo(this))
-                .each((effect)-> Log.warn("Failed to assign effect " + effect + " to block " + name));
+        /*effects.removeAll((e)->!e.canBeAppliedTo(this))
+                .each((effect)-> Log.warn("Failed to assign effect " + effect + " to block " + name));*/
 
         for(BlockEffect effect: effects){
             effect.apply(this);
@@ -109,12 +109,12 @@ public class BlockExtended extends Block {
             input.apply(this);
         }
 
-        for(Class<? extends BlockConfig> configType : blockConfigs.keys()){
-            BlockConfig config = getBlockConfig(configType);
-            if(config != null){
+        for(ObjectMap.Entry<Class<? extends BlockConfig>, ? super BlockConfig> entry: blockConfigs){
+            if(entry.value instanceof BlockConfig config){
                 config.apply(this);
             }
         }
+
         for(ConfigApplier<?,?> applier: configAppliers){
             applier.apply(this);
         }
@@ -208,9 +208,10 @@ public class BlockExtended extends Block {
         return newName;
     }
 
-    public void effect(BlockEffect effect){
+    public BlockEffect effect(BlockEffect effect){
         this.effects.add(effect);
         effect.applySubEffects(this);
+        return effect;
     }
 
     public void effect(BlockEffect... effects){
@@ -324,6 +325,19 @@ public class BlockExtended extends Block {
         }
 
         @Override
+        public void onRemoved() {
+            super.onRemoved();
+
+            for(BlockEffect effect: effects){
+                effect.onRemoved(this);
+            }
+
+            for(ObjectMap.Entry<String, BuildingState> entry: states){
+                entry.value.onRemove(this);
+            }
+        }
+
+        @Override
         public void updateTile() {
             super.updateTile();
 
@@ -361,6 +375,7 @@ public class BlockExtended extends Block {
             Object trueValue = value;
             if(value instanceof BuildConfigurationUnit buildConfig){
                 trueValue = buildConfig.toByteArray();
+                Pools.free(buildConfig);
             }
             super.configureAny(trueValue);
         }
@@ -624,4 +639,5 @@ public class BlockExtended extends Block {
     }
 
     public record BuildingStateRequest(BuildingStateSource<? extends BuildingState> factory, String name){}
+
 }

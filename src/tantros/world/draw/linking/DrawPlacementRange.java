@@ -1,4 +1,4 @@
-package tantros.world.draw.extended;
+package tantros.world.draw.linking;
 
 import arc.graphics.g2d.Draw;
 import arc.math.Mathf;
@@ -7,10 +7,11 @@ import tantros.graphics.TantrosDraw;
 import tantros.type.effect.projector.range.RangeConfig;
 import tantros.type.effect.projector.range.RangeState;
 import tantros.world.blocks.BlockExtended;
+import tantros.world.draw.extended.DrawBlockExtended;
 
 import static mindustry.Vars.tilesize;
 
-public class DrawPlacementRange extends DrawBlockExtended{
+public class DrawPlacementRange extends DrawBlockExtended {
 
     public boolean dashed = false;
 

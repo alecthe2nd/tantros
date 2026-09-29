@@ -1,8 +1,6 @@
 package tantros.world.draw.extended;
 
 import arc.math.geom.Vec2;
-import mindustry.Vars;
-import mindustry.gen.Building;
 import mindustry.gen.Unit;
 import mindustry.graphics.Drawf;
 import tantros.type.buildingState.logic.UnitLinks;

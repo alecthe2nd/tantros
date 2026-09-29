@@ -4,13 +4,9 @@ import arc.Core;
 import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.TextureRegion;
 import arc.math.Mathf;
-import arc.util.Time;
-import mindustry.Vars;
-import mindustry.gen.Building;
 import mindustry.graphics.Layer;
 import mindustry.world.Block;
 import tantros.type.buildingState.BoilerPressureBuildup;
-import tantros.type.buildingState.OutputHeatState;
 import tantros.world.blocks.BlockExtended;
 
 public class DrawPressureWarning extends DrawBlockExtended{

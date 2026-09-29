@@ -1,11 +1,8 @@
 package tantros.world.draw.extended;
 
-import arc.func.FloatFloatf;
 import arc.graphics.g2d.Draw;
 import arc.math.Angles;
 import arc.math.Mathf;
-import arc.util.Log;
-import mindustry.gen.Building;
 import mindustry.graphics.Layer;
 import mindustry.type.Weapon;
 import tantros.world.blocks.BlockExtended;
@@ -27,7 +24,6 @@ public class DrawWeapon extends DrawBlockExtended{
         } else {
             Draw.z(z + weapon.layerOffset);
         }
-        //Log.info("Drew: " + Draw.z() + " | " + z + ";");
         float
                 rotation = build.rotdeg() - 90,
                 weaponRotation  = rotation + weapon.baseRotation,

@@ -48,10 +48,8 @@ public class UnitLinkSetter<E extends BuildingState & Links> implements BlockEff
             for (Link link : links.getLinks()) {
 
                 Building other = world.build(link.x, link.y);
-                //Log.info(other.block.configurations.containsKey(Unit.class));
                 if(other != null && other.block.configurations.containsKey(AddUnitConfig.class)){
                     if(units.any()){
-                        //Log.info(units);
                         AddUnitConfig config = Pools.obtain(AddUnitConfig.class, AddUnitConfig::new);
                         config.unit = units.first();
                         other.configureAny(config);

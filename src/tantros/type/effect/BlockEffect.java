@@ -16,10 +16,16 @@ public interface BlockEffect {
 
     }
 
+    default void onRemoved(BlockExtended.BuildExtended build){
+
+    }
+
+    /** The proper time to add subeffects to this block when this effect is added. Initialization has not started yet!*/
     default void applySubEffects(BlockExtended block){
 
     }
 
+    /** The proper time initialize block configs and post building states. Subeffects should not be added in this step or after, see {@link #applySubEffects} */
     default void apply(BlockExtended block){
 
     }

@@ -17,7 +17,6 @@ public class ConfigApplier<State extends BuildingState, T> implements BlockConfi
     @Override
     public void apply(BlockExtended block) {
         block.config(this.configType, this::onConfig);
-        Log.info("Loaded config of " + stateType + " to " + this.configType);
     }
 
     public void onConfig(BlockExtended.BuildExtended build, T value){

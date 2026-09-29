@@ -1,8 +1,6 @@
 package tantros.world.draw;
 
 import arc.graphics.g2d.Draw;
-import arc.util.Log;
-import mindustry.gen.Building;
 import mindustry.world.draw.DrawBlock;
 import mindustry.world.draw.DrawRegion;
 import tantros.type.buildingState.CooldownState;

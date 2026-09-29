@@ -109,7 +109,6 @@ public class HarpoonBulletType extends BasicBulletType {
             Tmp.v1.set(b).sub(owner);
             float scale = size/Tmp.v1.len();
             Tmp.v1.scl(scale);
-            Log.info(owner + "|" + size + "|" + scale + "|" + Tmp.v1);
             Tmp.v2.set(owner).add(Tmp.v1);
             Lines.line(cableRegion, b.x, b.y, Tmp.v2.x, Tmp.v2.y, true);
             Draw.z(Layer.turret - 0.1f);

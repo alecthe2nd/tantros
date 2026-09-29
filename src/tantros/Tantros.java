@@ -1,11 +1,14 @@
 package tantros;
 
 import arc.Events;
+import arc.func.Func;
+import arc.func.Func2;
 import arc.util.Log;
 import mindustry.Vars;
 import mindustry.game.EventType;
 import mindustry.game.Team;
 import mindustry.gen.Tex;
+import mindustry.logic.LogicOp;
 import mindustry.mod.*;
 import mindustry.ui.Fonts;
 import mindustry.ui.dialogs.BaseDialog;
@@ -19,10 +22,10 @@ import tantros.content.world.*;
 import tantros.gen.*;
 import tantros.content.recipes.TantrosRecipes;
 import tantros.graphics.TantrosShaders;
+import tantros.logic.operations.VanillaOperation;
 import tantros.mod.ScriptInjector;
 import tantros.net.TantrosCalls;
-import tantros.ui.ClearPlanetsDialog;
-import tantros.ui.TantrosFonts;
+import tantros.ui.*;
 
 import java.lang.reflect.Field;
 
@@ -33,11 +36,14 @@ public class Tantros extends Mod{
     public static float waterToSteamConversion = 2f;
 
     public static ClearPlanetsDialog clearPlanetsDialog;
+    public static SignalParserLogicDialog signalParserLogicDialog;
+    public static SignalOperationDialog signalOperationDialog;
 
 
     public Tantros(){
         Events.on(EventType.ClientLoadEvent.class, e -> {
             TantrosFonts.loadFonts();
+            TantrosTex.load();
             Team.blue.emoji = Fonts.getUnicodeStr("archae");
         });
     }
@@ -80,6 +86,7 @@ public class Tantros extends Mod{
 
         Log.info("Attempting to access data settings ui.");
         clearPlanetsDialog = new ClearPlanetsDialog();
+
         try {
             Field field = SettingsMenuDialog.class.getDeclaredField("dataDialog");
             field.setAccessible(true);
@@ -97,5 +104,8 @@ public class Tantros extends Mod{
         } catch (Exception e){
             Log.err(e);
         }
+
+        signalParserLogicDialog = new SignalParserLogicDialog();
+        signalOperationDialog = new SignalOperationDialog();
     }
 }

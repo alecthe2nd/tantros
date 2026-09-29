@@ -55,7 +55,6 @@ public class TantrosVars {
         Events.on(EventType.UnitDamageEvent.class, (event)->{
             if(event.unit instanceof Burrowerc burrower){
                 burrower.dislodge(event.bullet);
-                Log.info("hit");
             }
         });
 

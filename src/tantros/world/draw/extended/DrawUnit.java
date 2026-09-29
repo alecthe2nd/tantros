@@ -2,14 +2,11 @@ package tantros.world.draw.extended;
 
 import arc.Core;
 import arc.graphics.Color;
-import arc.graphics.Texture;
 import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.TextureRegion;
 import arc.util.Eachable;
-import arc.util.Log;
 import arc.util.Nullable;
 import mindustry.entities.units.BuildPlan;
-import mindustry.gen.Building;
 import mindustry.graphics.Drawf;
 import mindustry.graphics.Layer;
 import mindustry.type.UnitType;
@@ -57,7 +54,6 @@ public class DrawUnit extends DrawBlockExtended{
             Draw.rect(region, build.x + x, build.y + y, build.totalProgress() * rotateSpeed + rotation + (buildingRotate ? build.rotdeg() : 0));
         }
         if(color != null) Draw.color();
-        //Log.info("Drew unit: " + Draw.z() + " | " + z + ";");
         Draw.z(z);
     }
 

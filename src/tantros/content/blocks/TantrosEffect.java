@@ -31,8 +31,8 @@ import tantros.world.blocks.effect.projector.draw.DrawEnvIconEmitter;
 import tantros.world.blocks.effect.projector.draw.DrawFieldArea;
 import tantros.world.blocks.effect.projector.draw.DrawMultiEmitter;
 import tantros.world.draw.extended.DrawMultiExtended;
-import tantros.world.draw.extended.DrawPlacementBlockTargets;
-import tantros.world.draw.extended.DrawPlacementRange;
+import tantros.world.draw.linking.DrawPlacementBlockTargets;
+import tantros.world.draw.linking.DrawPlacementRange;
 import tantros.world.environment.LocalEnv;
 
 import static mindustry.type.ItemStack.with;

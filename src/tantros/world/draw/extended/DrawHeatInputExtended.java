@@ -8,11 +8,8 @@ import arc.graphics.g2d.TextureRegion;
 import arc.math.Mathf;
 import arc.util.Eachable;
 import mindustry.entities.units.BuildPlan;
-import mindustry.gen.Building;
 import mindustry.graphics.Layer;
 import mindustry.world.Block;
-import mindustry.world.blocks.heat.HeatConsumer;
-import mindustry.world.draw.DrawBlock;
 import tantros.type.buildingState.InputHeatState;
 import tantros.world.blocks.BlockExtended;
 

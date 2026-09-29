@@ -1,4 +1,4 @@
-package tantros.world.draw.extended;
+package tantros.world.draw.linking;
 
 import arc.graphics.Color;
 import arc.math.Mathf;
@@ -9,11 +9,12 @@ import mindustry.graphics.Pal;
 import tantros.type.effect.projector.range.RangeConfig;
 import tantros.type.effect.projector.range.RangeState;
 import tantros.world.blocks.BlockExtended;
+import tantros.world.draw.extended.DrawBlockExtended;
 
 import static mindustry.Vars.indexer;
 import static mindustry.Vars.tilesize;
 
-public class DrawPlacementBlockTargets extends DrawBlockExtended{
+public class DrawPlacementBlockTargets extends DrawBlockExtended {
 
     public Color baseColor = (new Color()).set(Pal.accent);
 

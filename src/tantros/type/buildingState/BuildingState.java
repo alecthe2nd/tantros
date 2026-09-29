@@ -12,9 +12,13 @@ import tantros.world.blocks.BlockExtended;
 
 public interface BuildingState {
 
-    void initState(BlockExtended ownerType, BlockExtended.BuildExtended owner);
-    void update(BlockExtended ownerType, BlockExtended.BuildExtended owner);
-    void onProximity(BlockExtended ownerType, BlockExtended.BuildExtended owner);
+    default void initState(BlockExtended ownerType, BlockExtended.BuildExtended owner){}
+    default void update(BlockExtended ownerType, BlockExtended.BuildExtended owner){}
+    default void onProximity(BlockExtended ownerType, BlockExtended.BuildExtended owner){}
+
+    default void onRemove(BlockExtended.BuildExtended build){
+
+    }
 
     default <E> void onConfig(BlockExtended.BuildExtended owner, E config){
 

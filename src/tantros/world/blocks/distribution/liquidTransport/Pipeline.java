@@ -106,7 +106,6 @@ public class Pipeline extends PipelineBlock implements Autotiler {
             topRegions[i] = Core.atlas.find(name + "-top-" + i);
             botRegions[i] = Core.atlas.find(name + "-bottom-" + i);
         }
-        Log.info("Pipeline '" + this.name + "' has loaded its standard region from " + region.texture);
 
         rotateRegions = new TextureRegion[4][2][animationFrames];
 
@@ -140,9 +139,6 @@ public class Pipeline extends PipelineBlock implements Autotiler {
                 }
             }
 
-            Log.info("Pipeline '" + this.name + "' has loaded liquid regions from " + rotateRegions[0][0][0].texture);
-            Log.info("Pipeline '" + this.name + "' has loaded renderer liquid regions from " + renderer.fluidFrames[0][0].texture);
-            Log.info("Liquid texture == Main Region texture: " +  (rotateRegions[0][0][0].texture == topRegions[0].texture));
         }
     }
 

@@ -74,7 +74,6 @@ public class ConsumeRecipesDynamic extends ExtendedConsume {
 
             if(recipe.cost.power > 0){
                 block.hasPower = true;
-                Log.info("Assigned power to " + block.localizedName);
             }
         }
     }

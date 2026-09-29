@@ -104,7 +104,6 @@ public class ConsumeBoostWrapper extends ExtendedConsume{
             for(StatValue value : values){
                 stats.add(Stat.booster, TantrosStats.withEfficiencyMultiplier(efficiency, value));
             }
-            Log.info("Added boosters.");
         }
     }
 }

@@ -1,7 +1,9 @@
 package tantros.type.buildingState.logic.signalling;
 
+import arc.struct.IntMap;
 import arc.struct.ObjectSet;
 import arc.struct.Seq;
+import arc.util.Log;
 import arc.util.io.Reads;
 import arc.util.io.Writes;
 import arc.util.pooling.Pools;
@@ -16,18 +18,9 @@ public class SignalOutputState implements BuildingState {
     public boolean dirty;
 
     @Override
-    public void initState(BlockExtended ownerType, BlockExtended.BuildExtended owner) {
-
-    }
-
-    @Override
-    public void update(BlockExtended ownerType, BlockExtended.BuildExtended owner) {
-
-    }
-
-    @Override
-    public void onProximity(BlockExtended ownerType, BlockExtended.BuildExtended owner) {
-
+    public void onRemove(BlockExtended.BuildExtended build) {
+        //build index
+        clearSignals();
     }
 
     @Override
@@ -71,12 +64,19 @@ public class SignalOutputState implements BuildingState {
     /**Switches the output signal to exactly one signal by
      * clearing the list and then adding the one signal.*/
     public void toggleSignal(BlockExtended.BuildExtended build, Object data){
+        clearSignals();
+        Signal signal = Signal.newSignal(build, data);
+        this.signals.add(signal);
+        this.dirty = true;
+    }
+
+    /**Ends all signals.*/
+    public void clearSignals(){
+        if(signals.isEmpty()) return;
         for(Signal oldSignals: this.signals){
             Pools.free(oldSignals);
         }
         this.signals.clear();
-        Signal signal = Signal.newSignal(build, data);
-        this.signals.add(signal);
         this.dirty = true;
     }
 }

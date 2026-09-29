@@ -43,7 +43,7 @@ import tantros.world.draw.extended.DrawMultiExtended;
 import tantros.world.draw.wallDrill.DrawBoreBit;
 import tantros.world.draw.wallDrill.DrawBoreEfficiency;
 import tantros.world.consumers.ConsumeEnv;
-import tantros.world.draw.wallDrill.DrawPlacementLines;
+import tantros.world.draw.linking.DrawPlacementLines;
 import tantros.world.environment.LocalEnv;
 
 import static mindustry.type.ItemStack.with;

@@ -1,7 +1,10 @@
 package tantros.type.buildingState.logic.signalling;
 
+import arc.math.Mathf;
 import arc.math.geom.Geometry;
 import arc.math.geom.Point2;
+import arc.struct.Bits;
+import arc.struct.Seq;
 import mindustry.Vars;
 import mindustry.gen.Building;
 import mindustry.world.Tile;
@@ -15,7 +18,12 @@ public class BeamLinkState implements BuildingState {
 
     public Building[] links = new Building[4];
     public Tile[] dests = new Tile[4];
+    public Bits dirtyFlags = new Bits(4);
+
+    public Seq<Building> removed = new Seq<>();
+
     public int lastChange = -2;
+    private int lastRotation = 0;
 
     public BeamLinkState(BeamLinkConfig config) {
         this.config = config;
@@ -28,33 +36,48 @@ public class BeamLinkState implements BuildingState {
 
     @Override
     public void update(BlockExtended ownerType, BlockExtended.BuildExtended build) {
-        if (this.lastChange != Vars.world.tileChanges) {
+        if (this.lastChange != Vars.world.tileChanges || lastRotation != build.rotation) {
             this.lastChange = Vars.world.tileChanges;
+            this.lastRotation = build.rotation;
             this.updateDirections(build);
         }
     }
 
     public void updateDirections(BlockExtended.BuildExtended build) {
+        if(dirtyFlags.isEmpty()) removed.clear();
         for(int i = 0; i < 4; ++i) {
             Building prev = this.links[i];
-            Point2 dir = Geometry.d4[i];
             this.links[i] = null;
             this.dests[i] = null;
-            int offset = build.block.size / 2;
+            if(beamOn(build, i)) {
+                Point2 dir = Geometry.d4[i];
+                int offset = build.block.size / 2;
 
-            for(int j = 1 + offset; j <= this.config.range + offset; ++j) {
-                Building other = Vars.world.build(build.tile.x + j * dir.x, build.tile.y + j * dir.y);
-                if (other != null && other.isInsulated()) {
-                    break;
+                for (int j = 1 + offset; j <= this.config.range + offset; ++j) {
+                    Building other = Vars.world.build(build.tile.x + j * dir.x, build.tile.y + j * dir.y);
+                    if (other != null && other.isInsulated()) {
+                        break;
+                    }
+
+                    if (other != null && other.team == build.team && config.condition.get(build, other)) {
+                        this.links[i] = other;
+                        this.dests[i] = Vars.world.tile(build.tile.x + j * dir.x, build.tile.y + j * dir.y);
+                        break;
+                    }
                 }
-
-                if (other != null && other.team == build.team && config.condition.get(build, other)) {
-                    this.links[i] = other;
-                    this.dests[i] = Vars.world.tile(build.tile.x + j * dir.x, build.tile.y + j * dir.y);
-                    break;
+            }
+            if(links[i] != prev){
+                dirtyFlags.set(i);
+                if(prev != null){
+                    removed.add(prev);
                 }
             }
         }
+    }
+
+    /** Fetches whether this block has a beam in this absolute direction.*/
+    public boolean beamOn(BlockExtended.BuildExtended build, int dir){
+        return this.config.dir.get(Mathf.mod(dir - build.rotation, 4));
     }
 
     @Override

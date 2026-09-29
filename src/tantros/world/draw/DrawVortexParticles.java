@@ -1,12 +1,9 @@
 package tantros.world.draw;
 
-import arc.func.Func;
 import arc.graphics.*;
 import arc.graphics.g2d.*;
 import arc.math.*;
-import arc.math.Interp.*;
 import arc.util.*;
-import mindustry.gen.*;
 import tantros.world.blocks.BlockExtended;
 import tantros.world.draw.extended.DrawBlockExtended;
 
