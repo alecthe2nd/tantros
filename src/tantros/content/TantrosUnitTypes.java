@@ -6,6 +6,7 @@ import arc.struct.Seq;
 import static mindustry.Vars.indexer;
 import static mindustry.ai.UnitCommand.*;
 
+import ent.anno.Annotations;
 import mindustry.Vars;
 import mindustry.ai.ItemUnitStance;
 import mindustry.ai.UnitStance;
@@ -27,28 +28,39 @@ import tantros.type.units.*;
 
 public class TantrosUnitTypes {
 
+    @Annotations.EntityDef(value = {Unitc.class, Burrowerc.class}, serialize = false)
+    public static UnitType roach;
+
+    @Annotations.EntityDef(value = {Unitc.class, Burrowerc.class}, serialize = false)
+    public static UnitType infest;
+
+    @Annotations.EntityDef(value = {Unitc.class, Burrowerc.class}, serialize = false)
+    public static UnitType invade;
+
+    //public static UnitType tier 4 burrow;
+
+    //public static UnitType tier 5 burrow;
+
     public static UnitType
 
     testBoat,
-    aquas,
+
     flak,
     sherd,
     fractoid,
     //tier 4 mech
     //tier 5 mech
-    roach,
-    infest,
-    invade,
-    //tier 4 burrow
-    //tier 5 burrow
 
     skim,
     //tier 2 sub
     //tier 3 sub
     //tier 4 sub
     //tier 5 sub
+
     enact,
+
     delegate,
+
     largeFisk
     ;
 
@@ -218,7 +230,7 @@ public class TantrosUnitTypes {
             }});
         }};
 
-        roach = EntityRegistry.content("roach", BurrowerUnit.class, name -> new BurrowerUnitType(name){{
+        roach = new BurrowerUnitType("roach"){{
             //constructor = LegsUnit::create;
             aiController = SuicideAI::new;
             speed = 0.48f;
@@ -290,9 +302,9 @@ public class TantrosUnitTypes {
                 }};
             }});
             //abilities.add(new BurrowAbility());
-        }});
+        }};
 
-        infest = EntityRegistry.content("infest", BurrowerUnit.class, name -> new BurrowerUnitType(name){{
+        infest = new BurrowerUnitType("infest"){{
             //constructor = LegsUnit::create;
             speed = 0.5f;
             drag = 0.11f;
@@ -366,9 +378,9 @@ public class TantrosUnitTypes {
                         }}
             );
             //abilities.add(new BurrowAbility());
-        }});
+        }};
 
-        invade = EntityRegistry.content("invade", BurrowerUnit.class, name -> new BurrowerUnitType(name){{
+        invade = new BurrowerUnitType("invade"){{
             //constructor = LegsUnit::create;
             speed = 0.5f;
             drag = 0.11f;
@@ -442,7 +454,7 @@ public class TantrosUnitTypes {
                     new ShieldRegenFieldAbility(20f, 60f, 60f * 5, 60f)
             );
             //abilities.add(new BurrowAbility());
-        }});
+        }};
 
         skim = new UnitType("skim"){{
             constructor = UnitEntity::create;

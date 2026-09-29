@@ -162,10 +162,10 @@ allprojects{
 project(":"){
     apply(plugin = "com.github.GglLfr.EntityAnno")
 
-    val localModName = modName
+    //val localModName = modName
     val localMindustryVersion = mindustryVersion
     configure<EntityAnnoExtension>{
-        modName = localModName
+        //modName = localModName
         mindustryVersion = localMindustryVersion
         revisionDir = layout.projectDirectory.dir("revisions").asFile
         fetchPackage = modFetch

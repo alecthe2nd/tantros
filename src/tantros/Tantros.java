@@ -63,6 +63,8 @@ public class Tantros extends Mod{
         TantrosCalls.initPackets();
         ScriptInjector.load(TantrosVars.modWrapper, "packages.js");
         ScriptInjector.load(TantrosVars.modWrapper, "defaults.js");
+
+        EntityRegistry.registerUnits();
     }
 
     @Override
