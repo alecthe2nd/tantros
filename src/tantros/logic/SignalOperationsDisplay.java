@@ -9,14 +9,7 @@ import mindustry.ui.Styles;
 import tantros.logic.operations.Operation;
 import tantros.logic.operations.Operations;
 import tantros.type.blockConfig.BeamLinkConfig;
-import tantros.type.blockConfig.OperationConfig;
 import tantros.type.buildingState.OperationSettingState;
-import tantros.world.blocks.BlockExtended;
-
-import java.lang.reflect.Array;
-import java.util.Arrays;
-
-import static mindustry.logic.LCanvas.tooltip;
 
 public class SignalOperationsDisplay extends BaseDisplay{
 
@@ -52,6 +45,7 @@ public class SignalOperationsDisplay extends BaseDisplay{
         table.clearChildren();
         table.table((ops)->{
             ops.clearChildren();
+            table.add(Core.bundle.get("ui.logic.operation.perform")).padRight(6);
             int paramsSoFar = 0;
             if(operation.params > 1) {
                 for (int i = 0; i < operation.params && i < 4 && i < operation.placement; i++) {
@@ -91,11 +85,10 @@ public class SignalOperationsDisplay extends BaseDisplay{
                     }, Styles.logict, ()->{}).height(40f).margin(0).padRight(2).padLeft(2);
                 }
             }
-        /*table.add(Core.bundle.get("ui.logic.signal-parser.extract") + " ");
 
 
 
-        table.add( " " + Core.bundle.get("ui.logic.signal-parser.from"));*/
+        //table.add( " " + Core.bundle.get("ui.logic.signal-parser.from"));
         });
 
     }

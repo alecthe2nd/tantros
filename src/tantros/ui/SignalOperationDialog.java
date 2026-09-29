@@ -1,20 +1,13 @@
 package tantros.ui;
 
 import arc.scene.ui.layout.Table;
-import arc.struct.Seq;
-import arc.util.Log;
 import mindustry.gen.Tex;
 import mindustry.ui.dialogs.BaseDialog;
 import tantros.logic.SignalOperationsDisplay;
-import tantros.logic.SignalParseDisplay;
-import tantros.logic.operations.Operation;
-import tantros.logic.operations.Operations;
 import tantros.type.blockConfig.BeamLinkConfig;
 import tantros.type.buildConfig.BuildConfigurationUnit;
 import tantros.type.buildConfig.SetOperation;
-import tantros.type.buildConfig.SetParseType;
 import tantros.type.buildingState.OperationSettingState;
-import tantros.type.buildingState.logic.SignalParserState;
 import tantros.world.blocks.BlockExtended;
 
 import static arc.Core.bundle;
@@ -26,7 +19,7 @@ public class SignalOperationDialog extends BaseDialog {
     SignalOperationsDisplay display = new SignalOperationsDisplay();
 
     public SignalOperationDialog(){
-        super(bundle.get("ui.logic.signal-parser.configure", "Configure Signal Parser"));
+        super(bundle.get("ui.logic.operation.configure", "Configure Operation"));
 
         shouldPause = true;
 
